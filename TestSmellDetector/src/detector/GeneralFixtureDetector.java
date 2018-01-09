@@ -1,7 +1,8 @@
 package detector;
 
-public class GeneralFixtureDetector extends Thread implements Detector {
+public class GeneralFixtureDetector implements Detector {
 
+	@Override
 	public void run(){
 		analyze();
 	}

@@ -1,7 +1,8 @@
 package detector;
 
-public class TestCodeDuplicationDetector extends Thread implements Detector {
+public class TestCodeDuplicationDetector implements Detector {
 
+	@Override
 	public void run(){
 		analyze();
 	}

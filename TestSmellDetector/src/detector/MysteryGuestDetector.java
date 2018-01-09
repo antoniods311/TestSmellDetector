@@ -1,7 +1,8 @@
 package detector;
 
-public class MysteryGuestDetector extends Thread implements Detector {
+public class MysteryGuestDetector implements Detector {
 
+	@Override
 	public void run(){
 		analyze();
 	}

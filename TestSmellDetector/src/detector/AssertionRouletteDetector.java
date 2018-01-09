@@ -1,7 +1,8 @@
 package detector;
 
-public class AssertionRouletteDetector extends Thread implements Detector {
+public class AssertionRouletteDetector implements Detector {
 	
+	@Override
 	public void run(){
 		analyze();
 	}

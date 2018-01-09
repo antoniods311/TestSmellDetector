@@ -1,7 +1,8 @@
 package detector;
 
-public class SensitiveEqualityDetector extends Thread implements Detector {
+public class SensitiveEqualityDetector implements Detector {
 	
+	@Override
 	public void run(){
 		analyze();
 	}

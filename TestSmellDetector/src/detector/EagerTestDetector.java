@@ -1,7 +1,8 @@
 package detector;
 
-public class EagerTestDetector extends Thread implements Detector{
+public class EagerTestDetector implements Detector{
 
+	@Override
 	public void run(){
 		analyze();
 	}
