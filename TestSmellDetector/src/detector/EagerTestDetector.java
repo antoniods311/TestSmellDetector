@@ -1,5 +1,10 @@
 package detector;
 
+/**
+ * 
+ * @author antoniods311
+ *
+ */
 public class EagerTestDetector implements Detector{
 
 	@Override

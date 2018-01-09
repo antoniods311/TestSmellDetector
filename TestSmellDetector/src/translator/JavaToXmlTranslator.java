@@ -2,6 +2,11 @@ package translator;
 
 import java.io.File;
 
+/**
+ * 
+ * @author antoniods311
+ *
+ */
 public class JavaToXmlTranslator implements Translator {
 	
 	private File file;

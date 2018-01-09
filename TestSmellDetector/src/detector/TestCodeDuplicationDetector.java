@@ -1,5 +1,10 @@
 package detector;
 
+/**
+ * 
+ * @author antoniods311
+ *
+ */
 public class TestCodeDuplicationDetector implements Detector {
 
 	@Override

@@ -1,5 +1,10 @@
 package detector;
 
+/**
+ * 
+ * @author antoniods311
+ *
+ */
 public class SensitiveEqualityDetector implements Detector {
 	
 	@Override
