@@ -1,7 +1,9 @@
 package translator;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 /**
  * 
@@ -15,13 +17,27 @@ public class JavaToXmlTranslator implements Translator {
 	@Override
 	public String translate() {
 		// chiamata a tool di traduzione.
-		String command = "/home/antoniods311/Desktop/srcML/bin/srcml "
-				+ "../../testFiles/HelloWorld.java "
-				+ "-o HelloWorld.xml";
+		StringBuffer output = new StringBuffer();
+		String command = "/Users/antoniods311/Desktop/srcML/bin/srcml "
+				+ " /Users/antoniods311/Desktop/testFiles/HelloWorld.java "
+				+ "-o /Users/antoniods311/Desktop/testFiles/HelloWorld.java.xml";
 		try {
-			Runtime.getRuntime().exec(command);
+			Process p = Runtime.getRuntime().exec(command);
+			p.waitFor();
+			
+			BufferedReader reader =
+                    new BufferedReader(new InputStreamReader(p.getInputStream()));
+
+                String line = "";
+	while ((line = reader.readLine())!= null) {
+		output.append(line + "\n");
+	}
+			
 		} catch (IOException e) {
-			System.out.println("command exec error");
+			System.out.println("command exec error - IOException");
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			System.out.println("command exec error - InterruptedException");
 			e.printStackTrace();
 		}
 		
