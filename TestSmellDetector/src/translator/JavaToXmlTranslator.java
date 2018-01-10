@@ -18,18 +18,22 @@ public class JavaToXmlTranslator implements Translator {
 	@Override
 	public String translate() {
 		// chiamata a tool di traduzione.
-		//String command = "/Users/antoniods311/Desktop/srcML/bin/srcml";
-		String command = "../../srcML/bin/srcml";
+		String workingDir = System.getProperty("user.dir");
+		String command = workingDir+"/srcML/bin/srcml";
+		String testCaseName = "HelloWorld.java";
+		String inputTc = workingDir+"/inputTestCases/"+testCaseName;
+		String outputTc = workingDir+"/outputXML/"+testCaseName+".xml";
+		
 		try {
-			ProcessBuilder procBuilder = new ProcessBuilder(command, "../../testFiles/HelloWorld.java");
-			procBuilder = procBuilder.directory(new File("/Users/antoniods311/Desktop/srcML/bin"));
+			ProcessBuilder procBuilder = new ProcessBuilder(command,inputTc, "-o", outputTc);
+		    procBuilder = procBuilder.directory(new File(workingDir+"/srcML/bin"));
 			Process process = procBuilder.start();
 			
 			 InputStream is = process.getInputStream();
 		     InputStreamReader isr = new InputStreamReader(is);
 		     BufferedReader br = new BufferedReader(isr);
 		     String line;
-			
+	
 			while ((line = br.readLine()) != null) {
 			       System.out.println(line);
 			}
