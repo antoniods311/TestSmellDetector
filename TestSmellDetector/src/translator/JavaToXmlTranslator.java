@@ -3,6 +3,7 @@ package translator;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**
@@ -17,27 +18,23 @@ public class JavaToXmlTranslator implements Translator {
 	@Override
 	public String translate() {
 		// chiamata a tool di traduzione.
-		StringBuffer output = new StringBuffer();
-		String command = "/Users/antoniods311/Desktop/srcML/bin/srcml "
-				+ " /Users/antoniods311/Desktop/testFiles/HelloWorld.java "
-				+ "-o /Users/antoniods311/Desktop/testFiles/HelloWorld.java.xml";
+		String command = "/Users/antoniods311/Desktop/srcML/bin/srcml";
 		try {
-			Process p = Runtime.getRuntime().exec(command);
-			p.waitFor();
+			ProcessBuilder procBuilder = new ProcessBuilder(command, "../../testFiles/HelloWorld.java");
+			procBuilder = procBuilder.directory(new File("/Users/antoniods311/Desktop/srcML/bin"));
+			Process process = procBuilder.start();
 			
-			BufferedReader reader =
-                    new BufferedReader(new InputStreamReader(p.getInputStream()));
-
-                String line = "";
-	while ((line = reader.readLine())!= null) {
-		output.append(line + "\n");
-	}
+			 InputStream is = process.getInputStream();
+		     InputStreamReader isr = new InputStreamReader(is);
+		     BufferedReader br = new BufferedReader(isr);
+		     String line;
 			
-		} catch (IOException e) {
-			System.out.println("command exec error - IOException");
-			e.printStackTrace();
-		} catch (InterruptedException e) {
-			System.out.println("command exec error - InterruptedException");
+			while ((line = br.readLine()) != null) {
+			       System.out.println(line);
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Command exec error");
 			e.printStackTrace();
 		}
 		
