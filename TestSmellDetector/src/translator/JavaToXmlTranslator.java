@@ -18,7 +18,8 @@ public class JavaToXmlTranslator implements Translator {
 	@Override
 	public String translate() {
 		// chiamata a tool di traduzione.
-		String command = "/Users/antoniods311/Desktop/srcML/bin/srcml";
+		//String command = "/Users/antoniods311/Desktop/srcML/bin/srcml";
+		String command = "../../srcML/bin/srcml";
 		try {
 			ProcessBuilder procBuilder = new ProcessBuilder(command, "../../testFiles/HelloWorld.java");
 			procBuilder = procBuilder.directory(new File("/Users/antoniods311/Desktop/srcML/bin"));
@@ -33,7 +34,7 @@ public class JavaToXmlTranslator implements Translator {
 			       System.out.println(line);
 			}
 			
-		} catch (Exception e) {
+		} catch (IOException e) {
 			System.out.println("Command exec error");
 			e.printStackTrace();
 		}
