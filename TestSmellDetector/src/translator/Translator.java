@@ -9,7 +9,7 @@ import java.io.File;
  */
 public interface Translator {
 
-	public String translate();
+	public File translate();
 	public int load(File file);
 	
 }

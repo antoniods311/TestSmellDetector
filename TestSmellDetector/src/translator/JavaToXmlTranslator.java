@@ -13,51 +13,53 @@ import java.io.InputStreamReader;
  */
 public class JavaToXmlTranslator implements Translator {
 	
-	private File file;
+	private File sourceFile;
+	private File xmlFile = null;
 	
 	@Override
-	public String translate() {
+	public File translate() {
 		// chiamata a tool di traduzione.
 		String workingDir = System.getProperty("user.dir");
 		String command = workingDir+"/srcML/bin/srcml";
 		String testCaseName = "HelloWorld.java";
 		String inputTc = workingDir+"/inputTestCases/"+testCaseName;
-		String outputTc = workingDir+"/outputXML/"+testCaseName+".xml";
+		String outputPath = workingDir+"/outputXML/"+testCaseName+".xml";
 		
 		try {
-			ProcessBuilder procBuilder = new ProcessBuilder(command,inputTc, "-o", outputTc);
+			ProcessBuilder procBuilder = new ProcessBuilder(command,inputTc, "-o", outputPath);
 		    procBuilder = procBuilder.directory(new File(workingDir+"/srcML/bin"));
-			Process process = procBuilder.start();
+			procBuilder.start();
+			xmlFile = new File(outputPath);
 			
-			 InputStream is = process.getInputStream();
-		     InputStreamReader isr = new InputStreamReader(is);
-		     BufferedReader br = new BufferedReader(isr);
-		     String line;
-	
-			while ((line = br.readLine()) != null) {
-			       System.out.println(line);
-			}
+//		    Process process = procBuilder.start();
+//			InputStream is = process.getInputStream();
+//		    InputStreamReader isr = new InputStreamReader(is);
+//		    BufferedReader br = new BufferedReader(isr);
+//		    String line;
+//			while ((line = br.readLine()) != null) {
+//			       System.out.println(line);
+//			}
 			
 		} catch (IOException e) {
 			System.out.println("Command exec error");
 			e.printStackTrace();
 		}
 		
-		return null;
+		return xmlFile;
 	}
 
 	@Override
 	public int load(File file) {
-		this.setFile(file);
+		this.setSourceFile(file);
 		return 0;
 	}
 
-	public File getFile() {
-		return file;
+	public File getSourceFile() {
+		return sourceFile;
 	}
 
-	public void setFile(File file) {
-		this.file = file;
+	public void setSourceFile(File file) {
+		this.sourceFile = file;
 	}
 
 }
