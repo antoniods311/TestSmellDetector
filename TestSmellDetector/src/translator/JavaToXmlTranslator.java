@@ -1,10 +1,8 @@
 package translator;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import util.ToolConstant;
 
 /**
  * 
@@ -19,26 +17,17 @@ public class JavaToXmlTranslator implements Translator {
 	@Override
 	public File translate() {
 		// chiamata a tool di traduzione.
-		String workingDir = System.getProperty("user.dir");
-		String command = workingDir+"/srcML/bin/srcml";
-		String testCaseName = "HelloWorld.java";
-		String inputTc = workingDir+"/inputTestCases/"+testCaseName;
-		String outputPath = workingDir+"/outputXML/"+testCaseName+".xml";
+		String command = ToolConstant.SRCML_DIR+"srcml";
+		String testCaseName = sourceFile.getName();
+		System.out.println(testCaseName);
+		String inputTc = ToolConstant.TEST_CASES_DIR+testCaseName;
+		String outputPath = ToolConstant.XML_DIR+testCaseName+".xml";
 		
 		try {
 			ProcessBuilder procBuilder = new ProcessBuilder(command,inputTc, "-o", outputPath);
-		    procBuilder = procBuilder.directory(new File(workingDir+"/srcML/bin"));
+		    procBuilder = procBuilder.directory(new File(ToolConstant.SRCML_DIR));
 			procBuilder.start();
 			xmlFile = new File(outputPath);
-			
-//		    Process process = procBuilder.start();
-//			InputStream is = process.getInputStream();
-//		    InputStreamReader isr = new InputStreamReader(is);
-//		    BufferedReader br = new BufferedReader(isr);
-//		    String line;
-//			while ((line = br.readLine()) != null) {
-//			       System.out.println(line);
-//			}
 			
 		} catch (IOException e) {
 			System.out.println("Command exec error");

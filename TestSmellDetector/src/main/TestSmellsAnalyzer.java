@@ -5,6 +5,7 @@ import java.io.File;
 import java.util.ArrayList;
 import detector.Detector;
 import translator.JavaToXmlTranslator;
+import util.ToolConstant;
 
 /**
  * 
@@ -13,12 +14,16 @@ import translator.JavaToXmlTranslator;
  */
 public class TestSmellsAnalyzer {
 
+	private static String fileName = "MyTest.java";
+	
 	public static void main(String[] args) {
 		
 		System.out.println("Start analysis...");
 		
 		//Rappresentazione XML del caso di test
+		String inputTc = ToolConstant.XML_DIR+fileName;
 		JavaToXmlTranslator jxmlTranslator = new JavaToXmlTranslator();
+		jxmlTranslator.load(new File(inputTc));
 		File xml = jxmlTranslator.translate();
 		
 		//Esecuzione delle analisi usando i diversi detector
