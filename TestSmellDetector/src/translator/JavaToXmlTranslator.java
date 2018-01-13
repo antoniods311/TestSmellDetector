@@ -11,36 +11,31 @@ import util.ToolConstant;
  */
 public class JavaToXmlTranslator implements Translator {
 	
-	private File sourceFile;
-	private File xmlFile = null;
+	private File sourceFile, xmlFile;
+	private String input, output;
 	
 	@Override
 	public File translate() {
 		// chiamata a tool di traduzione.
 		String command = ToolConstant.SRCML_DIR+"srcml";
-		String testCaseName = sourceFile.getName();
-		System.out.println(testCaseName);
-		String inputTc = ToolConstant.TEST_CASES_DIR+testCaseName;
-		String outputPath = ToolConstant.XML_DIR+testCaseName+".xml";
-		
 		try {
-			ProcessBuilder procBuilder = new ProcessBuilder(command,inputTc, "-o", outputPath);
+			ProcessBuilder procBuilder = new ProcessBuilder(command,input, "-o", output);
 		    procBuilder = procBuilder.directory(new File(ToolConstant.SRCML_DIR));
 			procBuilder.start();
-			xmlFile = new File(outputPath);
+			xmlFile = new File(output);
 			
 		} catch (IOException e) {
 			System.out.println("Command exec error");
 			e.printStackTrace();
 		}
-		
 		return xmlFile;
 	}
 
 	@Override
-	public int load(File file) {
+	public void load(File file) {
 		this.setSourceFile(file);
-		return 0;
+		this.input = ToolConstant.TEST_CASES_DIR+file.getName();
+		this.output = ToolConstant.XML_DIR+file.getName()+".xml";
 	}
 
 	public File getSourceFile() {

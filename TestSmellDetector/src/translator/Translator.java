@@ -10,6 +10,6 @@ import java.io.File;
 public interface Translator {
 
 	public File translate();
-	public int load(File file);
+	public void load(File file);
 	
 }
