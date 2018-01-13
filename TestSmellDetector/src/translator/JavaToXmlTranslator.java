@@ -17,15 +17,15 @@ public class JavaToXmlTranslator implements Translator {
 	@Override
 	public File translate() {
 		// chiamata a tool di traduzione.
-		String command = ToolConstant.SRCML_DIR+"srcml";
+		String command = ToolConstant.SRCML_DIR+ToolConstant.SRCML_COMMAND;
 		try {
-			ProcessBuilder procBuilder = new ProcessBuilder(command,input, "-o", output);
+			ProcessBuilder procBuilder = new ProcessBuilder(command,input,ToolConstant.SRCML_OUTPUT_OPTION,output);
 		    procBuilder = procBuilder.directory(new File(ToolConstant.SRCML_DIR));
 			procBuilder.start();
 			xmlFile = new File(output);
 			
 		} catch (IOException e) {
-			System.out.println("Command exec error");
+			System.out.println(ToolConstant.SRCML_ERROR);
 			e.printStackTrace();
 		}
 		return xmlFile;
