@@ -97,10 +97,10 @@ public class EagerTestDetector implements Detector{
 
 		boolean isTest = false;
 		int i = 0;
-		NodeList annotationList = element.getElementsByTagName("annotation");
+		NodeList annotationList = element.getElementsByTagName(ToolConstant.ANNOTATION);
 		while(!isTest && i < annotationList.getLength()){
 			Element annotationElement = (Element) annotationList.item(i);
-			NodeList nameList = annotationElement.getElementsByTagName("name");
+			NodeList nameList = annotationElement.getElementsByTagName(ToolConstant.NAME);
 			int j;
 			for(j=0; j<nameList.getLength(); j++){
 				Element nameElement = (Element) nameList.item(j);;
