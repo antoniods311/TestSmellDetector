@@ -38,6 +38,7 @@ public class ToolConstant {
 	//XML ELEMENTS NAME
 	public static final String ANNOTATION = "annotation";
 	public static final String NAME = "name";
+	public static final String FUNCTION = "function";
 	
 	
 }
