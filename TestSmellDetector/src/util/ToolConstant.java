@@ -39,6 +39,7 @@ public class ToolConstant {
 	public static final String ANNOTATION = "annotation";
 	public static final String NAME = "name";
 	public static final String FUNCTION = "function";
+	public static final String CALL = "call";
 	
 	
 }

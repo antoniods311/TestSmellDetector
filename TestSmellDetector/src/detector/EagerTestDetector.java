@@ -2,6 +2,7 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -23,6 +24,7 @@ public class EagerTestDetector implements Detector{
 	private DocumentBuilderFactory docbuilderFactory;
 	private DocumentBuilder documentBuilder;
 	private Document doc;
+	private HashMap<String,Integer> result;
 	
 	public EagerTestDetector(File xml){
 		this.xml = xml;
@@ -50,8 +52,10 @@ public class EagerTestDetector implements Detector{
 		 * gestire caso di più metodi di test che possono presentare molti assert.
 		 * Per esempio si potrebbe considerare una HashMap<String,int> dove ad ogni test si fa
 		 * corrispondere un intero che rappresenta il numero di assert che sono stati trovati.
+		 * fallo fare nel metodo getAssertsNumber
 		 */
-		int numberOfAsserts = 0;
+		
+		result = new HashMap<String,Integer>();
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
 		try {
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
@@ -63,16 +67,14 @@ public class EagerTestDetector implements Detector{
 			for(int i=0; i<list.getLength(); i++){
 				if(list.item(i).getNodeType() == Node.ELEMENT_NODE){
 					Element functionElement = (Element) list.item(i);
-					System.out.println(functionElement.getNodeName());
 				
 					//Se entro ho trovato un metodo di test e devo cercare le chiamate dei metodi assert
 					if(isTestMethod(functionElement))
-						numberOfAsserts = getAssertsNumber(functionElement);
+						calculateAssertsNumber(functionElement);
 				}	
 			}
 			
-			
-			
+
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);
 			e.printStackTrace();
@@ -84,20 +86,32 @@ public class EagerTestDetector implements Detector{
 			e.printStackTrace();
 		}
 		
-		System.out.println("Eager Test --> numero di assert presenti: "+numberOfAsserts);
+		//System.out.println("Eager Test --> numero di assert presenti: "+numberOfAsserts);
 		
 		return 0;
 	}
 	
 	/*
 	 * metodo che conta il numero degli assert all'interno di un test
+	 * deve riempire result!
 	 */
-	private int getAssertsNumber(Element functionElement){
+	private void calculateAssertsNumber(Element functionElement){
 		
 		int numOfAssert = 0;
 		int i;
-		NodeList callList = functionElement.getElementsByTagName("call");
-		System.out.println("callList: "+callList.getLength());
+		String methodName = "";
+		
+		//leggo il nome del metodo
+		NodeList childNodes = functionElement.getChildNodes();
+		for(int j=0; j<childNodes.getLength(); j++){
+			if(childNodes.item(j).getNodeName() == ToolConstant.NAME){
+				methodName = childNodes.item(j).getTextContent();
+			}
+			//System.out.println("----->  "+childNodes.item(j).getNodeName());
+		}
+		
+		//calcolo il numero di result
+		NodeList callList = functionElement.getElementsByTagName(ToolConstant.CALL);
 		for(i=0; i<callList.getLength(); i++){
 			Element call = (Element) callList.item(i);
 			NodeList nameMethodList = call.getElementsByTagName(ToolConstant.NAME);
@@ -106,12 +120,8 @@ public class EagerTestDetector implements Detector{
 				if(isAssertMethod(nameMethodList.item(j).getTextContent()))
 					numOfAssert++;
 			}
-			
-			
-		}
-			
-		System.out.println("assert trovati: "+numOfAssert);
-		return numOfAssert;
+		}	
+		result.put(methodName, numOfAssert);
 	}
 	
 	/*
@@ -126,8 +136,7 @@ public class EagerTestDetector implements Detector{
 				isAssert = true;
 			index++;
 		}		
-		System.out.println("assert analizzato: "+nodeValue);
-		
+		//System.out.println("assert analizzato: "+nodeValue);
 		return isAssert;
 	}
 
