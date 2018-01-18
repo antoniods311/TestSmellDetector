@@ -7,6 +7,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.Node;
+
+import util.TestChecker;
 import util.ToolConstant;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -25,6 +27,7 @@ public class EagerTestDetector implements Detector{
 	private DocumentBuilder documentBuilder;
 	private Document doc;
 	private HashMap<String,Integer> result;
+	private TestChecker testChecker;
 	
 	public EagerTestDetector(File xml){
 		this.xml = xml;
@@ -69,9 +72,13 @@ public class EagerTestDetector implements Detector{
 					Element functionElement = (Element) list.item(i);
 				
 					//Se entro ho trovato un metodo di test e devo cercare le chiamate dei metodi assert
-					if(isTestMethod(functionElement))
+					if(testChecker.isTestMethod(functionElement))
 						calculateAssertsNumber(functionElement);
 				}	
+			}
+			
+			for(String s: result.keySet()){
+				System.out.println("ET: "+s+" --> "+result.get(s));
 			}
 			
 
@@ -117,53 +124,13 @@ public class EagerTestDetector implements Detector{
 			NodeList nameMethodList = call.getElementsByTagName(ToolConstant.NAME);
 			int j;
 			for(j=0; j<nameMethodList.getLength(); j++){
-				if(isAssertMethod(nameMethodList.item(j).getTextContent()))
+				if(testChecker.isAssertMethod(nameMethodList.item(j).getTextContent()))
 					numOfAssert++;
 			}
 		}	
 		result.put(methodName, numOfAssert);
 	}
-	
-	/*
-	 * metodo che controlla se il nome del nodo passato è un assert
-	 */
-	private boolean isAssertMethod(String nodeValue) {
-		
-		boolean isAssert = false;
-		int index = 0;
-		while(index < ToolConstant.ASSERT_METHODS.length && !isAssert){
-			if(nodeValue.equalsIgnoreCase(ToolConstant.ASSERT_METHODS[index]))
-				isAssert = true;
-			index++;
-		}		
-		//System.out.println("assert analizzato: "+nodeValue);
-		return isAssert;
-	}
 
-	/*
-	 * metodo che controlla se un metodo del TC è un test o meno.
-	 * Si verifica che ci sia l'annotazione @Test
-	 */
-	private boolean isTestMethod(Element element) {
-
-		boolean isTest = false;
-		int i = 0;
-		NodeList annotationList = element.getElementsByTagName(ToolConstant.ANNOTATION);
-		while(!isTest && i < annotationList.getLength()){
-			Element annotationElement = (Element) annotationList.item(i);
-			NodeList nameList = annotationElement.getElementsByTagName(ToolConstant.NAME);
-			int j;
-			for(j=0; j<nameList.getLength(); j++){
-				Element nameElement = (Element) nameList.item(j);;
-				if(nameElement.getTextContent().equalsIgnoreCase(ToolConstant.TEST_ANNOTATION))
-					isTest = true;
-				j++;
-			}
-			i++;
-		}
-		
-		return isTest;
-	}
 
 	@Override
 	public void run(){
