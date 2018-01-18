@@ -21,7 +21,7 @@ private File xml;
 	}
 	
 	@Override
-	public int analyze() {
+	public double analyze() {
 		// TODO Auto-generated method stub
 		return 0;
 	}

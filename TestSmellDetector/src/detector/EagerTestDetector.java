@@ -44,8 +44,13 @@ public class EagerTestDetector implements Detector{
 	 * - tra questi conto gli assert
 	 */
 	@Override
-	public int analyze() {
+	public double analyze() {
 
+		/*
+		 * gestire caso di più metodi di test che possono presentare molti assert.
+		 * Per esempio si potrebbe considerare una HashMap<String,int> dove ad ogni test si fa
+		 * corrispondere un intero che rappresenta il numero di assert che sono stati trovati.
+		 */
 		int numberOfAsserts = 0;
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
 		try {
