@@ -6,8 +6,8 @@ import org.w3c.dom.NodeList;
 public class TestParseTool {
 
 	/*
-	 * metodo che restituisce il nome di un metodo in un TC
-	 * a partire dall'elemento function
+	 * metodo che restituisce il nome di un metodo in un TC a partire
+	 * dall'elemento function
 	 */
 	public static String readMethodNameByFunction(Element functionElement) {
 

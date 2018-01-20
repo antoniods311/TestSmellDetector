@@ -61,7 +61,7 @@ public class SensitiveEqualityDetector implements Detector {
 					Element functionElement = (Element) list.item(i);
 
 					// Se entro ho trovato un metodo di test e devo cercare le
-					// chiamate dei metodi assert
+					// chiamate dei metodi toString
 					if (testChecker.isTestMethod(functionElement)) {
 						checkToString(functionElement);
 					}
