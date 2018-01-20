@@ -13,6 +13,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
+
+import util.MethodMatcher;
 import util.TestMethodChecker;
 import util.ToolConstant;
 
@@ -29,11 +31,13 @@ public class SensitiveEqualityDetector implements Detector {
 	private Document doc;
 	private HashMap<String, Integer> result;
 	private TestMethodChecker testChecker;
+	private MethodMatcher methodMatcher;
 	private static Logger log;
 
 	public SensitiveEqualityDetector(File xml) {
 		this.xml = xml;
 		testChecker = new TestMethodChecker();
+		methodMatcher = new MethodMatcher();
 		log = LogManager.getLogger(EagerTestDetector.class.getName());
 	}
 
@@ -107,7 +111,7 @@ public class SensitiveEqualityDetector implements Detector {
 		NodeList nameList = functionElement.getElementsByTagName(ToolConstant.NAME);
 		for(int i=0; i<nameList.getLength(); i++){
 			Element nameElement = (Element) nameList.item(i);
-			if(testChecker.isToStringMethod(nameElement.getTextContent()))
+			if(methodMatcher.isToStringMethod(nameElement.getTextContent()))
 				numOfToString++;
 		}
 		

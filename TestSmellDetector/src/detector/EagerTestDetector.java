@@ -7,6 +7,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.Node;
+
+import util.MethodMatcher;
 import util.TestMethodChecker;
 import util.ToolConstant;
 import org.apache.logging.log4j.LogManager;
@@ -29,11 +31,13 @@ public class EagerTestDetector implements Detector{
 	private Document doc;
 	private HashMap<String,Integer> result;
 	private TestMethodChecker testChecker;
+	private MethodMatcher methodMatcher;
 	private static Logger log;
 	
 	public EagerTestDetector(File xml){
 		this.xml = xml;
 		testChecker = new TestMethodChecker();
+		methodMatcher = new MethodMatcher();
 		log = LogManager.getLogger(EagerTestDetector.class.getName());
 	}
 
@@ -133,7 +137,7 @@ public class EagerTestDetector implements Detector{
 			NodeList nameMethodList = call.getElementsByTagName(ToolConstant.NAME);
 			int j;
 			for(j=0; j<nameMethodList.getLength(); j++){
-				if(testChecker.isAssertMethod(nameMethodList.item(j).getTextContent()))
+				if(methodMatcher.isAssertMethod(nameMethodList.item(j).getTextContent()))
 					numOfAssert++;
 			}
 		}	
