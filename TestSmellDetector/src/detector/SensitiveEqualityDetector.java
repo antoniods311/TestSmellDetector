@@ -16,6 +16,7 @@ import org.xml.sax.SAXException;
 
 import util.MethodMatcher;
 import util.TestMethodChecker;
+import util.TestParseTool;
 import util.ToolConstant;
 
 /**
@@ -96,15 +97,7 @@ public class SensitiveEqualityDetector implements Detector {
 	private void checkToString(Element functionElement) {
 
 		int numOfToString = 0;
-		String methodName = "";
-
-		// leggo il nome del metodo
-		NodeList childNodes = functionElement.getChildNodes();
-		for (int j = 0; j < childNodes.getLength(); j++) {
-			if (childNodes.item(j).getNodeName() == ToolConstant.NAME) {
-				methodName = childNodes.item(j).getTextContent();
-			}
-		}
+		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 
 		// calcolo il numero di result
 		//devo scorrere direttamente i name

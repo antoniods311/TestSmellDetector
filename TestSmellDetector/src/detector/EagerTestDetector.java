@@ -10,6 +10,7 @@ import javax.xml.soap.Node;
 
 import util.MethodMatcher;
 import util.TestMethodChecker;
+import util.TestParseTool;
 import util.ToolConstant;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -119,16 +120,7 @@ public class EagerTestDetector implements Detector{
 	private void calculateAssertsNumber(Element functionElement){
 		
 		int numOfAssert = 0;
-		String methodName = "";
-		
-		//leggo il nome del metodo
-		NodeList childNodes = functionElement.getChildNodes();
-		for(int j=0; j<childNodes.getLength(); j++){
-			if(childNodes.item(j).getNodeName() == ToolConstant.NAME){
-				methodName = childNodes.item(j).getTextContent();
-			}
-			//System.out.println("----->  "+childNodes.item(j).getNodeName());
-		}
+		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 		
 		//calcolo il numero di result
 		NodeList callList = functionElement.getElementsByTagName(ToolConstant.CALL);
