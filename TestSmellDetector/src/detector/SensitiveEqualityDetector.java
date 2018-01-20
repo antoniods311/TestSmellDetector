@@ -65,7 +65,6 @@ public class SensitiveEqualityDetector implements Detector {
 					if (testChecker.isTestMethod(functionElement)) {
 						checkToString(functionElement);
 					}
-
 				}
 			}
 
