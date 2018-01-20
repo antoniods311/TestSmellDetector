@@ -3,7 +3,8 @@ package main;
 import detector.*;
 import java.io.File;
 import java.util.ArrayList;
-import detector.Detector;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import translator.JavaToXmlTranslator;
 import util.ToolConstant;
 
@@ -15,10 +16,12 @@ import util.ToolConstant;
 public class TestSmellsAnalyzer {
 
 	private static String fileName = "MyTest.java";
+	private static Logger log;
 	
 	public static void main(String[] args) {
 		
-		System.out.println("Start analysis...");
+		log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
+		log.info("Start analysis...");
 		
 		//Rappresentazione XML del caso di test
 		String inputTc = ToolConstant.XML_DIR+fileName;
@@ -40,7 +43,7 @@ public class TestSmellsAnalyzer {
 		}
 		
 		//Restituzione dei risultati.
-		System.out.println("...Analysis end!");
+		log.info("...End analysis");
 	}
 
 }

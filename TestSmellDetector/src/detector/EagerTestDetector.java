@@ -7,9 +7,10 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.Node;
-
 import util.TestChecker;
 import util.ToolConstant;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -28,9 +29,12 @@ public class EagerTestDetector implements Detector{
 	private Document doc;
 	private HashMap<String,Integer> result;
 	private TestChecker testChecker;
+	private static Logger log;
 	
 	public EagerTestDetector(File xml){
 		this.xml = xml;
+		testChecker = new TestChecker();
+		log = LogManager.getLogger(EagerTestDetector.class.getName());
 	}
 
 	/*
@@ -48,9 +52,14 @@ public class EagerTestDetector implements Detector{
 	 * - scorro la lista prendendomi solo quelli che sono "ELEMENT_NODE"
 	 * - tra questi conto gli assert
 	 */
+	
+	/*
+	 * in result si trovano le corrispondeze tra metodoDiTest e numero di assert
+	 */
 	@Override
 	public double analyze() {
-
+		
+		log.info("start eager test analysis"); 
 		/*
 		 * gestire caso di più metodi di test che possono presentare molti assert.
 		 * Per esempio si potrebbe considerare una HashMap<String,int> dove ad ogni test si fa
@@ -78,7 +87,7 @@ public class EagerTestDetector implements Detector{
 			}
 			
 			for(String s: result.keySet()){
-				System.out.println("ET: "+s+" --> "+result.get(s));
+				log.info("assert number for  "+s+": "+result.get(s));
 			}
 			
 
@@ -93,7 +102,7 @@ public class EagerTestDetector implements Detector{
 			e.printStackTrace();
 		}
 		
-		//System.out.println("Eager Test --> numero di assert presenti: "+numberOfAsserts);
+		log.info("end eager test analysis");
 		
 		return 0;
 	}
