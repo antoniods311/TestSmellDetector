@@ -7,7 +7,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.Node;
-import util.TestChecker;
+import util.TestMethodChecker;
 import util.ToolConstant;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -28,12 +28,12 @@ public class EagerTestDetector implements Detector{
 	private DocumentBuilder documentBuilder;
 	private Document doc;
 	private HashMap<String,Integer> result;
-	private TestChecker testChecker;
+	private TestMethodChecker testChecker;
 	private static Logger log;
 	
 	public EagerTestDetector(File xml){
 		this.xml = xml;
-		testChecker = new TestChecker();
+		testChecker = new TestMethodChecker();
 		log = LogManager.getLogger(EagerTestDetector.class.getName());
 	}
 

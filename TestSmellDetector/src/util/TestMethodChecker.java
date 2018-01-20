@@ -3,9 +3,9 @@ package util;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-public class TestChecker {
+public class TestMethodChecker {
 
-	public TestChecker(){
+	public TestMethodChecker(){
 		
 	}
 	

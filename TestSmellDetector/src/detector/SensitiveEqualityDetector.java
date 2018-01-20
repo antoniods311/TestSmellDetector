@@ -13,8 +13,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-
-import util.TestChecker;
+import util.TestMethodChecker;
 import util.ToolConstant;
 
 /**
@@ -29,12 +28,12 @@ public class SensitiveEqualityDetector implements Detector {
 	private DocumentBuilder documentBuilder;
 	private Document doc;
 	private HashMap<String, Integer> result;
-	private TestChecker testChecker;
+	private TestMethodChecker testChecker;
 	private static Logger log;
 
 	public SensitiveEqualityDetector(File xml) {
 		this.xml = xml;
-		testChecker = new TestChecker();
+		testChecker = new TestMethodChecker();
 		log = LogManager.getLogger(EagerTestDetector.class.getName());
 	}
 
