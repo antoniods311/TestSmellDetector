@@ -59,7 +59,8 @@ public class EagerTestDetector implements Detector{
 	@Override
 	public double analyze() {
 		
-		log.info("start eager test analysis"); 
+		log.info(" <<< start Eager Test analysis >>>"); 
+		
 		/*
 		 * gestire caso di più metodi di test che possono presentare molti assert.
 		 * Per esempio si potrebbe considerare una HashMap<String,int> dove ad ogni test si fa
@@ -102,7 +103,7 @@ public class EagerTestDetector implements Detector{
 			e.printStackTrace();
 		}
 		
-		log.info("end eager test analysis");
+		log.info("<<< end Eager Test analysis >>>");
 		
 		return 0;
 	}
@@ -114,7 +115,6 @@ public class EagerTestDetector implements Detector{
 	private void calculateAssertsNumber(Element functionElement){
 		
 		int numOfAssert = 0;
-		int i;
 		String methodName = "";
 		
 		//leggo il nome del metodo
@@ -128,7 +128,7 @@ public class EagerTestDetector implements Detector{
 		
 		//calcolo il numero di result
 		NodeList callList = functionElement.getElementsByTagName(ToolConstant.CALL);
-		for(i=0; i<callList.getLength(); i++){
+		for(int i=0; i<callList.getLength(); i++){
 			Element call = (Element) callList.item(i);
 			NodeList nameMethodList = call.getElementsByTagName(ToolConstant.NAME);
 			int j;

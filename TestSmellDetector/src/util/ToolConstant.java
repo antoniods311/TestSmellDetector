@@ -35,6 +35,9 @@ public class ToolConstant {
 			"assertNotSame"
 	};
 	
+	//toString method
+	public static final String TO_STRING = "toString";
+	
 	//XML ELEMENTS NAME
 	public static final String ANNOTATION = "annotation";
 	public static final String NAME = "name";

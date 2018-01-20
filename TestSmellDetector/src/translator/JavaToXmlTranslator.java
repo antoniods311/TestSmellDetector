@@ -2,6 +2,11 @@ package translator;
 
 import java.io.File;
 import java.io.IOException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import main.TestSmellsAnalyzer;
 import util.ToolConstant;
 
 /**
@@ -13,10 +18,15 @@ public class JavaToXmlTranslator implements Translator {
 	
 	private File sourceFile, xmlFile;
 	private String input, output;
+	private static Logger log;
+	
+	public JavaToXmlTranslator(){
+		log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
+	}
 	
 	@Override
-	public File translate() {
-		// chiamata a tool di traduzione.
+	public File translate() {	
+
 		String command = ToolConstant.SRCML_DIR+ToolConstant.SRCML_COMMAND;
 		try {
 			ProcessBuilder procBuilder = new ProcessBuilder(command,input,ToolConstant.SRCML_OUTPUT_OPTION,output);
@@ -25,7 +35,7 @@ public class JavaToXmlTranslator implements Translator {
 			xmlFile = new File(output);
 			
 		} catch (IOException e) {
-			System.out.println(ToolConstant.SRCML_ERROR);
+			log.error(ToolConstant.SRCML_ERROR);
 			e.printStackTrace();
 		}
 		return xmlFile;
