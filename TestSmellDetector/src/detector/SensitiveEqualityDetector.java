@@ -83,7 +83,7 @@ public class SensitiveEqualityDetector implements Detector {
 			log.info("toString call number for "+s+": "+result.get(s));
 		}
 		
-		log.info("<<< end Sensitive Equality analysis >>>");
+		log.info("<<< end Sensitive Equality analysis >>>\n");
 
 		return 0;
 

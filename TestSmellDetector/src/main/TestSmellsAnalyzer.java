@@ -21,7 +21,7 @@ public class TestSmellsAnalyzer {
 	public static void main(String[] args) {
 		
 		log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
-		log.info("Start analysis...");
+		log.info("Start analysis...\n");
 		
 		//Rappresentazione XML del caso di test
 		String inputTc = ToolConstant.XML_DIR+fileName;
@@ -44,7 +44,7 @@ public class TestSmellsAnalyzer {
 		}
 		
 		//Restituzione dei risultati.
-		log.info("...End analysis");
+		log.info("...End analysis\n");
 	}
 
 }

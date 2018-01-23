@@ -108,7 +108,7 @@ public class EagerTestDetector implements Detector {
 			e.printStackTrace();
 		}
 
-		log.info("<<< end Eager Test analysis >>>");
+		log.info("<<< end Eager Test analysis >>>\n");
 
 		return 0;
 	}

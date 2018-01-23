@@ -17,8 +17,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import util.FileApiChecker;
 import util.MethodMatcher;
 import util.TestMethodChecker;
+import util.TestParseTool;
 import util.ToolConstant;
 
 /**
@@ -32,16 +34,14 @@ public class MysteryGuestDetector implements Detector {
 	private DocumentBuilderFactory docbuilderFactory;
 	private DocumentBuilder documentBuilder;
 	private Document doc;
-	private HashMap<String,ArrayList<String>> typeResult;
-	private HashMap<String,ArrayList<String>> functionResult;
-	private TestMethodChecker testChecker;
-	private MethodMatcher methodMatcher;
+	private HashMap<String, ArrayList<String>> typeResult;
+	private HashMap<String, ArrayList<String>> functionResult;
+	private FileApiChecker fileApiChecker;
 	private static Logger log;
 
 	public MysteryGuestDetector(File xml) {
 		this.xml = xml;
-		testChecker = new TestMethodChecker();
-		methodMatcher = new MethodMatcher();
+		fileApiChecker = new FileApiChecker();
 		log = LogManager.getLogger(MysteryGuestDetector.class.getName());
 	}
 
@@ -55,8 +55,8 @@ public class MysteryGuestDetector implements Detector {
 
 		log.info(" <<< start Mystery Guest analysis >>>");
 
-		typeResult = new HashMap<String,ArrayList<String>>();
-		functionResult = new HashMap<String,ArrayList<String>>();
+		typeResult = new HashMap<String, ArrayList<String>>();
+		functionResult = new HashMap<String, ArrayList<String>>();
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
 		try {
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
@@ -64,10 +64,10 @@ public class MysteryGuestDetector implements Detector {
 			doc.getDocumentElement().normalize();
 
 			// leggo la lista di nodi function
-			NodeList list = doc.getElementsByTagName(ToolConstant.FUNCTION);
-			for (int i = 0; i < list.getLength(); i++) {
-				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
-					Element functionElement = (Element) list.item(i);
+			NodeList functionList = doc.getElementsByTagName(ToolConstant.FUNCTION);
+			for (int i = 0; i < functionList.getLength(); i++) {
+				if (functionList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+					Element functionElement = (Element) functionList.item(i);
 					/*
 					 * In questo caso non serve controllare se sono in un metodo
 					 * di test o meno perché l'uso dei file va individuato anche
@@ -79,7 +79,11 @@ public class MysteryGuestDetector implements Detector {
 			}
 
 			for (String s : typeResult.keySet()) {
-				log.info("assert number for  " + s + ": " + typeResult.get(s));
+				ArrayList<String> list = typeResult.get(s);
+				for(String t : list){
+					log.info("file API types for method "+s+": "+t);
+				}
+				
 			}
 
 		} catch (ParserConfigurationException e) {
@@ -93,25 +97,36 @@ public class MysteryGuestDetector implements Detector {
 			e.printStackTrace();
 		}
 
-		log.info("<<< end Mystery Guest analysis >>>");
+		log.info("<<< end Mystery Guest analysis >>>\n");
 
 		return 0;
 	}
-	
-	
+
 	/*
 	 * metodo che legge le chiamate a metodi di API per la gestione dei file
 	 */
 	private void calculateFileApiFunctions(Element functionElement) {
-		
-		
+
 	}
 
 	/*
-	 * metodo che legge i tipi definite nelle API di gestione file 
+	 * metodo che legge i tipi definite nelle API di gestione file
 	 */
 	private void calculateFileApiTypes(Element functionElement) {
-		
+
+		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
+		typeResult.put(methodName, new ArrayList<String>());
+		NodeList typeNodeList = functionElement.getElementsByTagName(ToolConstant.TYPE);
+
+		for (int i = 0; i < typeNodeList.getLength(); i++) {
+			Element typeNode = (Element) typeNodeList.item(i);
+			if (fileApiChecker.isFileApiType(typeNode)) {
+				// per il metodo corrente vengono aggiunti i tipi.
+				String type = typeNode.getTextContent();
+				typeResult.get(methodName).add(type);
+			}
+		}
+
 		
 	}
 
