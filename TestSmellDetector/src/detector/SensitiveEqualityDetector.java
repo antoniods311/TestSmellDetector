@@ -45,7 +45,7 @@ public class SensitiveEqualityDetector implements Detector {
 	@Override
 	public double analyze() {
 
-		log.info("<<< start sensitive Equality analysis >>>");
+		log.info("*** START SENSITIVE EQUALITY ANALYSIS ***");
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
 		result = new HashMap<String, Integer>();
 
@@ -83,7 +83,7 @@ public class SensitiveEqualityDetector implements Detector {
 			log.info("toString call number for "+s+": "+result.get(s));
 		}
 		
-		log.info("<<< end Sensitive Equality analysis >>>\n");
+		log.info("*** END SENSITIVE EQUALITY ANALYSIS ***\n");
 
 		return 0;
 

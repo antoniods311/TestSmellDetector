@@ -53,7 +53,7 @@ public class MysteryGuestDetector implements Detector {
 	@Override
 	public double analyze() {
 
-		log.info(" <<< start Mystery Guest analysis >>>");
+		log.info("*** START MYSTERY GUEST ANALYSIS ***");
 
 		typeResult = new HashMap<String, ArrayList<String>>();
 		functionResult = new HashMap<String, ArrayList<String>>();
@@ -97,7 +97,7 @@ public class MysteryGuestDetector implements Detector {
 			e.printStackTrace();
 		}
 
-		log.info("<<< end Mystery Guest analysis >>>\n");
+		log.info("*** END MYSTERY GUEST ANALYSIS ***\n");
 
 		return 0;
 	}

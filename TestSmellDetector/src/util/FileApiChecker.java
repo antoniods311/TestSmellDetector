@@ -22,6 +22,17 @@ public class FileApiChecker {
 		return isFileType;
 	}
 	
+	/*
+	 * metodo che controlla se un metodo chiamato nel TC
+	 * appartiene o meno ad una API di gestione dei file.
+	 */
+	public boolean isFileApiFunction(Element callNode){
+		
+		boolean isFileCall = false;
+		
+		
+		return isFileCall;
+	}
 	
 	
 }

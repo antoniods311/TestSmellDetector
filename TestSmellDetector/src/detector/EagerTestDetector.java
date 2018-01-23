@@ -63,7 +63,7 @@ public class EagerTestDetector implements Detector {
 	@Override
 	public double analyze() {
 
-		log.info(" <<< start Eager Test analysis >>>");
+		log.info("*** START EAGER TEST ANALYSIS ***");
 
 		/*
 		 * gestire caso di più metodi di test che possono presentare molti
@@ -108,7 +108,7 @@ public class EagerTestDetector implements Detector {
 			e.printStackTrace();
 		}
 
-		log.info("<<< end Eager Test analysis >>>\n");
+		log.info("*** END EAGER TEST ANALYSIS ***\n");
 
 		return 0;
 	}
