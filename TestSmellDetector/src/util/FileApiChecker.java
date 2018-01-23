@@ -29,7 +29,13 @@ public class FileApiChecker {
 	public boolean isFileApiFunction(Element callNode){
 		
 		boolean isFileCall = false;
-		
+		int index = 0;
+		int size = ToolConstant.FILE_API_METHODS.length;
+		while(index < size && !isFileCall){
+			if(callNode.getTextContent().equals(ToolConstant.FILE_API_METHODS[index]))
+				isFileCall = true;
+			index++;
+		}
 		
 		return isFileCall;
 	}

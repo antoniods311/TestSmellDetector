@@ -80,11 +80,19 @@ public class MysteryGuestDetector implements Detector {
 
 			for (String s : typeResult.keySet()) {
 				ArrayList<String> list = typeResult.get(s);
-				for(String t : list){
-					log.info("file API types for method "+s+": "+t);
+				for (String t : list) {
+					log.info("file API types for method " + s + ": " + t);
 				}
-				
 			}
+			
+			for(String s: functionResult.keySet()){
+				ArrayList<String> list = functionResult.get(s);
+				for(String t: list){
+					log.info("file API called method for method " + s + ": " + t);
+				}
+			}
+			
+			
 
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);
@@ -107,6 +115,23 @@ public class MysteryGuestDetector implements Detector {
 	 */
 	private void calculateFileApiFunctions(Element functionElement) {
 
+		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
+		functionResult.put(methodName, new ArrayList<String>());
+		NodeList callList = functionElement.getElementsByTagName(ToolConstant.CALL);
+		for (int i = 0; i < callList.getLength(); i++) {
+			Element call = (Element) callList.item(i);
+			NodeList nameMethodList = call.getElementsByTagName(ToolConstant.NAME);
+			for (int j = 0; j < nameMethodList.getLength(); j++) {
+				Element callNode = (Element) nameMethodList.item(j);
+				if (fileApiChecker.isFileApiFunction(callNode)) {
+					// per il metodo corrente aggiungo le chiamate alla API di
+					// gestione dei file
+					String calledMethod = callNode.getTextContent();
+					functionResult.get(methodName).add(calledMethod);
+				}
+
+			}
+		}
 	}
 
 	/*
@@ -127,7 +152,6 @@ public class MysteryGuestDetector implements Detector {
 			}
 		}
 
-		
 	}
 
 	@Override

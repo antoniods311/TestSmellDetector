@@ -32,7 +32,7 @@ public class ToolConstant {
 			"FileWriter", "PrintWriter", "Scanner" };
 
 	// File API methods
-	public static final String[] FILE_API_METHODS = { "readLine", "nextLine", "close" };
+	public static final String[] FILE_API_METHODS = { "readLine", "nextLine", "close", "read" };
 
 	// toString method
 	public static final String TO_STRING = "toString";
