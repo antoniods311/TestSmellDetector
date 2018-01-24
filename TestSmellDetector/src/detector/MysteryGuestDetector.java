@@ -77,23 +77,6 @@ public class MysteryGuestDetector implements Detector {
 					calculateFileApiFunctions(functionElement);
 				}
 			}
-
-			for (String s : typeResult.keySet()) {
-				ArrayList<String> list = typeResult.get(s);
-				for (String t : list) {
-					log.info("file API types for method " + s + ": " + t);
-				}
-			}
-			
-			for(String s: functionResult.keySet()){
-				ArrayList<String> list = functionResult.get(s);
-				for(String t: list){
-					log.info("file API called method for method " + s + ": " + t);
-				}
-			}
-			
-			
-
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);
 			e.printStackTrace();
@@ -105,6 +88,20 @@ public class MysteryGuestDetector implements Detector {
 			e.printStackTrace();
 		}
 
+		for (String s : typeResult.keySet()) {
+			ArrayList<String> list = typeResult.get(s);
+			for (String t : list) {
+				log.info("file API types for method " + s + ": " + t);
+			}
+		}
+		
+		for(String s: functionResult.keySet()){
+			ArrayList<String> list = functionResult.get(s);
+			for(String t: list){
+				log.info("file API called method for method " + s + ": " + t);
+			}
+		}
+		
 		log.info("*** END MYSTERY GUEST ANALYSIS ***\n");
 
 		return 0;
