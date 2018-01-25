@@ -37,7 +37,7 @@ public class AssertionRouletteDetector implements Detector {
 	private TestMethodChecker testChecker;
 	private MethodMatcher methodMatcher;
 	private AssertParameterChecker assertChecker;
-	private HashMap<String,ArrayList<String>> result;
+	private HashMap<String, ArrayList<String>> result;
 	private static Logger log;
 
 	public AssertionRouletteDetector(File xml) {
@@ -52,7 +52,7 @@ public class AssertionRouletteDetector implements Detector {
 	public double analyze() {
 
 		log.info("*** START ASSERTION ROULETTE ANALYSIS ***");
-		result = new HashMap<String,ArrayList<String>>();
+		result = new HashMap<String, ArrayList<String>>();
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
 		try {
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
@@ -96,23 +96,23 @@ public class AssertionRouletteDetector implements Detector {
 
 		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 		result.put(methodName, new ArrayList<String>());
-		
+
 		NodeList callList = functionElement.getElementsByTagName(ToolConstant.CALL);
-		for(int i=0; i<callList.getLength(); i++){
+		for (int i = 0; i < callList.getLength(); i++) {
 			Element call = (Element) callList.item(i);
-			//devo scorrere i name delle diverse call
+			// devo scorrere i name delle diverse call
 			NodeList nameList = call.getElementsByTagName(ToolConstant.NAME);
-			for(int j=0; j<nameList.getLength(); j++){
+			for (int j = 0; j < nameList.getLength(); j++) {
 				Element nameElement = (Element) nameList.item(j);
 				String nameElementContent = nameElement.getTextContent();
-				if (methodMatcher.isAssertMethod(nameElementContent)){
-					//se entro ho trovato un metodo assert
-					//e quindi devo vedere se ho il parametro message o meno
-					if(!assertChecker.hasMessageParameter(call,nameElementContent)){
+				if (methodMatcher.isAssertMethod(nameElementContent)) {
+					// se entro ho trovato un metodo assert
+					// e quindi devo vedere se ho il parametro message o meno
+					if (!assertChecker.hasMessageParameter(call, nameElementContent)) {
 						result.get(methodName).add(nameElement.getTextContent());
 					}
 				}
-					
+
 			}
 		}
 	}

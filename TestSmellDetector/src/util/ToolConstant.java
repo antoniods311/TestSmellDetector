@@ -34,7 +34,6 @@ public class ToolConstant {
 	public static final String ASSERT_NOT_NULL = "assertNotNull";
 	public static final String ASSERT_SAME = "assertSame";
 	public static final String ASSERT_NOT_SAME = "assertNotSame";
-	
 
 	// File API types
 	public static final String[] FILE_API_TYPES = { "File", "BufferedReader", "FileReader", "FileWriter", "IOException",
