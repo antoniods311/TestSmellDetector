@@ -1,35 +1,35 @@
 package util;
 
+import javax.print.attribute.standard.Sides;
+
 import org.w3c.dom.Element;
 
 public class AssertParameterChecker {
 
-	public boolean hasMessageParameter(Element call) {
+	private MethodMatcher methodMatcher;
+	
+	public AssertParameterChecker(){
+		methodMatcher = new MethodMatcher();
+	}
+	
+	public boolean hasMessageParameter(Element call, String name) {
 
 		boolean hasMsgParam = false;
+		
+		if(methodMatcher.isFailMethod(name)){
+			//devo controllare se c'è almeno un parametro di tipo string
+			
+			
+		}else{
+			
+			
+			
+		}
 
 		return hasMsgParam;
 	}
 
-	private boolean isFailMethod() {
-
-		boolean isFail = false;
-
-		return isFail;
-	}
-
-	private boolean isAssertTrueMethod() {
-
-		boolean isAssertTrue = false;
-
-		return isAssertTrue;
-	}
-
-	private boolean isAssertFalseMethod() {
-
-		boolean isAssertFalse = false;
-
-		return isAssertFalse;
-	}
+	
+	
 
 }

@@ -34,4 +34,33 @@ public class MethodMatcher {
 		return hasToStringMethod;
 	}
 	
+	public boolean isFailMethod(String methodName) {
+
+		boolean isFail = false;
+
+		return isFail;
+	}
+
+	public boolean isAssertTrueMethod(String methodName) {
+
+		boolean isAssertTrue = false;
+
+		return isAssertTrue;
+	}
+
+	public boolean isAssertFalseMethod(String methodName) {
+
+		boolean isAssertFalse = false;
+
+		return isAssertFalse;
+	}
+	
+	public boolean isAssertEqualsMethod(String name){
+		
+		boolean isAssertEquals = false;
+		
+		return isAssertEquals;
+		
+	}
+	
 }

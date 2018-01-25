@@ -104,20 +104,17 @@ public class AssertionRouletteDetector implements Detector {
 			NodeList nameList = call.getElementsByTagName(ToolConstant.NAME);
 			for(int j=0; j<nameList.getLength(); j++){
 				Element nameElement = (Element) nameList.item(j);
-				if (methodMatcher.isAssertMethod(nameElement.getTextContent())){
+				String nameElementContent = nameElement.getTextContent();
+				if (methodMatcher.isAssertMethod(nameElementContent)){
 					//se entro ho trovato un metodo assert
 					//e quindi devo vedere se ho il parametro message o meno
-					if(!assertChecker.hasMessageParameter(call)){
+					if(!assertChecker.hasMessageParameter(call,nameElementContent)){
 						result.get(methodName).add(nameElement.getTextContent());
 					}
 				}
 					
 			}
-			
 		}
-		
-		
-		
 	}
 
 	@Override
