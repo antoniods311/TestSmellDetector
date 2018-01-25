@@ -27,14 +27,22 @@ public class AssertParameterChecker {
 				if (methodMatcher.isAssertNullMethod(name) || methodMatcher.isAssertNotNullMethod(name)) {
 					// qui devo avere 2 parametri, il primo dei quali deve
 					// essere di tipo String
-					
-				}else{
-					if(methodMatcher.isAssertEqualsMethod(name)){
-						//sto nel caso equals. Qui devo gestire il caso con 2, 3 o 4 parametri
+
+				} else {
+					if (methodMatcher.isAssertEqualsMethod(name)) {
+						/*
+						 * sto nel caso equals. Qui devo gestire il caso con 2,
+						 * 3 o 4 parametri nel caso 2 parametri è facile capire
+						 * che non ho il msg nel caso 4 parametri ho sicuramente
+						 * msg nel caso 3 parametri bisogna ragionare sulla
+						 * tolleranza. Se c'è ovviamente sono nella versione del
+						 * metodo che prevede 4 parametri e quindi se ne trovo
+						 * solo 3 significa che il msg non ci sta
+						 */
+
 					}
-					
+
 				}
-				
 
 			}
 
