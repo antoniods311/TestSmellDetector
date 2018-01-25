@@ -26,6 +26,15 @@ public class ToolConstant {
 	// Assert Methods
 	public static final String[] ASSERT_METHODS = { "fail", "assertTrue", "assertFalse", "assertEquals", "assertNull",
 			"assertNotNull", "assertSame", "assertNotSame" };
+	public static final String FAIL = "fail";
+	public static final String ASSERT_TRUE = "assertTrue";
+	public static final String ASSERT_FALSE = "assertFalse";
+	public static final String ASSERT_EQUALS = "assertEquals";
+	public static final String ASSERT_NULL = "assertNull";
+	public static final String ASSERT_NOT_NULL = "assertNotNull";
+	public static final String ASSERT_SAME = "assertSame";
+	public static final String ASSERT_NOT_SAME = "assertNotSame";
+	
 
 	// File API types
 	public static final String[] FILE_API_TYPES = { "File", "BufferedReader", "FileReader", "FileWriter", "IOException",

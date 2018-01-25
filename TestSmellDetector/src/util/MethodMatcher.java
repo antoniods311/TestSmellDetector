@@ -25,42 +25,39 @@ public class MethodMatcher {
 	 * metodo che controlla se il nodo contiene la chiamata al metodo toString()
 	 */
 	public boolean isToStringMethod(String textContent) {
-
-		boolean hasToStringMethod = false;
-		
-		if(textContent.equalsIgnoreCase(ToolConstant.TO_STRING)) 
-			hasToStringMethod = true;
-		
-		return hasToStringMethod;
+		return textContent.equalsIgnoreCase(ToolConstant.TO_STRING);
 	}
 	
 	public boolean isFailMethod(String methodName) {
-
-		boolean isFail = false;
-
-		return isFail;
+		return methodName.equals(ToolConstant.FAIL);
 	}
 
 	public boolean isAssertTrueMethod(String methodName) {
-
-		boolean isAssertTrue = false;
-
-		return isAssertTrue;
+		return methodName.equals(ToolConstant.ASSERT_TRUE);
 	}
 
 	public boolean isAssertFalseMethod(String methodName) {
-
-		boolean isAssertFalse = false;
-
-		return isAssertFalse;
+		return methodName.equals(ToolConstant.ASSERT_FALSE);
 	}
 	
-	public boolean isAssertEqualsMethod(String name){
-		
-		boolean isAssertEquals = false;
-		
-		return isAssertEquals;
-		
+	public boolean isAssertEqualsMethod(String methodName){
+		return methodName.equals(ToolConstant.ASSERT_EQUALS);
+	}
+	
+	public boolean isAssertNullMethod(String methodName){
+		return methodName.equals(ToolConstant.ASSERT_NULL);
+	}
+	
+	public boolean isAssertNotNullMethod(String methodName){
+		return methodName.equals(ToolConstant.ASSERT_NOT_NULL);
+	}
+	
+	public boolean isAssertSameMethod(String methodName){
+		return methodName.equals(ToolConstant.ASSERT_SAME);
+	}
+	
+	public boolean isAssertNotSameMetho(String methodName){
+		return methodName.equals(ToolConstant.ASSERT_NOT_SAME);
 	}
 	
 }
