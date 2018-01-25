@@ -93,7 +93,7 @@ public class AssertionRouletteDetector implements Detector {
 	 * parametro message
 	 */
 	private void readNoMessageAsserts(Element functionElement) {
-
+		
 		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 		result.put(methodName, new ArrayList<String>());
 

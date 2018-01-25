@@ -15,25 +15,31 @@ import util.ToolConstant;
  *
  */
 public class JavaToXmlTranslator implements Translator {
-	
+
 	private File sourceFile, xmlFile;
 	private String input, output;
 	private static Logger log;
-	
-	public JavaToXmlTranslator(){
+
+	public JavaToXmlTranslator() {
 		log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
 	}
-	
-	@Override
-	public File translate() {	
 
-		String command = ToolConstant.SRCML_DIR+ToolConstant.SRCML_COMMAND;
+	@Override
+	public File translate() {
+
+		String command = ToolConstant.SRCML_DIR + ToolConstant.SRCML_COMMAND;
 		try {
-			ProcessBuilder procBuilder = new ProcessBuilder(command,input,ToolConstant.SRCML_OUTPUT_OPTION,output);
-		    procBuilder = procBuilder.directory(new File(ToolConstant.SRCML_DIR));
+			ProcessBuilder procBuilder = new ProcessBuilder(command, input, ToolConstant.SRCML_OUTPUT_OPTION, output);
+			procBuilder = procBuilder.directory(new File(ToolConstant.SRCML_DIR));
 			procBuilder.start();
+
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			xmlFile = new File(output);
-			
+
 		} catch (IOException e) {
 			log.error(ToolConstant.SRCML_ERROR);
 			e.printStackTrace();
@@ -44,8 +50,8 @@ public class JavaToXmlTranslator implements Translator {
 	@Override
 	public void load(File file) {
 		this.setSourceFile(file);
-		this.input = ToolConstant.TEST_CASES_DIR+file.getName();
-		this.output = ToolConstant.XML_DIR+file.getName()+".xml";
+		this.input = ToolConstant.TEST_CASES_DIR + file.getName();
+		this.output = ToolConstant.XML_DIR + file.getName() + ".xml";
 	}
 
 	public File getSourceFile() {
