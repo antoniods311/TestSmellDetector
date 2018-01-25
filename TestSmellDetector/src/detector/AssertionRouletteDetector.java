@@ -17,7 +17,10 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import util.AssertParameterChecker;
+import util.MethodMatcher;
 import util.TestMethodChecker;
+import util.TestParseTool;
 import util.ToolConstant;
 
 /**
@@ -32,18 +35,24 @@ public class AssertionRouletteDetector implements Detector {
 	private DocumentBuilder documentBuilder;
 	private Document doc;
 	private TestMethodChecker testChecker;
+	private MethodMatcher methodMatcher;
+	private AssertParameterChecker assertChecker;
+	private HashMap<String,ArrayList<String>> result;
 	private static Logger log;
 
 	public AssertionRouletteDetector(File xml) {
 		this.xml = xml;
+		testChecker = new TestMethodChecker();
+		methodMatcher = new MethodMatcher();
+		assertChecker = new AssertParameterChecker();
 		log = LogManager.getLogger(AssertionRouletteDetector.class.getName());
 	}
 
 	@Override
 	public double analyze() {
-		
-		log.info("*** START ASSERTION ROULETTE ANALYSIS ***");
 
+		log.info("*** START ASSERTION ROULETTE ANALYSIS ***");
+		result = new HashMap<String,ArrayList<String>>();
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
 		try {
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
@@ -57,12 +66,11 @@ public class AssertionRouletteDetector implements Detector {
 					Element functionElement = (Element) functionList.item(i);
 					// Se entro ho trovato un metodo di test e devo cercare le
 					// chiamate dei metodi assert e controllarle
-					if (testChecker.isTestMethod(functionElement)){
-						
-						//aggiungere check sugli assert
-						
+					if (testChecker.isTestMethod(functionElement)) {
+						// aggiungere check sugli assert
+						readNoMessageAsserts(functionElement);
 					}
-					
+
 				}
 			}
 		} catch (ParserConfigurationException e) {
@@ -73,13 +81,45 @@ public class AssertionRouletteDetector implements Detector {
 			e.printStackTrace();
 		} catch (IOException e) {
 			System.out.println(ToolConstant.IO_EXCEPTION_MSG);
-			e.printStackTrace();	
+			e.printStackTrace();
 		}
-		
+
 		log.info("*** END ASSERTION ROULETTE ANALYSIS ***");
 		return 0;
 	}
-	
+
+	/*
+	 * metodo che individua gli assert per i quali non è specificato il
+	 * parametro message
+	 */
+	private void readNoMessageAsserts(Element functionElement) {
+
+		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
+		result.put(methodName, new ArrayList<String>());
+		
+		NodeList callList = functionElement.getElementsByTagName(ToolConstant.CALL);
+		for(int i=0; i<callList.getLength(); i++){
+			Element call = (Element) callList.item(i);
+			//devo scorrere i name delle diverse call
+			NodeList nameList = call.getElementsByTagName(ToolConstant.NAME);
+			for(int j=0; j<nameList.getLength(); j++){
+				Element nameElement = (Element) nameList.item(j);
+				if (methodMatcher.isAssertMethod(nameElement.getTextContent())){
+					//se entro ho trovato un metodo assert
+					//e quindi devo vedere se ho il parametro message o meno
+					if(!assertChecker.hasMessageParameter(call)){
+						result.get(methodName).add(nameElement.getTextContent());
+					}
+				}
+					
+			}
+			
+		}
+		
+		
+		
+	}
+
 	@Override
 	public void run() {
 		analyze();
