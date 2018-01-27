@@ -84,7 +84,14 @@ public class AssertionRouletteDetector implements Detector {
 			e.printStackTrace();
 		}
 
-		log.info("*** END ASSERTION ROULETTE ANALYSIS ***");
+		for(String m : result.keySet()){
+			ArrayList<String> array = result.get(m);
+			for(String s : array){
+				log.info("test method "+m+" calls "+s+" without message parameter");
+			}
+		}
+		
+		log.info("*** END ASSERTION ROULETTE ANALYSIS ***\n");
 		return 0;
 	}
 
