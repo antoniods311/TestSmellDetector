@@ -93,28 +93,28 @@ public class AssertionRouletteDetector implements Detector {
 	 * parametro message
 	 */
 	private void readNoMessageAsserts(Element functionElement) {
-		
+
 		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 		result.put(methodName, new ArrayList<String>());
 
-		NodeList callList = functionElement.getElementsByTagName(ToolConstant.CALL);
-		for (int i = 0; i < callList.getLength(); i++) {
-			Element call = (Element) callList.item(i);
-			// devo scorrere i name delle diverse call
-			NodeList nameList = call.getElementsByTagName(ToolConstant.NAME);
-			for (int j = 0; j < nameList.getLength(); j++) {
-				Element nameElement = (Element) nameList.item(j);
-				String nameElementContent = nameElement.getTextContent();
-				if (methodMatcher.isAssertMethod(nameElementContent)) {
-					// se entro ho trovato un metodo assert
-					// e quindi devo vedere se ho il parametro message o meno
-					if (!assertChecker.hasMessageParameter(call, nameElementContent)) {
+		// devo scorrere i name della function
+		NodeList nameList = functionElement.getElementsByTagName(ToolConstant.NAME);
+		for (int j = 0; j < nameList.getLength(); j++) {
+			Element nameElement = (Element) nameList.item(j);
+			String nameElementContent = nameElement.getTextContent();
+			if (methodMatcher.isAssertMethod(nameElementContent)) {
+				// se entro ho trovato un metodo assert
+				// e quindi devo vedere se ho il parametro message o meno
+				if (nameElement.getParentNode().getNodeType() == Node.ELEMENT_NODE) {
+					Element call = (Element) nameElement.getParentNode();
+					if (!assertChecker.hasMessageParameter(call, nameElementContent)) 
 						result.get(methodName).add(nameElement.getTextContent());
-					}
 				}
 
 			}
+
 		}
+
 	}
 
 	@Override

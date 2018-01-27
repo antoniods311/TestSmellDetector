@@ -123,16 +123,12 @@ public class EagerTestDetector implements Detector {
 		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 
 		// calcolo il numero di result
-		NodeList callList = functionElement.getElementsByTagName(ToolConstant.CALL);
-		for (int i = 0; i < callList.getLength(); i++) {
-			Element call = (Element) callList.item(i);
-			NodeList nameMethodList = call.getElementsByTagName(ToolConstant.NAME);
-			int j;
-			for (j = 0; j < nameMethodList.getLength(); j++) {
-				if (methodMatcher.isAssertMethod(nameMethodList.item(j).getTextContent()))
-					numOfAssert++;
-			}
+		NodeList nameMethodList = functionElement.getElementsByTagName(ToolConstant.NAME);
+		for (int j = 0; j < nameMethodList.getLength(); j++) {
+			if (methodMatcher.isAssertMethod(nameMethodList.item(j).getTextContent()))
+				numOfAssert++;
 		}
+
 		result.put(methodName, numOfAssert);
 	}
 

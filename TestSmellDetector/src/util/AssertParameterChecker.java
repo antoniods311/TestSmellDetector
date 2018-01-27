@@ -1,13 +1,17 @@
 package util;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class AssertParameterChecker {
 
 	private MethodMatcher methodMatcher;
+	private ParameterAnalyzer paramAnalyzer;
 
 	public AssertParameterChecker() {
 		methodMatcher = new MethodMatcher();
+		paramAnalyzer = new ParameterAnalyzer();
 	}
 
 	public boolean hasMessageParameter(Element call, String name) {
@@ -15,8 +19,20 @@ public class AssertParameterChecker {
 		boolean hasMsgParam = false;
 
 		if (methodMatcher.isFailMethod(name)) {
-			// devo controllare se c'è almeno un parametro di tipo string
-
+			// devo controllare se c'è almeno un parametro [di tipo string]
+			NodeList childList = call.getChildNodes();
+			for(int i=0; i<childList.getLength(); i++){
+				if(childList.item(i).getNodeType() == Node.ELEMENT_NODE){
+					Element currentElement = (Element) childList.item(i);
+					if(currentElement.getNodeName().equals(ToolConstant.ARGUMENT_LIST)){
+						if(paramAnalyzer.getParameterNumber(currentElement) > 0) {
+							hasMsgParam = true;
+							System.out.println("£££££ "+name+" ha numero param > 0");
+						}
+						
+					}
+				}
+			}
 		} else {
 			if (methodMatcher.isAssertTrueMethod(name) || methodMatcher.isAssertFalseMethod(name)
 					|| methodMatcher.isAssertSameMethod(name) || methodMatcher.isAssertNotSameMetho(name)) {

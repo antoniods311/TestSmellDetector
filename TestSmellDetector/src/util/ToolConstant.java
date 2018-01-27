@@ -51,5 +51,7 @@ public class ToolConstant {
 	public static final String FUNCTION = "function";
 	public static final String CALL = "call";
 	public static final String TYPE = "type";
+	public static final String ARGUMENT_LIST = "argument_list";
+	public static final String ARGUMENT = "argument";
 
 }
