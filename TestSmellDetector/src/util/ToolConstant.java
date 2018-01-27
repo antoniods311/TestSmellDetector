@@ -53,5 +53,10 @@ public class ToolConstant {
 	public static final String TYPE = "type";
 	public static final String ARGUMENT_LIST = "argument_list";
 	public static final String ARGUMENT = "argument";
+	public static final String LITERAL = "literal";
+	
+	//Types
+	public static final String STRING_TYPE_LOWER = "string";
+	public static final String STRING_TYPE_UPPER = "String";
 
 }

@@ -110,11 +110,8 @@ public class AssertionRouletteDetector implements Detector {
 					if (!assertChecker.hasMessageParameter(call, nameElementContent)) 
 						result.get(methodName).add(nameElement.getTextContent());
 				}
-
 			}
-
 		}
-
 	}
 
 	@Override
