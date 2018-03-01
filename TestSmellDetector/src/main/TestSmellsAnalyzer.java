@@ -39,11 +39,11 @@ public class TestSmellsAnalyzer {
 		
 		//Esecuzione delle analisi usando i diversi detector
 		ArrayList<Detector> detectors = new ArrayList<Detector>();
-//		detectors.add(new AssertionRouletteDetector(xml));
-//		detectors.add(new EagerTestDetector(xml));
-//		detectors.add(new GeneralFixtureDetector(xml));
-//		detectors.add(new MysteryGuestDetector(xml));
-//		detectors.add(new SensitiveEqualityDetector(xml));
+		detectors.add(new AssertionRouletteDetector(xml));
+		detectors.add(new EagerTestDetector(xml));
+		detectors.add(new GeneralFixtureDetector(xml));
+		detectors.add(new MysteryGuestDetector(xml));
+		detectors.add(new SensitiveEqualityDetector(xml));
 		detectors.add(new TestCodeDuplicationDetector(cloneFiles));
 		
 		for(Detector d: detectors){

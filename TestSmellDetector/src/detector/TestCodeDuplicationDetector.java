@@ -22,6 +22,7 @@ public class TestCodeDuplicationDetector implements Detector {
 	public TestCodeDuplicationDetector(List<File> files) {
 		log = LogManager.getLogger(TestCodeDuplicationDetector.class.getName());
 		duplicationAnalyzer = new TestSmellCloneAnalyzer();
+		this.files = files;
 	}
 
 	@Override
@@ -37,7 +38,7 @@ public class TestCodeDuplicationDetector implements Detector {
 		int numberOfDuplicatedLines = duplicationAnalyzer.getCloneLinesNumber(files);
 		log.info("number of cloned lines: "+numberOfDuplicatedLines);
 		
-		log.info("*** END CODE DUPLICATION ANALYSIS ***");
+		log.info("*** END CODE DUPLICATION ANALYSIS ***\n");
 		
 		return 0;
 	}

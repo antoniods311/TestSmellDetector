@@ -16,7 +16,6 @@ public class CloneAuditListener implements AuditListener{
 
 	@Override
 	public void endCheck(CheckSummary arg0) {
-		System.out.println("------ "+arg0.getDuplicateLineCount());
 		TestSmellCloneAnalyzer.setAnalysisResult(arg0.getDuplicateLineCount());
 	}
 
