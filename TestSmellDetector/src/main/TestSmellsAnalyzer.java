@@ -16,6 +16,7 @@ import util.ToolConstant;
 public class TestSmellsAnalyzer {
 
 	private static String fileName = "MyTest.java";
+	private static String cloneFileName = "MyTestClone.java";
 	private static Logger log;
 	
 	public static void main(String[] args) {
@@ -29,6 +30,11 @@ public class TestSmellsAnalyzer {
 		jxmlTranslator.load(new File(inputTc));
 		File xml = jxmlTranslator.translate();
 		
+		//Costruzione ArrayList per clone detection
+		ArrayList<File> cloneFiles = new ArrayList<File>();
+		cloneFiles.add(new File(fileName));
+		cloneFiles.add(new File(cloneFileName));
+		
 		//Esecuzione delle analisi usando i diversi detector
 		ArrayList<Detector> detectors = new ArrayList<Detector>();
 		detectors.add(new AssertionRouletteDetector(xml));
@@ -36,7 +42,7 @@ public class TestSmellsAnalyzer {
 		detectors.add(new GeneralFixtureDetector(xml));
 		detectors.add(new MysteryGuestDetector(xml));
 		detectors.add(new SensitiveEqualityDetector(xml));
-		detectors.add(new TestCodeDuplicationDetector());
+		detectors.add(new TestCodeDuplicationDetector(cloneFiles));
 		
 		for(Detector d: detectors){
 			d.run();

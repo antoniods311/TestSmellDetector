@@ -15,6 +15,7 @@ public class TestSmellCloneAnalyzer implements CloneAnalyzer{
 		
 		//ogni file va aggiunto alla lisa di file da analizzare con Simian
 		
+		
 		return 0;
 	}
 
