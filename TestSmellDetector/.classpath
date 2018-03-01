@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="/Users/antoniods311/Downloads/apache-log4j-2.10.0-bin/log4j-api-2.10.0-javadoc.jar"/>
 	<classpathentry kind="lib" path="/Users/antoniods311/Downloads/apache-log4j-2.10.0-bin/log4j-api-2.10.0-sources.jar"/>
 	<classpathentry kind="lib" path="/Users/antoniods311/Downloads/apache-log4j-2.10.0-bin/log4j-api-2.10.0.jar"/>
+	<classpathentry kind="lib" path="/Users/antoniods311/Documents/simian/simian-2.6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
