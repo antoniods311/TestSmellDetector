@@ -36,7 +36,7 @@ public class TestSmellsAnalyzer {
 		detectors.add(new GeneralFixtureDetector(xml));
 		detectors.add(new MysteryGuestDetector(xml));
 		detectors.add(new SensitiveEqualityDetector(xml));
-		detectors.add(new TestCodeDuplicationDetector(xml));
+		detectors.add(new TestCodeDuplicationDetector());
 		
 		for(Detector d: detectors){
 			d.run();
