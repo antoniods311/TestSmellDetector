@@ -40,12 +40,6 @@ public class TestSmellCloneAnalyzer implements CloneAnalyzer{
 		
 		return numberOfCloneLines;
 	}
-
-	@Override
-	public int getCloneLinesNumber(File root, List<File> files) {
-		// TODO Auto-generated method stub
-		return 0;
-	}
 	
 	public static void setAnalysisResult(int resultNumber){
 		numberOfCloneLines = resultNumber;
