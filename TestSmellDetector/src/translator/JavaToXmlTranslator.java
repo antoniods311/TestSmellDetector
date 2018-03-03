@@ -31,16 +31,14 @@ public class JavaToXmlTranslator implements Translator {
 		try {
 			ProcessBuilder procBuilder = new ProcessBuilder(command, input, ToolConstant.SRCML_OUTPUT_OPTION, output);
 			procBuilder = procBuilder.directory(new File(ToolConstant.SRCML_DIR));
-			procBuilder.start();
-
-			try {
-				Thread.sleep(3000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			Process process = procBuilder.start();
+			process.waitFor(); //wait process termination
 			xmlFile = new File(output);
 
 		} catch (IOException e) {
+			log.error(ToolConstant.SRCML_ERROR);
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			log.error(ToolConstant.SRCML_ERROR);
 			e.printStackTrace();
 		}
