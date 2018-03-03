@@ -12,6 +12,8 @@ import util.MethodMatcher;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
+import util.eagertest.SourceClassAnalyzer;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
@@ -125,9 +127,18 @@ public class EagerTestDetector implements Detector {
 
 		// calcolo il numero di result
 		NodeList nameMethodList = functionElement.getElementsByTagName(ToolConstant.NAME);
-		for (int j = 0; j < nameMethodList.getLength(); j++) {
-			if (methodMatcher.isAssertMethod(nameMethodList.item(j).getTextContent()))
+		for (int j = 0; j < nameMethodList.getLength(); j++) {			
+			if (methodMatcher.isAssertMethod(nameMethodList.item(j).getTextContent())){
 				numOfAssert++;
+				
+				/*
+				 * check sui parametri del metodo assert
+				 */
+				SourceClassAnalyzer scAnalyzer = new SourceClassAnalyzer(xmlClass);
+				
+				
+			}
+				
 		}
 
 		result.put(methodName, numOfAssert);
