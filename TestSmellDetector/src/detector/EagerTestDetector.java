@@ -3,17 +3,16 @@ package detector;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.TreeSet;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.Node;
-
 import util.MethodMatcher;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
 import util.eagertest.SourceClassAnalyzer;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
@@ -35,6 +34,8 @@ public class EagerTestDetector implements Detector {
 	private HashMap<String, Integer> result;
 	private TestMethodChecker testChecker;
 	private MethodMatcher methodMatcher;
+	private SourceClassAnalyzer scAnalyzer;
+	private TreeSet<String> classMethods;
 	private static Logger log;
 
 	public EagerTestDetector(File xml, File xmlClass) {
@@ -83,6 +84,13 @@ public class EagerTestDetector implements Detector {
 			doc = documentBuilder.parse(xmlTest);
 			doc.getDocumentElement().normalize();
 
+			// leggo i metodi che appartengono alla classe sotto test
+			scAnalyzer = new SourceClassAnalyzer(xmlClass);
+			classMethods = scAnalyzer.getClassMethods();
+			for(String s : classMethods){
+				log.info(s);
+			}
+			
 			// leggo la lista di nodi function
 			NodeList list = doc.getElementsByTagName(ToolConstant.FUNCTION);
 			for (int i = 0; i < list.getLength(); i++) {
@@ -101,13 +109,13 @@ public class EagerTestDetector implements Detector {
 			}
 
 		} catch (ParserConfigurationException e) {
-			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);
+			log.error(ToolConstant.PARSE_EXCEPTION_MSG);
 			e.printStackTrace();
 		} catch (SAXException e) {
-			System.out.println(ToolConstant.SAX_EXCEPTION_MSG);
+			log.error(ToolConstant.SAX_EXCEPTION_MSG);
 			e.printStackTrace();
 		} catch (IOException e) {
-			System.out.println(ToolConstant.IO_EXCEPTION_MSG);
+			log.error(ToolConstant.IO_EXCEPTION_MSG);
 			e.printStackTrace();
 		}
 
@@ -132,13 +140,11 @@ public class EagerTestDetector implements Detector {
 				numOfAssert++;
 				
 				/*
-				 * check sui parametri del metodo assert
+				 * devo vedere i parametri dell'assert
+				 * mettere un metodo in SourceClassAnalyzer per farmeli restituire
 				 */
-				SourceClassAnalyzer scAnalyzer = new SourceClassAnalyzer(xmlClass);
-				
 				
 			}
-				
 		}
 
 		result.put(methodName, numOfAssert);
