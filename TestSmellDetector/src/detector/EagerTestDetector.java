@@ -90,7 +90,7 @@ public class EagerTestDetector implements Detector {
 					// Se entro ho trovato un metodo di test e devo cercare le
 					// chiamate dei metodi assert
 					if (testChecker.isTestMethod(functionElement))
-						calculateAssertsNumber(functionElement);
+						checkAssertMethods(functionElement);
 				}
 			}
 
@@ -118,7 +118,7 @@ public class EagerTestDetector implements Detector {
 	 * metodo che conta il numero degli assert all'interno di un test deve
 	 * riempire result!
 	 */
-	private void calculateAssertsNumber(Element functionElement) {
+	private void checkAssertMethods(Element functionElement) {
 
 		int numOfAssert = 0;
 		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
