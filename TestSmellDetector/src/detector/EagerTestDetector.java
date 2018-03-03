@@ -26,7 +26,7 @@ import org.xml.sax.SAXException;
  */
 public class EagerTestDetector implements Detector {
 
-	private File xml;
+	private File xmlTest, xmlClass;
 	private DocumentBuilderFactory docbuilderFactory;
 	private DocumentBuilder documentBuilder;
 	private Document doc;
@@ -35,8 +35,9 @@ public class EagerTestDetector implements Detector {
 	private MethodMatcher methodMatcher;
 	private static Logger log;
 
-	public EagerTestDetector(File xml) {
-		this.xml = xml;
+	public EagerTestDetector(File xml, File xmlClass) {
+		this.xmlTest = xml;
+		this.xmlClass = xmlClass;
 		testChecker = new TestMethodChecker();
 		methodMatcher = new MethodMatcher();
 		log = LogManager.getLogger(EagerTestDetector.class.getName());
@@ -77,7 +78,7 @@ public class EagerTestDetector implements Detector {
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
 		try {
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
-			doc = documentBuilder.parse(xml);
+			doc = documentBuilder.parse(xmlTest);
 			doc.getDocumentElement().normalize();
 
 			// leggo la lista di nodi function

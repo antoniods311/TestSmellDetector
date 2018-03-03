@@ -17,6 +17,8 @@ public class TestSmellsAnalyzer {
 
 	private static String fileName = "MyTest.java";
 	private static String cloneFileName = "MyTestClone.java";
+	private static String classFileName = "MyClass.java";
+	private static JavaToXmlTranslator jxmlTranslator;
 	private static Logger log;
 	
 	public static void main(String[] args) {
@@ -26,9 +28,13 @@ public class TestSmellsAnalyzer {
 		
 		//Rappresentazione XML del caso di test
 		String inputTc = ToolConstant.XML_DIR+fileName;
-		JavaToXmlTranslator jxmlTranslator = new JavaToXmlTranslator();
+		String inputClass = ToolConstant.XML_DIR+classFileName;
+		jxmlTranslator = new JavaToXmlTranslator();
 		jxmlTranslator.load(new File(inputTc));
-		File xml = jxmlTranslator.translate();
+		File xmlTest = jxmlTranslator.translate();
+		jxmlTranslator.load(new File(inputClass));
+		File xmlClass = jxmlTranslator.translate();
+		
 		
 		//Costruzione ArrayList per clone detection
 		ArrayList<File> cloneFiles = new ArrayList<File>();
@@ -37,12 +43,12 @@ public class TestSmellsAnalyzer {
 		
 		//Esecuzione delle analisi usando i diversi detector
 		ArrayList<Detector> detectors = new ArrayList<Detector>();
-//		detectors.add(new AssertionRouletteDetector(xml));
-//		detectors.add(new EagerTestDetector(xml));
-//		detectors.add(new GeneralFixtureDetector(xml));
-//		detectors.add(new MysteryGuestDetector(xml));
-//		detectors.add(new SensitiveEqualityDetector(xml));
-		detectors.add(new TestCodeDuplicationDetector(cloneFiles));
+//		detectors.add(new AssertionRouletteDetector(xmlTest));
+		detectors.add(new EagerTestDetector(xmlTest,xmlClass));
+//		detectors.add(new GeneralFixtureDetector(xmlTest));
+//		detectors.add(new MysteryGuestDetector(xmlTest));
+//		detectors.add(new SensitiveEqualityDetector(xmlTest));
+//		detectors.add(new TestCodeDuplicationDetector(cloneFiles));
 		
 		for(Detector d: detectors){
 			d.run();
