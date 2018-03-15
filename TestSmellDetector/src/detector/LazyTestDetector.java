@@ -18,7 +18,7 @@ import com.ibm.wala.ipa.callgraph.CallGraph;
 
 import util.ToolConstant;
 
-public class LazyTestDetector implements Detector {
+public class LazyTestDetector extends Thread {
 
 	private CallGraph graph;
 	private ArrayList<File> xmlList;
@@ -27,13 +27,22 @@ public class LazyTestDetector implements Detector {
 	private Document doc;
 	private static Logger log;
 	
+	/**
+	 * Constructor method
+	 * @param xmlList
+	 * @param graph
+	 */
 	public LazyTestDetector(ArrayList<File> xmlList, CallGraph graph) {
 		this.xmlList = xmlList;
 		this.graph = graph;
 		log = LogManager.getLogger(LazyTestDetector.class.getName());
 	}
 	
-	
+	/**
+	 * This method returns results of the single xml file analysis
+	 * @param xml
+	 * @return
+	 */
 	public double analyze(File xml) {
 		
 		log.info("*** START MYSTERY GUEST ANALYSIS ***");

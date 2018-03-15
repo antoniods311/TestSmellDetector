@@ -13,7 +13,7 @@ import simian.TestSmellCloneAnalyzer;
  * @author antoniods311
  *
  */
-public class TestCodeDuplicationDetector implements Detector {
+public class TestCodeDuplicationDetector extends Thread {
 
 	private static Logger log;
 	private CloneAnalyzer duplicationAnalyzer;

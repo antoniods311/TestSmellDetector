@@ -29,7 +29,7 @@ import com.ibm.wala.ipa.callgraph.CallGraph;
  * @author antoniods311
  *
  */
-public class EagerTestDetector implements Detector {
+public class EagerTestDetector extends Thread {
 
 	private File xmlTest, xmlClass;
 	private DocumentBuilderFactory docbuilderFactory;

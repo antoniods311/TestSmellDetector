@@ -57,7 +57,7 @@ public class TestSmellsAnalyzer {
 			cloneFiles.add(new File(ToolConstant.TEST_CASES_JAVA_DIR+cloneFileName));
 			
 			//Esecuzione delle analisi usando i diversi detector
-			ArrayList<Detector> detectors = new ArrayList<Detector>();
+			ArrayList<Thread> detectors = new ArrayList<Thread>();
 			detectors.add(new AssertionRouletteDetector(xmlTest));
 			detectors.add(new EagerTestDetector(xmlTest,xmlClass,callGraph));
 			detectors.add(new GeneralFixtureDetector(xmlTest,callGraph));
@@ -65,7 +65,7 @@ public class TestSmellsAnalyzer {
 			detectors.add(new SensitiveEqualityDetector(xmlTest));
 			detectors.add(new TestCodeDuplicationDetector(cloneFiles));
 			
-			for(Detector d: detectors){
+			for(Thread d: detectors){
 				d.run();
 				//Vedere come attendere terminazione di tutti prima di porcedere. Dovrebbe essere il join().
 			}

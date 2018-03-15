@@ -28,7 +28,7 @@ import util.ToolConstant;
  * @author antoniods311
  *
  */
-public class AssertionRouletteDetector implements Detector {
+public class AssertionRouletteDetector extends Thread{
 
 	private File xml;
 	private DocumentBuilderFactory docbuilderFactory;

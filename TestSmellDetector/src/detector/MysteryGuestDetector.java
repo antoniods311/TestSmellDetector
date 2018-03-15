@@ -26,7 +26,7 @@ import util.ToolConstant;
  * @author antoniods311
  *
  */
-public class MysteryGuestDetector implements Detector {
+public class MysteryGuestDetector extends Thread {
 
 	private File xml;
 	private DocumentBuilderFactory docbuilderFactory;

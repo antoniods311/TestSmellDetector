@@ -24,7 +24,7 @@ import util.ToolConstant;
  * @author antoniods311
  *
  */
-public class SensitiveEqualityDetector implements Detector {
+public class SensitiveEqualityDetector extends Thread {
 
 	private File xml;
 	private DocumentBuilderFactory docbuilderFactory;

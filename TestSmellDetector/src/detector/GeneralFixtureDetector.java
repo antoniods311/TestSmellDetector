@@ -9,7 +9,7 @@ import com.ibm.wala.ipa.callgraph.CallGraph;
  * @author antoniods311
  *
  */
-public class GeneralFixtureDetector implements Detector {
+public class GeneralFixtureDetector extends Thread {
 	
 private File xml;
 	
