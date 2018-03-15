@@ -22,6 +22,8 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.ibm.wala.ipa.callgraph.CallGraph;
+
 /**
  * 
  * @author antoniods311
@@ -42,7 +44,7 @@ public class EagerTestDetector implements Detector {
 	private static Logger log;
 	private ParameterAnalyzer paramAnalyzer;
 
-	public EagerTestDetector(File xml, File xmlClass) {
+	public EagerTestDetector(File xml, File xmlClass, CallGraph callGraph) {
 		this.xmlTest = xml;
 		this.xmlClass = xmlClass;
 		testChecker = new TestMethodChecker();

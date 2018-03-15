@@ -39,6 +39,7 @@ public class TestSmellsAnalyzer {
 		try {
 			builder = new WalaCallGraphBuilder(jarInput);
 			CallGraph callGraph = builder.buildCallGraph();
+			
 			//Rappresentazione XML del caso di test
 			String inputTc = ToolConstant.XML_DIR+fileName;
 			String inputClass = ToolConstant.XML_DIR+classFileName;
@@ -58,8 +59,8 @@ public class TestSmellsAnalyzer {
 			//Esecuzione delle analisi usando i diversi detector
 			ArrayList<Detector> detectors = new ArrayList<Detector>();
 			detectors.add(new AssertionRouletteDetector(xmlTest));
-			//detectors.add(new EagerTestDetector(xmlTest,xmlClass));
-			detectors.add(new GeneralFixtureDetector(xmlTest));
+			detectors.add(new EagerTestDetector(xmlTest,xmlClass,callGraph));
+			detectors.add(new GeneralFixtureDetector(xmlTest,callGraph));
 			detectors.add(new MysteryGuestDetector(xmlTest));
 			detectors.add(new SensitiveEqualityDetector(xmlTest));
 			detectors.add(new TestCodeDuplicationDetector(cloneFiles));
