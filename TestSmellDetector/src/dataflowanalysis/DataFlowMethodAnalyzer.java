@@ -20,5 +20,12 @@ public class DataFlowMethodAnalyzer {
 		return ir;
 	}
 	
+	/**
+	 * @return Call Graph Node object
+	 */
+	public CGNode getCGNode(){
+		return node;
+	}
+	
 	
 }

@@ -1,7 +1,5 @@
 package util;
 
-import com.ibm.wala.ipa.callgraph.CallGraphBuilderCancelException;
-
 public class ToolConstant {
 
 	// Directories and files
@@ -20,12 +18,14 @@ public class ToolConstant {
 	public static final String SRCML_ERROR = "srcml tool execution error!";
 	public static final String WALA_ILLEGAL_ARG_ERROR = "Illegal argument exception in graph building";
 	public static final String CALL_GRAPH_BUILDER_ERROR = "Call graph builder cancel exception!";
+	public static final String BUILD_CALL_GRAPH_ERROR = "Problem with jar file or in graph building";
+	
 
 	// XML Parser Errors
 	public static final String PARSE_EXCEPTION_MSG = "ParserConfigurationException, document builder error!";
 	public static final String SAX_EXCEPTION_MSG = "SAX Exception, parse method error!";
 	public static final String IO_EXCEPTION_MSG = "IO Exception, parse method error!";
-
+	
 	// Annotations
 	public static final String TEST_ANNOTATION = "Test";
 

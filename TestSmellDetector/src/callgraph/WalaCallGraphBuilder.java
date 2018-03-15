@@ -18,14 +18,12 @@ import com.ibm.wala.ipa.callgraph.AnalysisOptions.ReflectionOptions;
 import com.ibm.wala.ipa.callgraph.impl.AllApplicationEntrypoints;
 import com.ibm.wala.ipa.callgraph.impl.Util;
 import com.ibm.wala.ipa.cha.ClassHierarchy;
-import com.ibm.wala.ipa.cha.ClassHierarchyException;
 import com.ibm.wala.ipa.cha.IClassHierarchy;
 import com.ibm.wala.properties.WalaProperties;
 import com.ibm.wala.util.WalaException;
 import com.ibm.wala.util.config.AnalysisScopeReader;
 import com.ibm.wala.util.io.FileProvider;
 
-import detector.AssertionRouletteDetector;
 import util.ToolConstant;
 
 public class WalaCallGraphBuilder {
@@ -78,7 +76,6 @@ public class WalaCallGraphBuilder {
 			log.error(ToolConstant.CALL_GRAPH_BUILDER_ERROR);
 		}
 		return callGraph;
-		
 	}
 	
 	/**
