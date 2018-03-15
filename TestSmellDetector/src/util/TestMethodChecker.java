@@ -5,9 +5,11 @@ import org.w3c.dom.NodeList;
 
 public class TestMethodChecker {
 	
-	/*
-	 * metodo che controlla se un metodo del TC è un test o meno.
-	 * Si verifica che ci sia l'annotazione @Test
+	/**
+	 * This method returns true if the parameter represents a test method
+	 * 
+	 * @param element
+	 * @return isTest
 	 */
 	public boolean isTestMethod(Element element) {
 
