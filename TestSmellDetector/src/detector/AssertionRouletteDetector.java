@@ -48,7 +48,6 @@ public class AssertionRouletteDetector implements Detector {
 		log = LogManager.getLogger(AssertionRouletteDetector.class.getName());
 	}
 
-	@Override
 	public double analyze() {
 
 		log.info("*** START ASSERTION ROULETTE ANALYSIS ***");

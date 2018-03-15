@@ -30,7 +30,6 @@ public class TestCodeDuplicationDetector implements Detector {
 		analyze();
 	}
 
-	@Override
 	public double analyze() {
 
 		log.info("*** START CODE DUPLICATION ANALYSIS ***");

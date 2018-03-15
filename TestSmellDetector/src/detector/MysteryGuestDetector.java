@@ -48,7 +48,6 @@ public class MysteryGuestDetector implements Detector {
 	 * nell'uso dei file 2. Cercare i metodi tipicamente utilizzati nella
 	 * gestione dei file.
 	 */
-	@Override
 	public double analyze() {
 
 		log.info("*** START MYSTERY GUEST ANALYSIS ***");

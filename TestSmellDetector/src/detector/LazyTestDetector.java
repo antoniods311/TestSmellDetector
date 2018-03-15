@@ -2,6 +2,7 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -20,20 +21,20 @@ import util.ToolConstant;
 public class LazyTestDetector implements Detector {
 
 	private CallGraph graph;
-	private File xml;
+	private ArrayList<File> xmlList;
 	private DocumentBuilderFactory docbuilderFactory;
 	private DocumentBuilder documentBuilder;
 	private Document doc;
 	private static Logger log;
 	
-	public LazyTestDetector(File xml, CallGraph graph) {
-		this.xml = xml;
+	public LazyTestDetector(ArrayList<File> xmlList, CallGraph graph) {
+		this.xmlList = xmlList;
 		this.graph = graph;
 		log = LogManager.getLogger(LazyTestDetector.class.getName());
 	}
 	
-	@Override
-	public double analyze() {
+	
+	public double analyze(File xml) {
 		
 		log.info("*** START MYSTERY GUEST ANALYSIS ***");
 		
@@ -64,6 +65,9 @@ public class LazyTestDetector implements Detector {
 	
 	@Override
 	public void run() {
-		analyze();
+		for(File file : xmlList){
+			analyze(file);
+		}
+		
 	}
 }

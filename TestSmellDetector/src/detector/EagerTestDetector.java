@@ -71,7 +71,6 @@ public class EagerTestDetector implements Detector {
 	/*
 	 * in result si trovano le corrispondeze tra metodoDiTest e numero di assert
 	 */
-	@Override
 	public double analyze() {
 
 		log.info("*** START EAGER TEST ANALYSIS ***");

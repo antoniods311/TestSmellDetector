@@ -42,7 +42,6 @@ public class SensitiveEqualityDetector implements Detector {
 		log = LogManager.getLogger(EagerTestDetector.class.getName());
 	}
 
-	@Override
 	public double analyze() {
 
 		log.info("*** START SENSITIVE EQUALITY ANALYSIS ***");
