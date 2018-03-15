@@ -18,8 +18,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import util.FileApiChecker;
-import util.MethodMatcher;
-import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
 

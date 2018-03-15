@@ -38,17 +38,17 @@ public class TestSmellsAnalyzer {
 		
 		//Costruzione ArrayList per clone detection
 		ArrayList<File> cloneFiles = new ArrayList<File>();
-		cloneFiles.add(new File(ToolConstant.TEST_CASES_DIR+fileName));
-		cloneFiles.add(new File(ToolConstant.TEST_CASES_DIR+cloneFileName));
+		cloneFiles.add(new File(ToolConstant.TEST_CASES_JAVA_DIR+fileName));
+		cloneFiles.add(new File(ToolConstant.TEST_CASES_JAVA_DIR+cloneFileName));
 		
 		//Esecuzione delle analisi usando i diversi detector
 		ArrayList<Detector> detectors = new ArrayList<Detector>();
-//		detectors.add(new AssertionRouletteDetector(xmlTest));
-		detectors.add(new EagerTestDetector(xmlTest,xmlClass));
-//		detectors.add(new GeneralFixtureDetector(xmlTest));
-//		detectors.add(new MysteryGuestDetector(xmlTest));
-//		detectors.add(new SensitiveEqualityDetector(xmlTest));
-//		detectors.add(new TestCodeDuplicationDetector(cloneFiles));
+		detectors.add(new AssertionRouletteDetector(xmlTest));
+		//detectors.add(new EagerTestDetector(xmlTest,xmlClass));
+		detectors.add(new GeneralFixtureDetector(xmlTest));
+		detectors.add(new MysteryGuestDetector(xmlTest));
+		detectors.add(new SensitiveEqualityDetector(xmlTest));
+		detectors.add(new TestCodeDuplicationDetector(cloneFiles));
 		
 		for(Detector d: detectors){
 			d.run();

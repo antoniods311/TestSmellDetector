@@ -1,5 +1,8 @@
 package util;
 
+import java.util.ArrayList;
+import java.util.TreeSet;
+
 import javax.xml.soap.Node;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -23,6 +26,14 @@ public class ParameterAnalyzer {
 			}
 		}
 		return argListSize;
+	}
+	
+	public TreeSet<String> getParameters(Element argumentList){
+		
+		TreeSet<String> parameters = new TreeSet<String>();
+		
+		
+		return parameters;
 	}
 
 	public String getParameterType(Element argument) {

@@ -26,7 +26,7 @@ public class AssertParameterChecker {
 					Element currentElement = (Element) childList.item(i);
 					if (currentElement.getNodeName().equals(ToolConstant.ARGUMENT_LIST)) {
 						if (paramAnalyzer.getParameterNumber(currentElement) > 0)
-							hasMsgParam = true;		
+							hasMsgParam = true;
 					}
 				}
 			}

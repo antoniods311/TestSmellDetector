@@ -2,6 +2,7 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.TreeSet;
 import javax.xml.parsers.DocumentBuilder;
@@ -9,6 +10,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.Node;
 import util.MethodMatcher;
+import util.ParameterAnalyzer;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
@@ -31,18 +33,21 @@ public class EagerTestDetector implements Detector {
 	private DocumentBuilderFactory docbuilderFactory;
 	private DocumentBuilder documentBuilder;
 	private Document doc;
-	private HashMap<String, Integer> result;
+	private HashMap<String, Integer> numOfAssertResult;
+	private ArrayList<String> eagerTestResult;
 	private TestMethodChecker testChecker;
 	private MethodMatcher methodMatcher;
 	private SourceClassAnalyzer scAnalyzer;
 	private TreeSet<String> classMethods;
 	private static Logger log;
+	private ParameterAnalyzer paramAnalyzer;
 
 	public EagerTestDetector(File xml, File xmlClass) {
 		this.xmlTest = xml;
 		this.xmlClass = xmlClass;
 		testChecker = new TestMethodChecker();
 		methodMatcher = new MethodMatcher();
+		paramAnalyzer = new ParameterAnalyzer();
 		log = LogManager.getLogger(EagerTestDetector.class.getName());
 	}
 
@@ -77,7 +82,8 @@ public class EagerTestDetector implements Detector {
 		 * getAssertsNumber
 		 */
 
-		result = new HashMap<String, Integer>();
+		eagerTestResult = new ArrayList<String>();
+		numOfAssertResult = new HashMap<String, Integer>();
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
 		try {
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
@@ -87,10 +93,10 @@ public class EagerTestDetector implements Detector {
 			// leggo i metodi che appartengono alla classe sotto test
 			scAnalyzer = new SourceClassAnalyzer(xmlClass);
 			classMethods = scAnalyzer.getClassMethods();
-			for(String s : classMethods){
+			for (String s : classMethods) {
 				log.info(s);
 			}
-			
+
 			// leggo la lista di nodi function
 			NodeList list = doc.getElementsByTagName(ToolConstant.FUNCTION);
 			for (int i = 0; i < list.getLength(); i++) {
@@ -104,8 +110,8 @@ public class EagerTestDetector implements Detector {
 				}
 			}
 
-			for (String s : result.keySet()) {
-				log.info("assert number for  " + s + ": " + result.get(s));
+			for (String s : numOfAssertResult.keySet()) {
+				log.info("assert number for  " + s + ": " + numOfAssertResult.get(s));
 			}
 
 		} catch (ParserConfigurationException e) {
@@ -135,19 +141,46 @@ public class EagerTestDetector implements Detector {
 
 		// calcolo il numero di result
 		NodeList nameMethodList = functionElement.getElementsByTagName(ToolConstant.NAME);
-		for (int j = 0; j < nameMethodList.getLength(); j++) {			
-			if (methodMatcher.isAssertMethod(nameMethodList.item(j).getTextContent())){
+		for (int j = 0; j < nameMethodList.getLength(); j++) {
+			if (methodMatcher.isAssertMethod(nameMethodList.item(j).getTextContent())) {
 				numOfAssert++;
-				
+
 				/*
-				 * devo vedere i parametri dell'assert
-				 * mettere un metodo in SourceClassAnalyzer per farmeli restituire
+				 * devo vedere i parametri dell'assert mettere un metodo in
+				 * SourceClassAnalyzer per farmeli restituire
 				 */
-				
+				if (nameMethodList.item(j).getNodeType() == Node.ELEMENT_NODE) {
+					Element assertElement = (Element) nameMethodList.item(j);
+					Element callElement = (Element) assertElement.getParentNode();
+					analyzeAssertMethod(callElement);
+				}
+
 			}
 		}
 
-		result.put(methodName, numOfAssert);
+		numOfAssertResult.put(methodName, numOfAssert);
+	}
+
+	/*
+	 * verifica se l'assert ha o meno come parametro un metodo della classe
+	 * sotto test
+	 */
+	private void analyzeAssertMethod(Element callElement) {
+
+		NodeList childList = callElement.getChildNodes();
+
+		for (int i = 0; i < childList.getLength(); i++) {
+			if (childList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+				Element currentElement = (Element) childList.item(i);
+				if (currentElement.getNodeName().equals(ToolConstant.ARGUMENT_LIST)) {
+
+					// usare paramAnalyzer per farsi restituire i parametri
+					TreeSet<String> parameters = paramAnalyzer.getParameters(currentElement);
+
+				}
+			}
+		}
+
 	}
 
 	@Override

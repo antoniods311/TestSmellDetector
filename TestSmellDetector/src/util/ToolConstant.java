@@ -1,12 +1,16 @@
 package util;
 
+import com.ibm.wala.ipa.callgraph.CallGraphBuilderCancelException;
+
 public class ToolConstant {
 
-	// Directories
+	// Directories and files
 	public static final String WORKING_DIR = System.getProperty("user.dir");
-	public static final String TEST_CASES_DIR = WORKING_DIR + "/inputTestCases/";
+	public static final String TEST_CASES_JAVA_DIR = WORKING_DIR + "/inputTestCases-java/";
+	public static final String TEST_CASES_JAR_DIR = WORKING_DIR + "/inputTestCases-jar/";
 	public static final String XML_DIR = WORKING_DIR + "/outputXML/";
 	public static final String SRCML_DIR = WORKING_DIR + "/srcML/bin/";
+	public static final String EXCLUSION_FILE = WORKING_DIR + "Java60RegressionExclusions.txt";
 
 	// Tool
 	public static final String SRCML_COMMAND = "srcml";
@@ -14,6 +18,8 @@ public class ToolConstant {
 
 	// Tool Error
 	public static final String SRCML_ERROR = "srcml tool execution error!";
+	public static final String WALA_ILLEGAL_ARG_ERROR = "Illegal argument exception in graph building";
+	public static final String CALL_GRAPH_BUILDER_ERROR = "Call graph builder cancel exception!";
 
 	// XML Parser Errors
 	public static final String PARSE_EXCEPTION_MSG = "ParserConfigurationException, document builder error!";

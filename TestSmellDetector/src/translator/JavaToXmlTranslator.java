@@ -48,7 +48,7 @@ public class JavaToXmlTranslator implements Translator {
 	@Override
 	public void load(File file) {
 		this.setSourceFile(file);
-		this.input = ToolConstant.TEST_CASES_DIR + file.getName();
+		this.input = ToolConstant.TEST_CASES_JAVA_DIR + file.getName();
 		this.output = ToolConstant.XML_DIR + file.getName() + ".xml";
 	}
 

@@ -11,5 +11,12 @@
 	<classpathentry kind="lib" path="/Users/antoniods311/Downloads/apache-log4j-2.10.0-bin/log4j-api-2.10.0-sources.jar"/>
 	<classpathentry kind="lib" path="/Users/antoniods311/Downloads/apache-log4j-2.10.0-bin/log4j-api-2.10.0.jar"/>
 	<classpathentry kind="lib" path="/Users/antoniods311/Documents/simian/simian-2.6.0.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wala.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wala.core.testdata"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wala.core.tests"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wala.ide"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wala.ide.tests"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wala.shrike"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wala.util"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
