@@ -71,6 +71,9 @@ public class ToolConstant {
 	//XML ATTRIBUTES NAME
 	public static final String FILENAME_ATTRIBUTE = "filename";
 	
+	//WALA Elements
+	public static final String APPLLICATION_CLASS_LOADER = "Application";
+	
 	//Types
 	public static final String STRING_TYPE_LOWER = "string";
 	public static final String STRING_TYPE_UPPER = "String";

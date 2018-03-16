@@ -8,11 +8,20 @@ public class DataFlowMethodAnalyzer {
 	private CGNode node;
 	private IR ir;
 	
+	/**
+	 * @param node
+	 */
 	public DataFlowMethodAnalyzer(CGNode node){
 		this.node = node;
 		this.ir = node.getIR();
 	}
-	
+
+	public void analyze() {
+		
+		
+		
+	}
+
 	/**
 	 * @return IR object
 	 */
@@ -26,6 +35,5 @@ public class DataFlowMethodAnalyzer {
 	public CGNode getCGNode(){
 		return node;
 	}
-	
 	
 }

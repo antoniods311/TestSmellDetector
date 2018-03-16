@@ -3,6 +3,7 @@ package detector;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,9 +17,16 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.ibm.wala.classLoader.IMethod;
+import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.ipa.callgraph.CallGraph;
+import com.ibm.wala.types.ClassLoaderReference;
+import com.ibm.wala.types.MethodReference;
+import com.ibm.wala.types.TypeReference;
 
+import dataflowanalysis.DataFlowMethodAnalyzer;
 import util.TestMethodChecker;
+import util.TestParseTool;
 import util.ToolConstant;
 import util.tooldata.ToolData;
 
@@ -32,12 +40,11 @@ public class LazyTestDetector extends Thread {
 	private Document doc;
 	private TestMethodChecker testChecker;
 	private static Logger log;
-	
-	
+
 	/**
 	 * @param data
 	 */
-	public LazyTestDetector(ToolData data){
+	public LazyTestDetector(ToolData data) {
 		this.xmlTestCasesList = data.getTestClasses();
 		this.xmlProdClassesList = data.getProductionClasses();
 		this.callGraph = data.getCallGraph();
@@ -66,12 +73,32 @@ public class LazyTestDetector extends Thread {
 					Element functionElement = (Element) functionList.item(i);
 					// Se entro ho trovato un metodo di test
 					if (testChecker.isTestMethod(functionElement)) {
-						
-						//far partire l'analisi sul metodo
-						
+						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
+
+						// far partire l'analisi sul metodo
+						Iterator<CGNode> iter = callGraph.iterator();
+						CGNode node;
+						DataFlowMethodAnalyzer methodAnalyzer = null;
+						while (iter.hasNext()) {
+							node = iter.next();
+							IMethod iMethod = node.getMethod();
+							MethodReference methodRef = iMethod.getReference();
+							TypeReference typeRef = methodRef.getDeclaringClass();
+							ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
+
+							if (classLoaderRef.getName().toString()
+									.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
+									&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
+								
+								methodAnalyzer = new DataFlowMethodAnalyzer(node);
+								methodAnalyzer.analyze(); //fa la dataflow analysis del metodo
+
+							}
+
+						}
+
 					}
-					
-					
+
 				}
 			}
 
@@ -92,11 +119,11 @@ public class LazyTestDetector extends Thread {
 	@Override
 	public void run() {
 		log.info("*** START LAZY ANALYSIS ***");
-		
+
 		for (File file : xmlTestCasesList)
 			analyze(file);
-		
+
 		log.info("*** END LAZY TEST ANALYSIS ***\n");
 	}
-	
+
 }
