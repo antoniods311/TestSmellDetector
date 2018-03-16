@@ -23,7 +23,7 @@ import util.ToolConstant;
 
 public class LazyTestDetector extends Thread {
 
-	private CallGraph graph;
+	private CallGraph callGraph;
 	private ArrayList<File> xmlList;
 	private DocumentBuilderFactory docbuilderFactory;
 	private DocumentBuilder documentBuilder;
@@ -39,7 +39,7 @@ public class LazyTestDetector extends Thread {
 	 */
 	public LazyTestDetector(ArrayList<File> xmlList, CallGraph graph) {
 		this.xmlList = xmlList;
-		this.graph = graph;
+		this.callGraph = graph;
 		this.testChecker = new TestMethodChecker();
 		log = LogManager.getLogger(LazyTestDetector.class.getName());
 	}
@@ -97,6 +97,6 @@ public class LazyTestDetector extends Thread {
 		for (File file : xmlList) {
 			analyze(file);
 		}
-
 	}
+	
 }

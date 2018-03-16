@@ -6,9 +6,10 @@ public class ToolConstant {
 	public static final String WORKING_DIR = System.getProperty("user.dir");
 	public static final String TEST_CASES_JAVA_DIR = WORKING_DIR + "/inputTestCases-java/";
 	public static final String TEST_CASES_JAR_DIR = WORKING_DIR + "/inputTestCases-jar/";
+	public static final String PRODUCTION_CLASS_DIR = WORKING_DIR + "/inputProductionClasses/";
 	public static final String XML_DIR = WORKING_DIR + "/outputXML/";
 	public static final String SRCML_DIR = WORKING_DIR + "/srcML/bin/";
-	public static final String EXCLUSION_FILE = WORKING_DIR + "Java60RegressionExclusions.txt";
+	public static final String EXCLUSION_FILE = WORKING_DIR + "/Java60RegressionExclusions.txt";
 
 	// Tool
 	public static final String SRCML_COMMAND = "srcml";

@@ -48,7 +48,7 @@ public class WalaCallGraphBuilder {
 	 */
 	public WalaCallGraphBuilder(File jarInput) throws IOException, WalaException{
 		exclusionFile = new FileProvider().getFile(ToolConstant.EXCLUSION_FILE);
-		scope = AnalysisScopeReader.makeJavaBinaryAnalysisScope(jarInput.getName(), exclusionFile);
+		scope = AnalysisScopeReader.makeJavaBinaryAnalysisScope(jarInput.getAbsolutePath(), exclusionFile);
 		classHierarchy = ClassHierarchy.make(scope);
 		entrypoint = Util.makeMainEntrypoints(scope, classHierarchy);
 		options = new AnalysisOptions(scope,entrypoint);

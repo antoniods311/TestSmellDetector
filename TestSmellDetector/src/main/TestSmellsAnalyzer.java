@@ -32,22 +32,46 @@ public class TestSmellsAnalyzer {
 		log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
 		log.info("Start analysis...\n");
 		
+		File prodClassDir = new File(ToolConstant.PRODUCTION_CLASS_DIR);
+		String prodClasses[] = prodClassDir.list();
+		for(int i=0; i<prodClasses.length; i++){
+			System.out.println(prodClasses[i]);
+		}
+		
 		
 		//Costruzione Call Graph
-		File jarInput = new File(ToolConstant.TEST_CASES_JAR_DIR+"prova.jar");
+		File jarInput = new File(ToolConstant.TEST_CASES_JAR_DIR+"calc.jar");
 		WalaCallGraphBuilder builder;
 		try {
 			builder = new WalaCallGraphBuilder(jarInput);
 			CallGraph callGraph = builder.buildCallGraph();
 			
+			/*
+			 * 1. costruire call graph
+			 * 2. traduzione production classes
+			 * 3. traduzione cassi di test
+			 * 4. calcolare tutti i metodi delle production classes
+			 * 5. costruire oggetto ToolData
+			 * 6. costruire i detector
+			 * 7. lanciare i detector
+			 */
+			
+//			File prodClassDir = new File(ToolConstant.PRODUCTION_CLASS_DIR);
+//			String prodClasses[] = prodClassDir.list();
+//			for(int i=0; i<prodClasses.length; i++){
+//				System.out.println(prodClasses[i]);
+//			}
+			
+			
+			
 			//Rappresentazione XML del caso di test
 			String inputTc = ToolConstant.XML_DIR+fileName;
-			String inputClass = ToolConstant.XML_DIR+classFileName;
+			String productionClass = ToolConstant.XML_DIR+classFileName;
 			jxmlTranslator = new JavaToXmlTranslator();
 			jxmlTranslator.load(new File(inputTc));
 			File xmlTest = jxmlTranslator.translate();
 			
-			jxmlTranslator.load(new File(inputClass));
+			jxmlTranslator.load(new File(productionClass));
 			File xmlClass = jxmlTranslator.translate();
 			
 			
@@ -58,12 +82,12 @@ public class TestSmellsAnalyzer {
 			
 			//Esecuzione delle analisi usando i diversi detector
 			ArrayList<Thread> detectors = new ArrayList<Thread>();
-			detectors.add(new AssertionRouletteDetector(xmlTest));
-			detectors.add(new EagerTestDetector(xmlTest,xmlClass,callGraph));
-			detectors.add(new GeneralFixtureDetector(xmlTest,callGraph));
-			detectors.add(new MysteryGuestDetector(xmlTest));
-			detectors.add(new SensitiveEqualityDetector(xmlTest));
-			detectors.add(new TestCodeDuplicationDetector(cloneFiles));
+//			detectors.add(new AssertionRouletteDetector(xmlTest));
+//			detectors.add(new EagerTestDetector(xmlTest,xmlClass,callGraph));
+//			detectors.add(new GeneralFixtureDetector(xmlTest,callGraph));
+//			detectors.add(new MysteryGuestDetector(xmlTest));
+//			detectors.add(new SensitiveEqualityDetector(xmlTest));
+//			detectors.add(new TestCodeDuplicationDetector(cloneFiles));
 			
 			for(Thread d: detectors){
 				d.run();
