@@ -20,26 +20,27 @@ import com.ibm.wala.ipa.callgraph.CallGraph;
 
 import util.TestMethodChecker;
 import util.ToolConstant;
+import util.tooldata.ToolData;
 
 public class LazyTestDetector extends Thread {
 
 	private CallGraph callGraph;
-	private ArrayList<File> xmlList;
+	private ArrayList<File> xmlTestCasesList;
+	private ArrayList<File> xmlProdClassesList;
 	private DocumentBuilderFactory docbuilderFactory;
 	private DocumentBuilder documentBuilder;
 	private Document doc;
 	private TestMethodChecker testChecker;
 	private static Logger log;
-
+	
+	
 	/**
-	 * Constructor method
-	 * 
-	 * @param xmlList
-	 * @param graph
+	 * @param data
 	 */
-	public LazyTestDetector(ArrayList<File> xmlList, CallGraph graph) {
-		this.xmlList = xmlList;
-		this.callGraph = graph;
+	public LazyTestDetector(ToolData data){
+		this.xmlTestCasesList = data.getTestClasses();
+		this.xmlProdClassesList = data.getProductioClasses();
+		this.callGraph = data.getCallGraph();
 		this.testChecker = new TestMethodChecker();
 		log = LogManager.getLogger(LazyTestDetector.class.getName());
 	}
@@ -94,7 +95,7 @@ public class LazyTestDetector extends Thread {
 
 	@Override
 	public void run() {
-		for (File file : xmlList) {
+		for (File file : xmlTestCasesList) {
 			analyze(file);
 		}
 	}
