@@ -66,6 +66,10 @@ public class ToolConstant {
 	public static final String ARGUMENT_LIST = "argument_list";
 	public static final String ARGUMENT = "argument";
 	public static final String LITERAL = "literal";
+	public static final String UNIT = "unit";
+	
+	//XML ATTRIBUTES NAME
+	public static final String FILENAME_ATTRIBUTE = "filename";
 	
 	//Types
 	public static final String STRING_TYPE_LOWER = "string";

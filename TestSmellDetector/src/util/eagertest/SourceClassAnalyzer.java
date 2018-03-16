@@ -48,9 +48,44 @@ public class SourceClassAnalyzer {
 		return isMethod;
 	}
 	
+	/**
+	 * 
+	 * @return a String which rapresents the class name
+	 */
+	public String getClassName(){
+		
+		String className = "";		
+		
+		docbuilderFactory = DocumentBuilderFactory.newInstance();
+		try {
+			documentBuilder = docbuilderFactory.newDocumentBuilder();
+			doc = documentBuilder.parse(sourceXml);
+			doc.getDocumentElement().normalize();
+			
+			NodeList list = doc.getElementsByTagName(ToolConstant.UNIT);
+			Element unitElement = (Element) list.item(0);
+			className = unitElement.getAttribute(ToolConstant.FILENAME_ATTRIBUTE);
+			
+		} catch (ParserConfigurationException e) {
+			log.error(ToolConstant.PARSE_EXCEPTION_MSG);
+			e.printStackTrace();
+		} catch (SAXException e) {
+			log.error(ToolConstant.SAX_EXCEPTION_MSG);
+			e.printStackTrace();
+		} catch (IOException e) {
+			log.error(ToolConstant.IO_EXCEPTION_MSG);
+			e.printStackTrace();
+		}
+		
+		return className;
+	}
+	
 	/*
 	 * restituisce tutti i metodi della production class
 	 * sotto test.
+	 * 
+	 * NB: per ora è richiamato solo dalla versione sbagliata
+	 * di eager test detector
 	 */
 	public TreeSet<String> getClassMethods(){
 		

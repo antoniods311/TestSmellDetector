@@ -2,8 +2,11 @@ package util.tooldata;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import com.ibm.wala.ipa.callgraph.CallGraph;
+
+import util.prodclass.ToolMethodType;
 
 /**
  * @author antoniods311
@@ -11,8 +14,9 @@ import com.ibm.wala.ipa.callgraph.CallGraph;
  */
 public class ToolData {
 	
-	private ArrayList<File> productioClasses = null;
 	private ArrayList<File> testClasses = null;
+	private ArrayList<File> productionClasses = null;
+	private HashSet<ToolMethodType> productionMethods;
 	private CallGraph callGraph = null;
 	
 	/**
@@ -27,7 +31,7 @@ public class ToolData {
 	 */
 	public ToolData(ArrayList<File> productioClasses, ArrayList<File> testClasses, CallGraph callGraph) {
 		super();
-		this.productioClasses = productioClasses;
+		this.productionClasses = productioClasses;
 		this.testClasses = testClasses;
 		this.callGraph = callGraph;
 	}
@@ -35,15 +39,15 @@ public class ToolData {
 	/**
 	 * @return the productioClasses
 	 */
-	public ArrayList<File> getProductioClasses() {
-		return productioClasses;
+	public ArrayList<File> getProductionClasses() {
+		return productionClasses;
 	}
 
 	/**
 	 * @param productioClasses the productioClasses to set
 	 */
-	public void setProductioClasses(ArrayList<File> productioClasses) {
-		this.productioClasses = productioClasses;
+	public void setProductionClasses(ArrayList<File> productioClasses) {
+		this.productionClasses = productioClasses;
 	}
 
 	/**
@@ -72,6 +76,20 @@ public class ToolData {
 	 */
 	public void setCallGraph(CallGraph callGraph) {
 		this.callGraph = callGraph;
+	}
+
+	/**
+	 * @return the productionMethods
+	 */
+	public HashSet<ToolMethodType> getProductionMethods() {
+		return productionMethods;
+	}
+
+	/**
+	 * @param productionMethods the productionMethods to set
+	 */
+	public void setProductionMethods(HashSet<ToolMethodType> productionMethods) {
+		this.productionMethods = productionMethods;
 	}
 	
 	

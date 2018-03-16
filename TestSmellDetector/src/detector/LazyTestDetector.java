@@ -39,7 +39,7 @@ public class LazyTestDetector extends Thread {
 	 */
 	public LazyTestDetector(ToolData data){
 		this.xmlTestCasesList = data.getTestClasses();
-		this.xmlProdClassesList = data.getProductioClasses();
+		this.xmlProdClassesList = data.getProductionClasses();
 		this.callGraph = data.getCallGraph();
 		this.testChecker = new TestMethodChecker();
 		log = LogManager.getLogger(LazyTestDetector.class.getName());
@@ -52,8 +52,6 @@ public class LazyTestDetector extends Thread {
 	 * @return
 	 */
 	public double analyze(File xml) {
-
-		log.info("*** START MYSTERY GUEST ANALYSIS ***");
 
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
 		try {
@@ -88,16 +86,17 @@ public class LazyTestDetector extends Thread {
 			e.printStackTrace();
 		}
 
-		log.info("*** END MYSTERY GUEST ANALYSIS ***\n");
-
 		return 0;
 	}
 
 	@Override
 	public void run() {
-		for (File file : xmlTestCasesList) {
+		log.info("*** START LAZY ANALYSIS ***");
+		
+		for (File file : xmlTestCasesList)
 			analyze(file);
-		}
+		
+		log.info("*** END LAZY TEST ANALYSIS ***\n");
 	}
 	
 }

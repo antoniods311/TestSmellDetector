@@ -4,6 +4,9 @@ import detector.*;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.TreeSet;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,6 +16,8 @@ import com.ibm.wala.util.WalaException;
 import callgraph.WalaCallGraphBuilder;
 import translator.JavaToXmlTranslator;
 import util.ToolConstant;
+import util.prodclass.ProductionClassAnalyzer;
+import util.prodclass.ToolMethodType;
 import util.tooldata.ToolData;
 
 /**
@@ -69,13 +74,17 @@ public class TestSmellsAnalyzer {
 				xmlTestCases.add(jxmlTranslator.translate());
 			}
 			
+			// 3a. Calcolo di tutti i metodi delle production class
+			ProductionClassAnalyzer prodClassAnalyzer = new ProductionClassAnalyzer(xmlProdClasses);
+			HashSet<ToolMethodType> productionClassesMethods = prodClassAnalyzer.getClassMethods();
+			
 			// 4. Costruzione oggetto ToolData
 			ToolData data = new ToolData();
 			data.setCallGraph(callGraph);
-			data.setProductioClasses(xmlProdClasses);
+			data.setProductionClasses(xmlProdClasses);
 			data.setTestClasses(xmlTestCases);
-			
-			
+			data.setProductionMethods(productionClassesMethods);
+				
 			//Costruzione ArrayList per clone detection
 			ArrayList<File> cloneFiles = new ArrayList<File>();
 			cloneFiles.add(new File(ToolConstant.TEST_CASES_JAVA_DIR+fileName));
@@ -101,9 +110,6 @@ public class TestSmellsAnalyzer {
 			log.error(ToolConstant.BUILD_CALL_GRAPH_ERROR);
 			e.printStackTrace();
 		}
-		
-		
-		
 		
 		//Restituzione dei risultati.
 		log.info("...End analysis\n");
