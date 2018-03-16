@@ -49,7 +49,7 @@ public class SourceClassAnalyzer {
 	}
 	
 	/*
-	 * restituisce tutti i metodi della classe
+	 * restituisce tutti i metodi della production class
 	 * sotto test.
 	 */
 	public TreeSet<String> getClassMethods(){

@@ -44,10 +44,10 @@ public class TestSmellsAnalyzer {
 		 * 6. lanciare i detector
 		 */
 		
-		// 1.Costruzione Call Graph
 		File jarInput = new File(ToolConstant.TEST_CASES_JAR_DIR+"calc.jar");
 		WalaCallGraphBuilder builder;
 		try {
+			// 1.Costruzione Call Graph
 			builder = new WalaCallGraphBuilder(jarInput);
 			CallGraph callGraph = builder.buildCallGraph();
 			
@@ -89,6 +89,7 @@ public class TestSmellsAnalyzer {
 //			detectors.add(new MysteryGuestDetector(xmlTest));
 //			detectors.add(new SensitiveEqualityDetector(xmlTest));
 //			detectors.add(new TestCodeDuplicationDetector(cloneFiles));
+			detectors.add(new LazyTestDetector(data));
 			
 			for(Thread d: detectors){
 				d.run();
