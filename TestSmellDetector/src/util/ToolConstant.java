@@ -7,9 +7,14 @@ public class ToolConstant {
 	public static final String TEST_CASES_JAVA_DIR = WORKING_DIR + "/inputTestCases-java/";
 	public static final String TEST_CASES_JAR_DIR = WORKING_DIR + "/inputTestCases-jar/";
 	public static final String PRODUCTION_CLASS_DIR = WORKING_DIR + "/inputProductionClasses/";
-	public static final String XML_DIR = WORKING_DIR + "/outputXML/";
+	public static final String TEST_CASE_XML_DIR = WORKING_DIR + "/outputTestCasesXML/";
+	public static final String PRODUCTION_CLASSES_XML_DIR = WORKING_DIR + "/outputProductionClassesXML/";
 	public static final String SRCML_DIR = WORKING_DIR + "/srcML/bin/";
 	public static final String EXCLUSION_FILE = WORKING_DIR + "/Java60RegressionExclusions.txt";
+	
+	//Translator
+	public static final int PRODUCTION_CLASS = 0;
+	public static final int TEST_CLASS = 1;
 
 	// Tool
 	public static final String SRCML_COMMAND = "srcml";

@@ -24,6 +24,18 @@ public class JavaToXmlTranslator implements Translator {
 		log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
 	}
 
+	public JavaToXmlTranslator(File sourceFile, String input, String output) {
+		super();
+		this.sourceFile = sourceFile;
+		this.input = input;
+		this.output = output;
+		log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
+	}
+
+
+	/* (non-Javadoc)
+	 * @see translator.Translator#translate()
+	 */
 	@Override
 	public File translate() {
 
@@ -46,18 +58,67 @@ public class JavaToXmlTranslator implements Translator {
 	}
 
 	@Override
-	public void load(File file) {
+	public void load(File file, int type) {
 		this.setSourceFile(file);
-		this.input = ToolConstant.TEST_CASES_JAVA_DIR + file.getName();
-		this.output = ToolConstant.XML_DIR + file.getName() + ".xml";
+		if(type == ToolConstant.PRODUCTION_CLASS){
+			this.input = ToolConstant.PRODUCTION_CLASS_DIR + file.getName();
+			this.output = ToolConstant.PRODUCTION_CLASSES_XML_DIR + file.getName() + ".xml";
+		}else{
+			this.input = ToolConstant.TEST_CASES_JAVA_DIR + file.getName();
+			this.output = ToolConstant.TEST_CASE_XML_DIR + file.getName() + ".xml";
+		}
+		
 	}
 
+	/**
+	 * @return soruce file
+	 */
 	public File getSourceFile() {
 		return sourceFile;
 	}
 
+	/**
+	 * @param file
+	 */
 	public void setSourceFile(File file) {
 		this.sourceFile = file;
 	}
+
+	/**
+	 * @return the input file
+	 */
+	public String getInput() {
+		return input;
+	}
+
+	/**
+	 * @param the input file to set
+	 */
+	public void setInput(String input) {
+		this.input = input;
+	}
+
+	/**
+	 * @return the output path
+	 */
+	public String getOutput() {
+		return output;
+	}
+
+	/**
+	 * @param output the output to set
+	 */
+	public void setOutput(String output) {
+		this.output = output;
+	}
+
+	/**
+	 * @return the xmlFile
+	 */
+	public File getXmlFile() {
+		return xmlFile;
+	}
+	
+	
 
 }

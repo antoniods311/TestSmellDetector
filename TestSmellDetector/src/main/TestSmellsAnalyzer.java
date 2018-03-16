@@ -13,6 +13,7 @@ import com.ibm.wala.util.WalaException;
 import callgraph.WalaCallGraphBuilder;
 import translator.JavaToXmlTranslator;
 import util.ToolConstant;
+import util.tooldata.ToolData;
 
 /**
  * 
@@ -30,49 +31,49 @@ public class TestSmellsAnalyzer {
 	public static void main(String[] args) {
 		
 		log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
+		jxmlTranslator = new JavaToXmlTranslator();
 		log.info("Start analysis...\n");
 		
-		File prodClassDir = new File(ToolConstant.PRODUCTION_CLASS_DIR);
-		String prodClasses[] = prodClassDir.list();
-		for(int i=0; i<prodClasses.length; i++){
-			System.out.println(prodClasses[i]);
-		}
+		/*
+		 * 1. costruire call graph
+		 * 2. traduzione production classes
+		 * 3. traduzione casi di test
+		 * (3a. calcolare tutti i metodi delle production classes)
+		 * 4. costruire oggetto ToolData
+		 * 5. costruire i detector
+		 * 6. lanciare i detector
+		 */
 		
-		
-		//Costruzione Call Graph
+		// 1.Costruzione Call Graph
 		File jarInput = new File(ToolConstant.TEST_CASES_JAR_DIR+"calc.jar");
 		WalaCallGraphBuilder builder;
 		try {
 			builder = new WalaCallGraphBuilder(jarInput);
 			CallGraph callGraph = builder.buildCallGraph();
 			
-			/*
-			 * 1. costruire call graph
-			 * 2. traduzione production classes
-			 * 3. traduzione cassi di test
-			 * 4. calcolare tutti i metodi delle production classes
-			 * 5. costruire oggetto ToolData
-			 * 6. costruire i detector
-			 * 7. lanciare i detector
-			 */
+			// 2.Traduzione delle production classes
+			ArrayList<File> xmlProdClasses = new ArrayList<File>();
+			File prodClassDir = new File(ToolConstant.PRODUCTION_CLASS_DIR);
+			String prodClasses[] = prodClassDir.list();
+			for(int i=0; i<prodClasses.length; i++){
+				jxmlTranslator.load(new File(prodClasses[i]), ToolConstant.PRODUCTION_CLASS);
+				xmlProdClasses.add(jxmlTranslator.translate());
+			}
 			
-//			File prodClassDir = new File(ToolConstant.PRODUCTION_CLASS_DIR);
-//			String prodClasses[] = prodClassDir.list();
-//			for(int i=0; i<prodClasses.length; i++){
-//				System.out.println(prodClasses[i]);
-//			}
+			// 3.Traduzione dei casi di test
+			ArrayList<File> xmlTestCases = new ArrayList<File>();
+			File testCasesDir = new File(ToolConstant.TEST_CASES_JAVA_DIR);
+			String testCases[] = testCasesDir.list();
+			for(int i=0; i<testCases.length; i++){
+				jxmlTranslator.load(new File(testCases[i]), ToolConstant.TEST_CLASS);
+				xmlTestCases.add(jxmlTranslator.translate());
+			}
 			
-			
-			
-			//Rappresentazione XML del caso di test
-			String inputTc = ToolConstant.XML_DIR+fileName;
-			String productionClass = ToolConstant.XML_DIR+classFileName;
-			jxmlTranslator = new JavaToXmlTranslator();
-			jxmlTranslator.load(new File(inputTc));
-			File xmlTest = jxmlTranslator.translate();
-			
-			jxmlTranslator.load(new File(productionClass));
-			File xmlClass = jxmlTranslator.translate();
+			// 4. Costruzione oggetto ToolData
+			ToolData data = new ToolData();
+			data.setCallGraph(callGraph);
+			data.setProductioClasses(xmlProdClasses);
+			data.setTestClasses(xmlTestCases);
 			
 			
 			//Costruzione ArrayList per clone detection
