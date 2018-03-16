@@ -3,16 +3,16 @@ package util.prodclass;
 public class ToolMethodType {
 	
 	private String classType;
-	private String method;
+	private String methodName;
 	
 	/**
 	 * @param classType
 	 * @param method
 	 */
-	public ToolMethodType(String classType, String method) {
+	public ToolMethodType(String classType, String methodName) {
 		super();
 		this.classType = classType;
-		this.method = method;
+		this.methodName = methodName;
 	}
 
 	/**
@@ -32,15 +32,21 @@ public class ToolMethodType {
 	/**
 	 * @return the method
 	 */
-	public String getMethod() {
-		return method;
+	public String getMethodName() {
+		return methodName;
 	}
 
 	/**
 	 * @param method the method to set
 	 */
-	public void setMethod(String method) {
-		this.method = method;
+	public void setMethodName(String method) {
+		this.methodName = method;
+	}
+
+	@Override
+	public String toString() {
+		//return "ToolMethodType [classType=" + classType + ", method=" + method + "]";
+		return classType+"."+methodName;
 	}
 	
 	
