@@ -2,7 +2,6 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,7 +20,6 @@ import org.xml.sax.SAXException;
 
 import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.CGNode;
-import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
@@ -30,7 +28,6 @@ import dataflowanalysis.DataFlowMethodAnalyzer;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
-import util.prodclass.ToolMethodType;
 import util.tooldata.ToolData;
 
 public class LazyTestDetector extends Thread {
@@ -41,7 +38,8 @@ public class LazyTestDetector extends Thread {
 	private Document doc;
 	private TestMethodChecker testChecker;
 	private DataFlowMethodAnalyzer methodAnalyzer;
-	private HashMap<String,HashSet<String>> callPaths;
+	private HashMap<String,HashSet<String>> callPaths;	//metodi chiamati dal metodo di test
+	private HashMap<String,HashSet<String>> testedMethods; //metodi TESTATI dal metodo di test
 	private static Logger log;
 
 	/**
@@ -91,8 +89,8 @@ public class LazyTestDetector extends Thread {
 									.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
 									&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
 								methodAnalyzer = new DataFlowMethodAnalyzer(node);
-								methodAnalyzer.calculatePCMethodsCall(data,methodName);
-								callPaths.put(methodName, methodAnalyzer.getResults());
+								HashSet<String> methods = methodAnalyzer.calculatePCMethodsCall(data,methodName);
+								callPaths.put(methodName, methods);
 								
 								
 							}
