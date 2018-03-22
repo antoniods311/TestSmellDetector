@@ -1,6 +1,5 @@
 package dataflowanalysis;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -58,7 +57,6 @@ public class DataFlowMethodAnalyzer {
 		    		if(path!=null && path.size()>0){
 		    			results.add(toolMethodType.getMethodName());
 		    		}
-
 				}
 			}
 		}
@@ -82,7 +80,6 @@ public class DataFlowMethodAnalyzer {
 		 * metodo e va a fare l'analisi. 
 		 */
 		HashSet<String> testedMethods = new HashSet<String>();
-		ArrayList<SSAInstruction> asserts = new ArrayList<SSAInstruction>(); 
 		IR ir = node.getIR();
 		Iterator<SSAInstruction> istrIter = ir.iterateAllInstructions();
 		while(istrIter.hasNext()){
@@ -94,20 +91,20 @@ public class DataFlowMethodAnalyzer {
 					DefUse defUse = new DefUse(ir);
 					int usedVariable = instruction.getUse(g);
 	    			SSAInstruction uvDefinition = defUse.getDef(usedVariable); //recupero la definizioned della variabile usata dall'assert
-	    			
 	    			/*
-	    			 * 4.per ogni uso ora va richiamato in metodo di analisi delle variabili
+	    			 * 4.per ogni uso ora va richiamato in metodo di analisi delle variabili,
+	    			 * controllando prima che la SSAInstruction non sia "null" (caso delle costanti)
 	    			 * Dovrei aspettarmi una String restituita dal metodo di analisi della variabile
 	    			 */
-
-	    			
+	    			String testedMethod = null;
+	    			if(uvDefinition!=null){
+	    				AssertVariablesAnalyzer ava = new AssertVariablesAnalyzer(data, ir);
+	    				testedMethod = ava.analyzeUse(uvDefinition, usedVariable);
+	    				testedMethods.add(testedMethod);
+	    			}		
 				}
-				asserts.add(instruction);
-			}
-						
+			}		
 		}
-		
-		
 		return testedMethods;
 	}
 	

@@ -1,5 +1,6 @@
 package dataflowanalysis;
 
+import com.ibm.wala.ssa.DefUse;
 import com.ibm.wala.ssa.IR;
 import com.ibm.wala.ssa.SSAInstruction;
 
@@ -57,11 +58,35 @@ public class AssertVariablesAnalyzer {
 		 * istruzioni di definizione.
 		 * (Vedere conversion(J) in questo caso)
 		 */
-		
-		
+		if(!pmCallFound) {
+			pcDefinitionMethod = checkConversion(def,var);
+		}
 		
 		return pcDefinitionMethod;
 		
+	}
+
+	
+	private String checkConversion(SSAInstruction instruction, int var) {
+		
+		/*
+		 * t = sum(1+2);
+		 * s = t;
+		 * assertEquals("message",s,3);
+		 * 
+		 * 10 = conversion(J) 8
+		 * 
+		 * 10 = s 	and		8 = t
+		 * 
+		 */
+		String method = null;
+		if(instruction.toString().contains("conversion")){
+			int usedVar = instruction.getUse(0); //leggo la variabile usata nella definizione
+			DefUse defUse = new DefUse(ir);
+			SSAInstruction definition = defUse.getDef(usedVar);
+			method = analyzeUse(definition, usedVar);
+		}
+		return method;
 	}
 	
 	
