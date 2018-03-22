@@ -95,6 +95,7 @@ public class DataFlowMethodAnalyzer {
 	    			SSAInstruction use = defUs.getDef(instruction.getUse(g));
 	    			//4.per ogni uso ora va richiamato in metodo di analisi delle variabili
 	    			
+	    			
 				}
 			}
 			asserts.add(instruction);			
