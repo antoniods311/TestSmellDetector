@@ -71,7 +71,7 @@ public class DataFlowMethodAnalyzer {
 	 * 
 	 * @param data
 	 * @param testMethod
-	 * @return
+	 * @return methods tested by the test method parameter
 	 */
 	public HashSet<String> getPCMethodsTestedByTestMethod(ToolData data, String testMethod){
 		/*
@@ -91,14 +91,20 @@ public class DataFlowMethodAnalyzer {
 			if(instructionString!=null && (instructionString.contains(ToolConstant.JUNIT_PACKAGE) && isAssert(instructionString))){
 				int limit = instruction.getNumberOfUses();
 				for(int g=0; g<limit; g++){
-					DefUse defUs = new DefUse(ir);
-	    			SSAInstruction use = defUs.getDef(instruction.getUse(g));
-	    			//4.per ogni uso ora va richiamato in metodo di analisi delle variabili
+					DefUse defUse = new DefUse(ir);
+					int usedVariable = instruction.getUse(g);
+	    			SSAInstruction uvDefinition = defUse.getDef(usedVariable); //recupero la definizioned della variabile usata dall'assert
 	    			
+	    			/*
+	    			 * 4.per ogni uso ora va richiamato in metodo di analisi delle variabili
+	    			 * Dovrei aspettarmi una String restituita dal metodo di analisi della variabile
+	    			 */
+
 	    			
 				}
+				asserts.add(instruction);
 			}
-			asserts.add(instruction);			
+						
 		}
 		
 		

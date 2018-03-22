@@ -74,8 +74,15 @@ public class LazyTestDetector extends Thread {
 					Element functionElement = (Element) functionList.item(i);
 					// Se entro ho trovato un metodo di test
 					if (testChecker.isTestMethod(functionElement)) {
-
 						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
+						
+						/*
+						 * A questo punto AGGIUNGERE l'analisi preventiva pre vedere se
+						 * l'assert tra i parametri ha la chiamata ad un metodo 
+						 * della production class. In questo caso è inutile proseguire
+						 * con il resto dell'analisi.
+						 */
+						
 						CGNode node;
 						Iterator<CGNode> iter = data.getCallGraph().iterator();
 						while (iter.hasNext()) {
@@ -89,8 +96,15 @@ public class LazyTestDetector extends Thread {
 									.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
 									&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
 								methodAnalyzer = new DataFlowMethodAnalyzer(node);
-								HashSet<String> methods = methodAnalyzer.calculatePCMethodsCall(data,methodName);
-								callPaths.put(methodName, methods);
+								HashSet<String> methodsCalled = methodAnalyzer.calculatePCMethodsCall(data,methodName);
+								callPaths.put(methodName, methodsCalled); //tutti i metodi della PC chiamati nel metodo di test
+								HashSet<String> methodsTested = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
+								testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test
+							
+								/*
+								 * fare il check sul fatto che più metodi di test testano lo stesso metodo della PC.
+								 * Si deve lavorare su testedMethods.
+								 */
 								
 								
 							}
