@@ -9,12 +9,13 @@ import java.util.Iterator;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.soap.Node;
+
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -25,6 +26,8 @@ import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
 
 import dataflowanalysis.DataFlowMethodAnalyzer;
+import util.MethodMatcher;
+import util.ParameterAnalyzer;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
@@ -37,6 +40,7 @@ public class LazyTestDetector extends Thread {
 	private DocumentBuilder documentBuilder;
 	private Document doc;
 	private TestMethodChecker testChecker;
+	private MethodMatcher methodMatcher;
 	private DataFlowMethodAnalyzer methodAnalyzer;
 	private HashMap<String,HashSet<String>> callPaths;	//metodi chiamati dal metodo di test
 	private HashMap<String,HashSet<String>> testedMethods; //metodi TESTATI dal metodo di test
@@ -48,6 +52,7 @@ public class LazyTestDetector extends Thread {
 	public LazyTestDetector(ToolData data) {
 		this.data = data;
 		this.testChecker = new TestMethodChecker();
+		this.methodMatcher = new MethodMatcher();
 		this.methodAnalyzer = null;
 		this.callPaths = new HashMap<String,HashSet<String>>();
 		log = LogManager.getLogger(LazyTestDetector.class.getName());
@@ -82,7 +87,7 @@ public class LazyTestDetector extends Thread {
 						 * della production class. In questo caso è inutile proseguire
 						 * con il resto dell'analisi.
 						 */
-						assertsAnalysis(methodName);
+						assertsAnalysis(functionElement, methodName);
 						
 						CGNode node;
 						Iterator<CGNode> iter = data.getCallGraph().iterator();
@@ -139,7 +144,7 @@ public class LazyTestDetector extends Thread {
 	}
 
 	
-	private void assertsAnalysis(String testMethod) {
+	private void assertsAnalysis(Element functionElement, String testMethod) {
 		
 		/*
 		 * scorrere tutti gli assert di test e per ognuno di essi 
@@ -149,7 +154,35 @@ public class LazyTestDetector extends Thread {
 		 * questo metodo. Dopo di che aggiungere la coppia 
 		 * [methodName-set] a testedMethods
 		 */
+		HashSet<String> allAssertSet = new HashSet<String>();
+		NodeList nameMethodList = functionElement.getElementsByTagName(ToolConstant.NAME);
+		for (int j = 0; j < nameMethodList.getLength(); j++) {
+			if (methodMatcher.isAssertMethod(nameMethodList.item(j).getTextContent())) {
+				if (nameMethodList.item(j).getNodeType() == Node.ELEMENT_NODE) {
+					Element assertElement = (Element) nameMethodList.item(j); //questo è un metodo di assert
+					NodeList childList = assertElement.getChildNodes();
+					for(int k=0; k < childList.getLength(); k++){
+						Node temp = childList.item(k);
+						if(temp.getNodeType()==Node.ELEMENT_NODE && temp.getNodeName().equals(ToolConstant.ARGUMENT_LIST)){
+							Element argumentList = (Element) childList.item(k);
+							
+							//chiamare metodo di ParameterAnalyzer per analizzare questo element argument_list
+							ParameterAnalyzer paramAnalyzer = new ParameterAnalyzer(data);
+							HashSet<String> singleAssertSet = paramAnalyzer.getPCCallsParameters(argumentList);
+							if(!singleAssertSet.isEmpty()){
+								//se non è vuoto aggiungo gli elementi di questo set ad un set comune a tutti gli assert
+								
+							}
+							
+						}
+							
+					}
+					
+				}
+
+			}
 		
+		}
 	}
 
 	@Override
