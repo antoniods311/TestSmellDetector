@@ -77,7 +77,7 @@ public class LazyTestDetector extends Thread {
 						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 						
 						/*
-						 * A questo punto AGGIUNGERE l'analisi preventiva pre vedere se
+						 * A questo punto AGGIUNGERE l'analisi preventiva pre vedere se PER OGNI ASSERT
 						 * l'assert tra i parametri ha la chiamata ad un metodo 
 						 * della production class. In questo caso è inutile proseguire
 						 * con il resto dell'analisi.
