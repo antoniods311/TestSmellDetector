@@ -177,7 +177,7 @@ public class EagerTestDetector extends Thread {
 				if (currentElement.getNodeName().equals(ToolConstant.ARGUMENT_LIST)) {
 
 					// usare paramAnalyzer per farsi restituire i parametri
-					TreeSet<String> parameters = paramAnalyzer.getParameters(currentElement);
+					ArrayList<String> parameters = paramAnalyzer.getParameters(currentElement);
 
 				}
 			}
