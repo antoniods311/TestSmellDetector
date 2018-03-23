@@ -82,6 +82,7 @@ public class LazyTestDetector extends Thread {
 						 * della production class. In questo caso è inutile proseguire
 						 * con il resto dell'analisi.
 						 */
+						assertsAnalysis(methodName);
 						
 						CGNode node;
 						Iterator<CGNode> iter = data.getCallGraph().iterator();
@@ -135,6 +136,20 @@ public class LazyTestDetector extends Thread {
 		}
 
 		return 0;
+	}
+
+	
+	private void assertsAnalysis(String testMethod) {
+		
+		/*
+		 * scorrere tutti gli assert di test e per ognuno di essi 
+		 * richiamare i metodi di analisi della classe ParameterAnalyzer
+		 * per analizzarne i parametri. Se l'assert include tra i parametri
+		 * un metodo della PC aggiungere ad un set comune (a tutti gli assert) 
+		 * questo metodo. Dopo di che aggiungere la coppia 
+		 * [methodName-set] a testedMethods
+		 */
+		
 	}
 
 	@Override

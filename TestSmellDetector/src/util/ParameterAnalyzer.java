@@ -48,17 +48,30 @@ public class ParameterAnalyzer {
 		}
 		return argListSize;
 	}
+	
+	/*
+	 * DA IMPLEMENTARE: restituisce la lista di parametri di un ARGUMENT LIST element
+	 */
+	public ArrayList<String> getParameters(Element currentElement) {
+		
+		
+		
+		
+		
+		
+		return null;
+	}
 
 	/**
-	 * This method calculates the list of parameters for an assert method
-	 * starting from an Element which represents a list of arguments
+	 * This method calculates the list of parameters which represents a production class 
+	 * method call, starting from an Element which represents a list of arguments
 	 * 
 	 * @param argumentList
 	 * @return parameters a list of parameters
 	 */
-	public ArrayList<String> getParameters(Element argumentList) {
+	public HashSet<String> getPCCallsParameters(Element argumentList) {
 
-		ArrayList<String> parameters = new ArrayList<String>();
+		HashSet<String> parameters = new HashSet<String>();
 
 		NodeList childList = argumentList.getChildNodes();
 		for(int i=0; i<childList.getLength(); i++){
