@@ -55,6 +55,7 @@ public class LazyTestDetector extends Thread {
 		this.methodMatcher = new MethodMatcher();
 		this.methodAnalyzer = null;
 		this.callPaths = new HashMap<String,HashSet<String>>();
+		this.testedMethods = new HashMap<String,HashSet<String>>();
 		log = LogManager.getLogger(LazyTestDetector.class.getName());
 	}
 
