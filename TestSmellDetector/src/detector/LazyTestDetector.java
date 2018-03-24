@@ -59,7 +59,7 @@ public class LazyTestDetector extends Thread {
 	}
 
 	/**
-	 * This method returns results of the single xml file analysis
+	 * This method returns results of the single XML file analysis
 	 * 
 	 * @param xml
 	 * @return
@@ -89,6 +89,7 @@ public class LazyTestDetector extends Thread {
 						 */
 						HashSet<String> allAssertSet = assertsAnalysis(functionElement, methodName);
 						if(!allAssertSet.isEmpty()){
+							log.info(methodName+" analizzato in fase preliminare");
 							testedMethods.put(methodName, allAssertSet);
 						}else{
 							CGNode node;
@@ -108,22 +109,24 @@ public class LazyTestDetector extends Thread {
 									callPaths.put(methodName, methodsCalled); //tutti i metodi della PC chiamati nel metodo di test
 									HashSet<String> methodsTested = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
 									testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test
-								
-									/*
-									 * fare il check sul fatto che più metodi di test testano lo stesso metodo della PC.
-									 * Si deve lavorare su testedMethods.
-									 */
 								}
-							}
-							
+							}	
 						}
-						
-						
-						
 					}
-
 				}
 			}
+			/*
+			 * fare il check sul fatto che più metodi di test testano lo stesso metodo della PC.
+			 * Si deve lavorare su testedMethods.
+			 */
+			for(String key : testedMethods.keySet()){
+				System.out.print("TM: "+key+" -> ");
+				for(String meth : testedMethods.get(key)){
+					System.out.print(meth+" ");
+				}				
+			}
+			
+			
 
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);
@@ -137,13 +140,13 @@ public class LazyTestDetector extends Thread {
 		}
 
 		
-		for (String key : callPaths.keySet()) {
-			System.out.print("testMethod: "+key+" -> ");
-			for(String meth : callPaths.get(key)){
-				System.out.print(meth+" ");
-			}
-			System.out.println();
-		}
+//		for (String key : callPaths.keySet()) {
+//			System.out.print("testMethod: "+key+" -> ");
+//			for(String meth : callPaths.get(key)){
+//				System.out.print(meth+" ");
+//			}
+//			System.out.println();
+//		}
 
 		return 0;
 	}

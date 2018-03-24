@@ -1,5 +1,7 @@
 package dataflowanalysis;
 
+import java.util.ArrayList;
+
 import com.ibm.wala.ssa.DefUse;
 import com.ibm.wala.ssa.IR;
 import com.ibm.wala.ssa.SSAInstruction;
@@ -33,9 +35,9 @@ public class AssertVariablesAnalyzer {
 		
 		boolean pmCallFound = false;
 		String pcDefinitionMethod = null;
-		ToolMethodType[] prodMethods = (ToolMethodType[]) data.getProductionMethods().toArray();
+		ArrayList<ToolMethodType> prodMethods = getToolMethodTypeArray();
 		int index = 0;
-		int size = prodMethods.length;
+		int size = prodMethods.size();
 		/*
 		 * A. controllo se l'istruzione def contiene o meno
 		 * la chiamata ad un metodo della PC (es: sum()).
@@ -43,7 +45,7 @@ public class AssertVariablesAnalyzer {
 		 * entro nell'if del punto B.
 		 */
 		while(index<size && !pmCallFound){
-			String pcMethod = prodMethods[index].getMethodName();
+			String pcMethod = prodMethods.get(index).getMethodName();
 			if(def.toString().contains(pcMethod)){
 				pmCallFound = true;
 				pcDefinitionMethod = pcMethod;
@@ -67,6 +69,15 @@ public class AssertVariablesAnalyzer {
 	}
 
 	
+	private ArrayList<ToolMethodType> getToolMethodTypeArray() {
+		
+		ArrayList<ToolMethodType> arrList = new ArrayList<ToolMethodType>();
+		for(ToolMethodType tmt : data.getProductionMethods())
+			arrList.add(tmt);
+		
+		return arrList;
+	}
+
 	private String checkConversion(SSAInstruction instruction, int var) {
 		
 		/*

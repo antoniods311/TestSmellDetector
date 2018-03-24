@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.TreeSet;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +28,7 @@ public class TestSmellsAnalyzer {
 
 	private static String fileName = "MyTest.java";
 	private static String cloneFileName = "MyTestClone.java";
-	private static String classFileName = "MyClass.java";
+	//private static String classFileName = "MyClass.java";
 	private static JavaToXmlTranslator jxmlTranslator;
 	private static Logger log;
 	
