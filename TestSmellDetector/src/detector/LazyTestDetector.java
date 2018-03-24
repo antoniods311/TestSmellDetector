@@ -124,7 +124,8 @@ public class LazyTestDetector extends Thread {
 				System.out.print("TM: "+key+" -> ");
 				for(String meth : testedMethods.get(key)){
 					System.out.print(meth+" ");
-				}				
+				}
+				System.out.println();
 			}
 			
 			
