@@ -82,39 +82,44 @@ public class LazyTestDetector extends Thread {
 						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 						
 						/*
-						 * A questo punto AGGIUNGERE l'analisi preventiva pre vedere se PER OGNI ASSERT
-						 * l'assert tra i parametri ha la chiamata ad un metodo 
+						 * Analisi preventiva: PER OGNI ASSERT si vede
+						 * se l'assert tra i parametri ha la chiamata ad un metodo 
 						 * della production class. In questo caso è inutile proseguire
 						 * con il resto dell'analisi.
 						 */
-						assertsAnalysis(functionElement, methodName);
-						
-						CGNode node;
-						Iterator<CGNode> iter = data.getCallGraph().iterator();
-						while (iter.hasNext()) {
-							node = iter.next();
-							IMethod iMethod = node.getMethod();
-							MethodReference methodRef = iMethod.getReference();
-							TypeReference typeRef = methodRef.getDeclaringClass();
-							ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
+						HashSet<String> allAssertSet = assertsAnalysis(functionElement, methodName);
+						if(!allAssertSet.isEmpty()){
+							testedMethods.put(methodName, allAssertSet);
+						}else{
+							CGNode node;
+							Iterator<CGNode> iter = data.getCallGraph().iterator();
+							while (iter.hasNext()) {
+								node = iter.next();
+								IMethod iMethod = node.getMethod();
+								MethodReference methodRef = iMethod.getReference();
+								TypeReference typeRef = methodRef.getDeclaringClass();
+								ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
 
-							if (classLoaderRef.getName().toString()
-									.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
-									&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
-								methodAnalyzer = new DataFlowMethodAnalyzer(node);
-								HashSet<String> methodsCalled = methodAnalyzer.calculatePCMethodsCall(data,methodName);
-								callPaths.put(methodName, methodsCalled); //tutti i metodi della PC chiamati nel metodo di test
-								HashSet<String> methodsTested = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
-								testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test
-							
-								/*
-								 * fare il check sul fatto che più metodi di test testano lo stesso metodo della PC.
-								 * Si deve lavorare su testedMethods.
-								 */
+								if (classLoaderRef.getName().toString()
+										.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
+										&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
+									methodAnalyzer = new DataFlowMethodAnalyzer(node);
+									HashSet<String> methodsCalled = methodAnalyzer.calculatePCMethodsCall(data,methodName);
+									callPaths.put(methodName, methodsCalled); //tutti i metodi della PC chiamati nel metodo di test
+									HashSet<String> methodsTested = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
+									testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test
 								
-								
+									/*
+									 * fare il check sul fatto che più metodi di test testano lo stesso metodo della PC.
+									 * Si deve lavorare su testedMethods.
+									 */
+								}
 							}
+							
 						}
+						
+						
+						
 					}
 
 				}
@@ -144,7 +149,7 @@ public class LazyTestDetector extends Thread {
 	}
 
 	
-	private void assertsAnalysis(Element functionElement, String testMethod) {
+	private HashSet<String> assertsAnalysis(Element functionElement, String testMethod) {
 		
 		/*
 		 * scorrere tutti gli assert di test e per ognuno di essi 
@@ -170,8 +175,9 @@ public class LazyTestDetector extends Thread {
 							ParameterAnalyzer paramAnalyzer = new ParameterAnalyzer(data);
 							HashSet<String> singleAssertSet = paramAnalyzer.getPCCallsParameters(argumentList);
 							if(!singleAssertSet.isEmpty()){
-								//se non è vuoto aggiungo gli elementi di questo set ad un set comune a tutti gli assert
-								
+								//se non è vuoto aggiungo gli elementi di questo set ad un set comune a tutti gli assert dello stesso test method
+								for(String s : singleAssertSet)
+									allAssertSet.add(s);
 							}
 							
 						}
@@ -183,6 +189,7 @@ public class LazyTestDetector extends Thread {
 			}
 		
 		}
+		return allAssertSet;
 	}
 
 	@Override
