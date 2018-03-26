@@ -80,15 +80,31 @@ public class AssertVariablesAnalyzer {
 		 * 
 		 */
 		String method = null;
-		if (instruction.toString().contains("conversion")) {
-			int usedVar = instruction.getUse(0); // leggo la variabile usata
-													// nella definizione
+		/*
+		 * leggo le variabili usate nella definizione es: [ISTR: 8 =
+		 * binaryop(add) 7 , 6]
+		 * 
+		 */
+		
+		/* ALTRA OPZIONE:
+		 * fare invece del for un while:
+		 * while i<size && method!=null e method non appartiene ai metodi della pc
+		 * allora continua
+		 */
+		for (int i = 0; i < instruction.getNumberOfUses(); i++) {
+			int usedVar = instruction.getUse(i);
 			DefUse defUse = new DefUse(ir);
 			SSAInstruction definition = defUse.getDef(usedVar);
-			method = analyzeUse(definition, usedVar);
+			if(definition!=null){
+				AssertVariablesAnalyzer innerAva = new AssertVariablesAnalyzer(data, ir);
+				String returnedMethod = innerAva.analyzeUse(definition, usedVar);
+				if (returnedMethod != null)
+					method = returnedMethod;
+			}
 		}
+
 		return method;
-	}
+	}	
 
 	private ArrayList<ToolMethodType> getToolMethodTypeArray() {
 

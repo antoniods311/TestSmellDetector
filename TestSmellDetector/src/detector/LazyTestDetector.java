@@ -42,7 +42,7 @@ public class LazyTestDetector extends Thread {
 	private TestMethodChecker testChecker;
 	private MethodMatcher methodMatcher;
 	private DataFlowMethodAnalyzer methodAnalyzer;
-	private HashMap<String,HashSet<String>> callPaths;	//metodi chiamati dal metodo di test
+	//private HashMap<String,HashSet<String>> callPaths;	//metodi chiamati dal metodo di test
 	private HashMap<String,HashSet<String>> testedMethods; //metodi TESTATI dal metodo di test
 	private static Logger log;
 
@@ -54,7 +54,7 @@ public class LazyTestDetector extends Thread {
 		this.testChecker = new TestMethodChecker();
 		this.methodMatcher = new MethodMatcher();
 		this.methodAnalyzer = null;
-		this.callPaths = new HashMap<String,HashSet<String>>();
+		//this.callPaths = new HashMap<String,HashSet<String>>();
 		this.testedMethods = new HashMap<String,HashSet<String>>();
 		log = LogManager.getLogger(LazyTestDetector.class.getName());
 	}
