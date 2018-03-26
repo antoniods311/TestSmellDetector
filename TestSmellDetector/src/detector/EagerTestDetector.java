@@ -2,19 +2,17 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.TreeSet;
+import java.util.HashSet;
+import java.util.Iterator;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.Node;
-import util.MethodMatcher;
-import util.ParameterAnalyzer;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
-import util.eagertest.SourceClassAnalyzer;
+import util.tooldata.ToolData;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -23,7 +21,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import com.ibm.wala.ipa.callgraph.CallGraph;
+import com.ibm.wala.classLoader.IMethod;
+import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.types.ClassLoaderReference;
+import com.ibm.wala.types.MethodReference;
+import com.ibm.wala.types.TypeReference;
+
+import dataflowanalysis.DataFlowMethodAnalyzer;
 
 /**
  * 
@@ -32,72 +36,28 @@ import com.ibm.wala.ipa.callgraph.CallGraph;
  */
 public class EagerTestDetector extends Thread {
 
-	private File xmlTest, xmlClass;
+	private ToolData data;
 	private DocumentBuilderFactory docbuilderFactory;
 	private DocumentBuilder documentBuilder;
 	private Document doc;
-	private HashMap<String, Integer> numOfAssertResult;
-	private ArrayList<String> eagerTestResult;
 	private TestMethodChecker testChecker;
-	private MethodMatcher methodMatcher;
-	private SourceClassAnalyzer scAnalyzer;
-	private TreeSet<String> classMethods;
 	private static Logger log;
-	private ParameterAnalyzer paramAnalyzer;
-
-	public EagerTestDetector(File xml, File xmlClass, CallGraph callGraph) {
-		this.xmlTest = xml;
-		this.xmlClass = xmlClass;
-		testChecker = new TestMethodChecker();
-		methodMatcher = new MethodMatcher();
-		paramAnalyzer = new ParameterAnalyzer();
+	private DataFlowMethodAnalyzer methodAnalyzer;
+	
+	public EagerTestDetector(ToolData data){
+		this.data = data;
+		this.testChecker = new TestMethodChecker();
 		log = LogManager.getLogger(EagerTestDetector.class.getName());
 	}
 
-	/*
-	 * bisogna navigare ricorsivamente il doc xml in modo tale che per ogni
-	 * function (annotata con @Test) che incontra vado a verificare il contenuto
-	 * dell'elemento block. Nel block ci possono essere 2 situazioni: - trovo un
-	 * assert e allora devo aggiungerlo alla lista di assert trovati; - trovo un
-	 * altro blocco. Allora devo fare chiamata ricorsiva per visitare il blocco.
-	 */
+	public double analyze(File xml) {
 
-	/*
-	 * altra soluzione (per gestire anche casi in cui c'è un if annidato o un
-	 * while per esempio): - considero i singoli elementi function (annotati
-	 * con @Test) - mi prendo la lista di NODI - scorro la lista prendendomi
-	 * solo quelli che sono "ELEMENT_NODE" - tra questi conto gli assert
-	 */
-
-	/*
-	 * in result si trovano le corrispondeze tra metodoDiTest e numero di assert
-	 */
-	public double analyze() {
-
-		log.info("*** START EAGER TEST ANALYSIS ***");
-
-		/*
-		 * gestire caso di più metodi di test che possono presentare molti
-		 * assert. Per esempio si potrebbe considerare una HashMap<String,int>
-		 * dove ad ogni test si fa corrispondere un intero che rappresenta il
-		 * numero di assert che sono stati trovati. fallo fare nel metodo
-		 * getAssertsNumber
-		 */
-
-		eagerTestResult = new ArrayList<String>();
-		numOfAssertResult = new HashMap<String, Integer>();
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
+		HashMap<String, HashSet<String>> testedMethods = new HashMap<String, HashSet<String>>();
 		try {
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
-			doc = documentBuilder.parse(xmlTest);
+			doc = documentBuilder.parse(xml);
 			doc.getDocumentElement().normalize();
-
-			// leggo i metodi che appartengono alla classe sotto test
-			scAnalyzer = new SourceClassAnalyzer(xmlClass);
-			classMethods = scAnalyzer.getClassMethods();
-			for (String s : classMethods) {
-				log.info(s);
-			}
 
 			// leggo la lista di nodi function
 			NodeList list = doc.getElementsByTagName(ToolConstant.FUNCTION);
@@ -105,15 +65,30 @@ public class EagerTestDetector extends Thread {
 				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
 					Element functionElement = (Element) list.item(i);
 
-					// Se entro ho trovato un metodo di test e devo cercare le
-					// chiamate dei metodi assert
-					if (testChecker.isTestMethod(functionElement))
-						checkAssertMethods(functionElement);
-				}
-			}
+					// Se entro ho trovato un metodo di test
+					if (testChecker.isTestMethod(functionElement)){
+						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
+						CGNode node;
+						Iterator<CGNode> iter = data.getCallGraph().iterator();
+						while (iter.hasNext()) {
+							node = iter.next();
+							IMethod iMethod = node.getMethod();
+							MethodReference methodRef = iMethod.getReference();
+							TypeReference typeRef = methodRef.getDeclaringClass();
+							ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
 
-			for (String s : numOfAssertResult.keySet()) {
-				log.info("assert number for  " + s + ": " + numOfAssertResult.get(s));
+							if (classLoaderRef.getName().toString()
+									.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
+									&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
+								methodAnalyzer = new DataFlowMethodAnalyzer(node);
+								
+								HashSet<String> methodsTested = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
+								testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test									
+																		
+							}
+						}
+					}
+				}
 			}
 
 		} catch (ParserConfigurationException e) {
@@ -126,68 +101,74 @@ public class EagerTestDetector extends Thread {
 			log.error(ToolConstant.IO_EXCEPTION_MSG);
 			e.printStackTrace();
 		}
-
-		log.info("*** END EAGER TEST ANALYSIS ***\n");
-
+		
 		return 0;
 	}
 
+	@Override
+	public void run() {
+		log.info("*** START EAGER TEST ANALYSIS ***");;
+		for (File file : data.getTestClasses())
+			this.analyze(file);
+//		computeResults();
+		log.info("*** END EAGER TEST ANALYSIS ***\n");
+	}
+	
+	
+	
+	
 	/*
 	 * metodo che conta il numero degli assert all'interno di un test deve
 	 * riempire result!
 	 */
-	private void checkAssertMethods(Element functionElement) {
-
-		int numOfAssert = 0;
-		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
-
-		// calcolo il numero di result
-		NodeList nameMethodList = functionElement.getElementsByTagName(ToolConstant.NAME);
-		for (int j = 0; j < nameMethodList.getLength(); j++) {
-			if (methodMatcher.isAssertMethod(nameMethodList.item(j).getTextContent())) {
-				numOfAssert++;
-
-				/*
-				 * devo vedere i parametri dell'assert mettere un metodo in
-				 * SourceClassAnalyzer per farmeli restituire
-				 */
-				if (nameMethodList.item(j).getNodeType() == Node.ELEMENT_NODE) {
-					Element assertElement = (Element) nameMethodList.item(j);
-					Element callElement = (Element) assertElement.getParentNode();
-					analyzeAssertMethod(callElement);
-				}
-
-			}
-		}
-
-		numOfAssertResult.put(methodName, numOfAssert);
-	}
+//	private void checkAssertMethods(Element functionElement) {
+//
+//		int numOfAssert = 0;
+//		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
+//
+//		// calcolo il numero di result
+//		NodeList nameMethodList = functionElement.getElementsByTagName(ToolConstant.NAME);
+//		for (int j = 0; j < nameMethodList.getLength(); j++) {
+//			if (methodMatcher.isAssertMethod(nameMethodList.item(j).getTextContent())) {
+//				numOfAssert++;
+//
+//				/*
+//				 * devo vedere i parametri dell'assert mettere un metodo in
+//				 * SourceClassAnalyzer per farmeli restituire
+//				 */
+//				if (nameMethodList.item(j).getNodeType() == Node.ELEMENT_NODE) {
+//					Element assertElement = (Element) nameMethodList.item(j);
+//					Element callElement = (Element) assertElement.getParentNode();
+//					analyzeAssertMethod(callElement);
+//				}
+//
+//			}
+//		}
+//
+//		numOfAssertResult.put(methodName, numOfAssert);
+//	}
 
 	/*
 	 * verifica se l'assert ha o meno come parametro un metodo della classe
 	 * sotto test
 	 */
-	private void analyzeAssertMethod(Element callElement) {
+//	private void analyzeAssertMethod(Element callElement) {
+//
+//		NodeList childList = callElement.getChildNodes();
+//
+//		for (int i = 0; i < childList.getLength(); i++) {
+//			if (childList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+//				Element currentElement = (Element) childList.item(i);
+//				if (currentElement.getNodeName().equals(ToolConstant.ARGUMENT_LIST)) {
+//
+//					// usare paramAnalyzer per farsi restituire i parametri
+//					ArrayList<String> parameters = paramAnalyzer.getParameters(currentElement); //metodo ancora da implementare
+//
+//				}
+//			}
+//		}
+//
+//	}
 
-		NodeList childList = callElement.getChildNodes();
-
-		for (int i = 0; i < childList.getLength(); i++) {
-			if (childList.item(i).getNodeType() == Node.ELEMENT_NODE) {
-				Element currentElement = (Element) childList.item(i);
-				if (currentElement.getNodeName().equals(ToolConstant.ARGUMENT_LIST)) {
-
-					// usare paramAnalyzer per farsi restituire i parametri
-					ArrayList<String> parameters = paramAnalyzer.getParameters(currentElement); //metodo ancora da implementare
-
-				}
-			}
-		}
-
-	}
-
-	@Override
-	public void run() {
-		analyze();
-	}
 
 }

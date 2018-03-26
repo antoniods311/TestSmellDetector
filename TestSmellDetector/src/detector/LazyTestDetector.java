@@ -41,7 +41,6 @@ public class LazyTestDetector extends Thread {
 	private DocumentBuilder documentBuilder;
 	private Document doc;
 	private TestMethodChecker testChecker;
-	//private MethodMatcher methodMatcher;
 	private DataFlowMethodAnalyzer methodAnalyzer;
 	// private HashMap<String,HashSet<String>> callPaths; //metodi chiamati dal// metodo di test
 	private ArrayList<LazyTestResult> lazyTestResults;
@@ -53,7 +52,6 @@ public class LazyTestDetector extends Thread {
 	public LazyTestDetector(ToolData data) {
 		this.data = data;
 		this.testChecker = new TestMethodChecker();
-		//this.methodMatcher = new MethodMatcher();
 		this.methodAnalyzer = null;
 		// this.callPaths = new HashMap<String,HashSet<String>>();
 		this.lazyTestResults = new ArrayList<LazyTestResult>();
