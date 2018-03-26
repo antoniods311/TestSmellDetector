@@ -2,6 +2,7 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -9,7 +10,6 @@ import java.util.Iterator;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,11 +26,12 @@ import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
 
 import dataflowanalysis.DataFlowMethodAnalyzer;
-import util.MethodMatcher;
-import util.ParameterAnalyzer;
+import result.LazyTestResult;
+
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
+import util.prodclass.ToolMethodType;
 import util.tooldata.ToolData;
 
 public class LazyTestDetector extends Thread {
@@ -40,10 +41,10 @@ public class LazyTestDetector extends Thread {
 	private DocumentBuilder documentBuilder;
 	private Document doc;
 	private TestMethodChecker testChecker;
-	private MethodMatcher methodMatcher;
+	//private MethodMatcher methodMatcher;
 	private DataFlowMethodAnalyzer methodAnalyzer;
-	//private HashMap<String,HashSet<String>> callPaths;	//metodi chiamati dal metodo di test
-	private HashMap<String,HashSet<String>> testedMethods; //metodi TESTATI dal metodo di test
+	// private HashMap<String,HashSet<String>> callPaths; //metodi chiamati dal// metodo di test
+	private ArrayList<LazyTestResult> lazyTestResults;
 	private static Logger log;
 
 	/**
@@ -52,10 +53,10 @@ public class LazyTestDetector extends Thread {
 	public LazyTestDetector(ToolData data) {
 		this.data = data;
 		this.testChecker = new TestMethodChecker();
-		this.methodMatcher = new MethodMatcher();
+		//this.methodMatcher = new MethodMatcher();
 		this.methodAnalyzer = null;
-		//this.callPaths = new HashMap<String,HashSet<String>>();
-		this.testedMethods = new HashMap<String,HashSet<String>>();
+		// this.callPaths = new HashMap<String,HashSet<String>>();
+		this.lazyTestResults = new ArrayList<LazyTestResult>();
 		log = LogManager.getLogger(LazyTestDetector.class.getName());
 	}
 
@@ -68,6 +69,7 @@ public class LazyTestDetector extends Thread {
 	public double analyze(File xml) {
 
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
+		HashMap<String, HashSet<String>> testedMethods = new HashMap<String, HashSet<String>>();
 		try {
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
 			doc = documentBuilder.parse(xml);
@@ -81,54 +83,39 @@ public class LazyTestDetector extends Thread {
 					// Se entro ho trovato un metodo di test
 					if (testChecker.isTestMethod(functionElement)) {
 						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
-						
-						/*
-						 * Analisi preventiva: PER OGNI ASSERT si vede
-						 * se l'assert tra i parametri ha la chiamata ad un metodo 
-						 * della production class. In questo caso è inutile proseguire
-						 * con il resto dell'analisi.
-						 */
-						HashSet<String> allAssertSet = assertsAnalysis(functionElement, methodName);
-						if(!allAssertSet.isEmpty()){
-							log.info(methodName+" analizzato in fase preliminare");
-							testedMethods.put(methodName, allAssertSet);
-						}else{
-							CGNode node;
-							Iterator<CGNode> iter = data.getCallGraph().iterator();
-							while (iter.hasNext()) {
-								node = iter.next();
-								IMethod iMethod = node.getMethod();
-								MethodReference methodRef = iMethod.getReference();
-								TypeReference typeRef = methodRef.getDeclaringClass();
-								ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
+						CGNode node;
+						Iterator<CGNode> iter = data.getCallGraph().iterator();
+						while (iter.hasNext()) {
+							node = iter.next();
+							IMethod iMethod = node.getMethod();
+							MethodReference methodRef = iMethod.getReference();
+							TypeReference typeRef = methodRef.getDeclaringClass();
+							ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
 
-								if (classLoaderRef.getName().toString()
-										.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
-										&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
-									methodAnalyzer = new DataFlowMethodAnalyzer(node);
-//									HashSet<String> methodsCalled = methodAnalyzer.calculatePCMethodsCall(data,methodName);
-//									callPaths.put(methodName, methodsCalled); //tutti i metodi della PC chiamati nel metodo di test
-									HashSet<String> methodsTested = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
-									testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test
-								}
-							}	
+							if (classLoaderRef.getName().toString()
+									.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
+									&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
+								methodAnalyzer = new DataFlowMethodAnalyzer(node);
+								// HashSet<String> methodsCalled = methodAnalyzer.calculatePCMethodsCall(data,methodName);
+								// callPaths.put(methodName, methodsCalled);// tutti i metodi della PC chiamati nel metodo di test
+								HashSet<String> methodsTested = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
+								testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test									
+																		
+							}
 						}
 					}
 				}
 			}
-			/*
-			 * fare il check sul fatto che più metodi di test testano lo stesso metodo della PC.
-			 * Si deve lavorare su testedMethods.
-			 */
-			for(String key : testedMethods.keySet()){
-				System.out.print("TM: "+key+" -> ");
-				for(String meth : testedMethods.get(key)){
-					System.out.print(meth+" ");
+			
+			lazyTestResults.add(new LazyTestResult(xml, testedMethods));
+			
+			for (String key : testedMethods.keySet()) {
+				System.out.print("TM: " + key + " -> ");
+				for (String meth : testedMethods.get(key)) {
+					System.out.print(meth + " ");
 				}
 				System.out.println();
 			}
-			
-			
 
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);
@@ -141,70 +128,104 @@ public class LazyTestDetector extends Thread {
 			e.printStackTrace();
 		}
 
-		
-//		for (String key : callPaths.keySet()) {
-//			System.out.print("testMethod: "+key+" -> ");
-//			for(String meth : callPaths.get(key)){
-//				System.out.print(meth+" ");
-//			}
-//			System.out.println();
-//		}
-
 		return 0;
-	}
-
-	
-	private HashSet<String> assertsAnalysis(Element functionElement, String testMethod) {
-		
-		/*
-		 * scorrere tutti gli assert di test e per ognuno di essi 
-		 * richiamare i metodi di analisi della classe ParameterAnalyzer
-		 * per analizzarne i parametri. Se l'assert include tra i parametri
-		 * un metodo della PC aggiungere ad un set comune (a tutti gli assert) 
-		 * questo metodo. Dopo di che aggiungere la coppia 
-		 * [methodName-set] a testedMethods
-		 */
-		HashSet<String> allAssertSet = new HashSet<String>();
-		NodeList nameMethodList = functionElement.getElementsByTagName(ToolConstant.NAME);
-		for (int j = 0; j < nameMethodList.getLength(); j++) {
-			if (methodMatcher.isAssertMethod(nameMethodList.item(j).getTextContent())) {
-				if (nameMethodList.item(j).getNodeType() == Node.ELEMENT_NODE) {
-					Element assertElement = (Element) nameMethodList.item(j); //questo è un metodo di assert
-					NodeList childList = assertElement.getChildNodes();
-					for(int k=0; k < childList.getLength(); k++){
-						Node temp = childList.item(k);
-						if(temp.getNodeType()==Node.ELEMENT_NODE && temp.getNodeName().equals(ToolConstant.ARGUMENT_LIST)){
-							Element argumentList = (Element) childList.item(k);
-							
-							//chiamare metodo di ParameterAnalyzer per analizzare questo element argument_list
-							ParameterAnalyzer paramAnalyzer = new ParameterAnalyzer(data);
-							HashSet<String> singleAssertSet = paramAnalyzer.getPCCallsParameters(argumentList);
-							if(!singleAssertSet.isEmpty()){
-								//se non è vuoto aggiungo gli elementi di questo set ad un set comune a tutti gli assert dello stesso test method
-								for(String s : singleAssertSet)
-									allAssertSet.add(s);
-							}
-							
-						}
-							
-					}
-					
-				}
-
-			}
-		
-		}
-		return allAssertSet;
 	}
 
 	@Override
 	public void run() {
 		log.info("*** START LAZY ANALYSIS ***");
-
 		for (File file : data.getTestClasses())
 			this.analyze(file);
-
+		computeResults();
 		log.info("*** END LAZY TEST ANALYSIS ***\n");
 	}
+
+	/**
+	 * This method computes results for Lazy test analysis
+	 */
+	private void computeResults() {
+
+		boolean isLazyTest = false;
+		HashMap<String, Integer> tot = new HashMap<String, Integer>();
+		for (ToolMethodType tmt : data.getProductionMethods())
+			tot.put(tmt.getMethodName(), 0);
+		/*
+		 * scorro tutti i metodi della pc e poi vado ad aumentare il numero di
+		 * chiamate per questo
+		 */
+		for (LazyTestResult lazy : lazyTestResults) {
+			for (String testMtd : lazy.getTestedMethods().keySet()) {
+				for (String tm : lazy.getTestedMethods().get(testMtd)) {
+					if (tot.containsKey(tm)) {
+						int count = tot.get(tm);
+						count++;
+						tot.remove(tm);
+						tot.put(tm, count);
+					}
+				}
+			}
+		}
+		for (String key : tot.keySet()) {
+			if (tot.get(key) > 0)
+				isLazyTest = true;
+			log.info("PC method " + key + " is tested " + tot.get(key)+" times");
+		}
+
+		if (isLazyTest)
+			log.info("Lazy Test found");
+
+	}
+	
+//	private HashSet<String> assertsAnalysis(Element functionElement, String testMethod) {
+//
+//		/*
+//		 * scorrere tutti gli assert di test e per ognuno di essi richiamare i
+//		 * metodi di analisi della classe ParameterAnalyzer per analizzarne i
+//		 * parametri. Se l'assert include tra i parametri un metodo della PC
+//		 * aggiungere ad un set comune (a tutti gli assert) questo metodo. Dopo
+//		 * di che aggiungere la coppia [methodName-set] a testedMethods
+//		 */
+//		HashSet<String> allAssertSet = new HashSet<String>();
+//		NodeList nameMethodList = functionElement.getElementsByTagName(ToolConstant.NAME);
+//		for (int j = 0; j < nameMethodList.getLength(); j++) {
+//			if (methodMatcher.isAssertMethod(nameMethodList.item(j).getTextContent())) {
+//				if (nameMethodList.item(j).getNodeType() == Node.ELEMENT_NODE) {
+//					Element assertElement = (Element) nameMethodList.item(j); // questo
+//																				// è
+//																				// un
+//																				// metodo
+//																				// di
+//																				// assert
+//					NodeList childList = assertElement.getChildNodes();
+//					for (int k = 0; k < childList.getLength(); k++) {
+//						Node temp = childList.item(k);
+//						if (temp.getNodeType() == Node.ELEMENT_NODE
+//								&& temp.getNodeName().equals(ToolConstant.ARGUMENT_LIST)) {
+//							Element argumentList = (Element) childList.item(k);
+//
+//							// chiamare metodo di ParameterAnalyzer per
+//							// analizzare questo element argument_list
+//							ParameterAnalyzer paramAnalyzer = new ParameterAnalyzer(data);
+//							HashSet<String> singleAssertSet = paramAnalyzer.getPCCallsParameters(argumentList);
+//							if (!singleAssertSet.isEmpty()) {
+//								// se non è vuoto aggiungo gli elementi di
+//								// questo set ad un set comune a tutti gli
+//								// assert dello stesso test method
+//								for (String s : singleAssertSet)
+//									allAssertSet.add(s);
+//							}
+//
+//						}
+//
+//					}
+//
+//				}
+//
+//			}
+//
+//		}
+//		return allAssertSet;
+//	}
+	
 
 }
