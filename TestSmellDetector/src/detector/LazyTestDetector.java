@@ -106,8 +106,8 @@ public class LazyTestDetector extends Thread {
 										.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
 										&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
 									methodAnalyzer = new DataFlowMethodAnalyzer(node);
-									HashSet<String> methodsCalled = methodAnalyzer.calculatePCMethodsCall(data,methodName);
-									callPaths.put(methodName, methodsCalled); //tutti i metodi della PC chiamati nel metodo di test
+//									HashSet<String> methodsCalled = methodAnalyzer.calculatePCMethodsCall(data,methodName);
+//									callPaths.put(methodName, methodsCalled); //tutti i metodi della PC chiamati nel metodo di test
 									HashSet<String> methodsTested = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
 									testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test
 								}
