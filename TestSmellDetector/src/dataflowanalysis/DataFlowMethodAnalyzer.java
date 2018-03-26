@@ -91,6 +91,8 @@ public class DataFlowMethodAnalyzer {
 					DefUse defUse = new DefUse(ir);
 					int usedVariable = instruction.getUse(g);
 	    			SSAInstruction uvDefinition = defUse.getDef(usedVariable); //recupero la definizioned della variabile usata dall'assert
+//	    			if(uvDefinition!=null)
+//	    				System.out.println(testMethod+"-->"+uvDefinition.toString());
 	    			/*
 	    			 * 4.per ogni uso ora va richiamato in metodo di analisi delle variabili,
 	    			 * controllando prima che la SSAInstruction non sia "null" (caso delle costanti)
