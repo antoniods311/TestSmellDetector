@@ -26,7 +26,7 @@ import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
 
 import dataflowanalysis.DataFlowMethodAnalyzer;
-import result.LazyTestResult;
+import result.ResultContainer;
 
 import util.TestMethodChecker;
 import util.TestParseTool;
@@ -43,7 +43,7 @@ public class LazyTestDetector extends Thread {
 	private TestMethodChecker testChecker;
 	private DataFlowMethodAnalyzer methodAnalyzer;
 	// private HashMap<String,HashSet<String>> callPaths; //metodi chiamati dal// metodo di test
-	private ArrayList<LazyTestResult> lazyTestResults;
+	private ArrayList<ResultContainer> lazyTestResults;
 	private static Logger log;
 
 	/**
@@ -54,7 +54,7 @@ public class LazyTestDetector extends Thread {
 		this.testChecker = new TestMethodChecker();
 		this.methodAnalyzer = null;
 		// this.callPaths = new HashMap<String,HashSet<String>>();
-		this.lazyTestResults = new ArrayList<LazyTestResult>();
+		this.lazyTestResults = new ArrayList<ResultContainer>();
 		log = LogManager.getLogger(LazyTestDetector.class.getName());
 	}
 
@@ -105,7 +105,7 @@ public class LazyTestDetector extends Thread {
 				}
 			}
 			
-			lazyTestResults.add(new LazyTestResult(xml, testedMethods));
+			lazyTestResults.add(new ResultContainer(xml, testedMethods));
 			
 			for (String key : testedMethods.keySet()) {
 				System.out.print("TM: " + key + " -> ");
@@ -151,7 +151,7 @@ public class LazyTestDetector extends Thread {
 		 * scorro tutti i metodi della pc e poi vado ad aumentare il numero di
 		 * chiamate per questo
 		 */
-		for (LazyTestResult lazy : lazyTestResults) {
+		for (ResultContainer lazy : lazyTestResults) {
 			for (String testMtd : lazy.getTestedMethods().keySet()) {
 				for (String tm : lazy.getTestedMethods().get(testMtd)) {
 					if (tot.containsKey(tm)) {

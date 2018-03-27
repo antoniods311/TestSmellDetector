@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class LazyTestResult {
+public class ResultContainer {
 	
 	private File testCase;
 	private HashMap<String,HashSet<String>> testedMethods;
@@ -13,7 +13,7 @@ public class LazyTestResult {
 	 * @param testCase
 	 * @param testedMethods
 	 */
-	public LazyTestResult(File testCase, HashMap<String, HashSet<String>> testedMethods) {
+	public ResultContainer(File testCase, HashMap<String, HashSet<String>> testedMethods) {
 		super();
 		this.testCase = testCase;
 		this.testedMethods = testedMethods;

@@ -85,6 +85,11 @@ public class EagerTestDetector extends Thread {
 								HashSet<String> methodsTested = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
 								testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test									
 																		
+								/*
+								 * a questo punto inserire in una struttura dati le informazioni sul
+								 * singolo file xml che contiene 
+								 */
+								
 							}
 						}
 					}
