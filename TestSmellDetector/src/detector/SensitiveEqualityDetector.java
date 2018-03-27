@@ -18,6 +18,7 @@ import util.MethodMatcher;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
+import util.tooldata.ToolData;
 
 /**
  * 
@@ -26,34 +27,41 @@ import util.ToolConstant;
  */
 public class SensitiveEqualityDetector extends Thread {
 
-	private File xml;
+	private ToolData data;
 	private DocumentBuilderFactory docbuilderFactory;
 	private DocumentBuilder documentBuilder;
 	private Document doc;
-	private HashMap<String, Integer> result;
+	private HashMap<String, HashMap<String,Integer>> sensitiveEqualityResults;
 	private TestMethodChecker testChecker;
 	private MethodMatcher methodMatcher;
 	private static Logger log;
-
-	public SensitiveEqualityDetector(File xml) {
-		this.xml = xml;
-		testChecker = new TestMethodChecker();
-		methodMatcher = new MethodMatcher();
+	
+	public SensitiveEqualityDetector(ToolData data){
+		this.data = data;
+		this.testChecker = new TestMethodChecker();
+		this.methodMatcher = new MethodMatcher();
+		this.sensitiveEqualityResults = new HashMap<String,HashMap<String,Integer>>();
 		log = LogManager.getLogger(EagerTestDetector.class.getName());
 	}
 
-	public double analyze() {
+	/**
+	 * This method computes sensitive equality analysis
+	 * for a single test case (xml file)
+	 * 
+	 * @param xml
+	 * @return
+	 */
+	public double analyze(File xml) {
 
-		log.info("*** START SENSITIVE EQUALITY ANALYSIS ***");
+		
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
-		result = new HashMap<String, Integer>();
+		HashMap<String, Integer> result = new HashMap<String, Integer>();
 
 		try {
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
 			doc = documentBuilder.parse(xml);
 			doc.getDocumentElement().normalize();
-
-			// leggo la lista di nodi function
+			
 			NodeList list = doc.getElementsByTagName(ToolConstant.FUNCTION);
 			for (int i = 0; i < list.getLength(); i++) {
 				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
@@ -62,11 +70,16 @@ public class SensitiveEqualityDetector extends Thread {
 					// Se entro ho trovato un metodo di test e devo cercare le
 					// chiamate dei metodi toString
 					if (testChecker.isTestMethod(functionElement)) {
-						checkToString(functionElement);
+						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
+						int numberOfToString = checkToString(functionElement);
+						result.put(methodName, numberOfToString);
+						
 					}
 				}
 			}
 
+			sensitiveEqualityResults.put(xml.getName(), result);
+			
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);
 			e.printStackTrace();
@@ -77,28 +90,20 @@ public class SensitiveEqualityDetector extends Thread {
 			System.out.println(ToolConstant.IO_EXCEPTION_MSG);
 			e.printStackTrace();
 		}
-
-		for(String s: result.keySet()){
-			log.info("toString call number for "+s+": "+result.get(s));
-		}
 		
-		log.info("*** END SENSITIVE EQUALITY ANALYSIS ***\n");
-
 		return 0;
-
 	}
 
-	/*
-	 * Conta il numero di toString che ci sono nel singolo metodo aggiorna
-	 * l'hashmap dei risultati.
+	/**
+	 * This method calculates how many times a test
+	 * method calls toString()
+	 * 
+	 * @param functionElement
+	 * @return
 	 */
-	private void checkToString(Element functionElement) {
+	private int checkToString(Element functionElement) {
 
 		int numOfToString = 0;
-		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
-
-		// calcolo il numero di result
-		//devo scorrere direttamente i name
 		NodeList nameList = functionElement.getElementsByTagName(ToolConstant.NAME);
 		for(int i=0; i<nameList.getLength(); i++){
 			Element nameElement = (Element) nameList.item(i);
@@ -106,12 +111,34 @@ public class SensitiveEqualityDetector extends Thread {
 				numOfToString++;
 		}
 		
-		result.put(methodName, numOfToString);
+		return numOfToString;
 	}
 
 	@Override
 	public void run() {
-		analyze();
+		log.info("*** START SENSITIVE EQUALITY ANALYSIS ***");
+		for (File file : data.getTestClasses())
+			this.analyze(file);
+		computeResults();
+		log.info("*** END SENSITIVE EQUALITY ANALYSIS ***\n");
+	}
+
+	/**
+	 * This method checks how many times 
+	 * a test method calls toString()
+	 */
+	private void computeResults() {
+		
+		for(String testCaseName : sensitiveEqualityResults.keySet()){
+			HashMap<String,Integer> result = sensitiveEqualityResults.get(testCaseName);
+			for(String testMethod : result.keySet()){
+				int numToString = result.get(testMethod);
+				log.info(testMethod+" calls toString() "+numToString+" times");
+			}
+			
+		}
+		
+		
 	}
 
 }
