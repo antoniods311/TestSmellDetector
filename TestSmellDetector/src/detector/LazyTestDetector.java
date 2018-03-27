@@ -139,7 +139,7 @@ public class LazyTestDetector extends Thread {
 	}
 
 	/**
-	 * This method computes results for Lazy test analysis
+	 * This method computes results for Lazy Test analysis
 	 */
 	private void computeResults() {
 

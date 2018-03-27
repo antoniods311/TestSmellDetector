@@ -2,6 +2,7 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -28,6 +29,7 @@ import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
 
 import dataflowanalysis.DataFlowMethodAnalyzer;
+import result.ResultContainer;
 
 /**
  * 
@@ -43,10 +45,12 @@ public class EagerTestDetector extends Thread {
 	private TestMethodChecker testChecker;
 	private static Logger log;
 	private DataFlowMethodAnalyzer methodAnalyzer;
+	private ArrayList<ResultContainer> eagerTestResults;
 	
 	public EagerTestDetector(ToolData data){
 		this.data = data;
 		this.testChecker = new TestMethodChecker();
+		this.eagerTestResults = new ArrayList<ResultContainer>(); 
 		log = LogManager.getLogger(EagerTestDetector.class.getName());
 	}
 
@@ -83,18 +87,14 @@ public class EagerTestDetector extends Thread {
 								methodAnalyzer = new DataFlowMethodAnalyzer(node);
 								
 								HashSet<String> methodsTested = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
-								testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test									
-																		
-								/*
-								 * a questo punto inserire in una struttura dati le informazioni sul
-								 * singolo file xml che contiene 
-								 */
-								
+								testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test										
 							}
 						}
 					}
 				}
 			}
+			
+			eagerTestResults.add(new ResultContainer(xml, testedMethods));
 
 		} catch (ParserConfigurationException e) {
 			log.error(ToolConstant.PARSE_EXCEPTION_MSG);
@@ -115,12 +115,25 @@ public class EagerTestDetector extends Thread {
 		log.info("*** START EAGER TEST ANALYSIS ***");;
 		for (File file : data.getTestClasses())
 			this.analyze(file);
-//		computeResults();
+		computeResults();
 		log.info("*** END EAGER TEST ANALYSIS ***\n");
 	}
-	
-	
-	
+
+	/**
+	 * This method computes results for Eager Test analysis
+	 */
+	private void computeResults() {
+		
+		for(ResultContainer eager : eagerTestResults){
+			for(String testMtd : eager.getTestedMethods().keySet()){
+				int numberOfTestedMethods = eager.getTestedMethods().get(testMtd).size();
+				if(numberOfTestedMethods > 1){
+					log.info("Eager Test found! "+testMtd+" tests "+numberOfTestedMethods+" PC methods");
+				}
+			}
+		}
+		
+	}
 	
 	/*
 	 * metodo che conta il numero degli assert all'interno di un test deve
