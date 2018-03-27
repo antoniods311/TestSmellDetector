@@ -95,22 +95,6 @@ public class MysteryGuestDetector extends Thread {
 			e.printStackTrace();
 		}
 
-//		for (String s : typeResult.keySet()) {
-//			ArrayList<String> list = typeResult.get(s);
-//			for (String t : list) {
-//				log.info("file API types for method " + s + ": " + t);
-//			}
-//		}
-//		
-//		for(String s: callResult.keySet()){
-//			ArrayList<String> list = callResult.get(s);
-//			for(String t: list){
-//				log.info("file API called method for method " + s + ": " + t);
-//			}
-//		}
-		
-		
-
 		return 0;
 	}
 	
@@ -123,6 +107,10 @@ public class MysteryGuestDetector extends Thread {
 		log.info("*** END MYSTERY GUEST ANALYSIS ***\n");
 	}
 
+	/**
+	 * This method prints if a test method calls a 
+	 * File API method or if it uses a File API object 
+	 */
 	private void computeResults() {
 		
 		for(MysteryGuestResult testCase : results){
@@ -138,15 +126,16 @@ public class MysteryGuestDetector extends Thread {
 				for(String use : typeUses){
 					log.info("File API type use: "+methodName+" uses "+use);
 				}
-			}
-			
+			}	
 		}
-		
 	}
 	
-	
-	/*
-	 * metodo che legge le chiamate a metodi di API per la gestione dei file
+	/**
+	 * This method calculates which File API methods
+	 * are called by a test method
+	 * 
+	 * @param functionElement function XML element
+	 * @param functionResult a map testMethodName --> calls list
 	 */
 	private void calculateFileApiFunctions(Element functionElement,HashMap<String, ArrayList<String>> functionResult) {
 
@@ -169,8 +158,12 @@ public class MysteryGuestDetector extends Thread {
 		}
 	}
 
-	/*
-	 * metodo che legge i tipi definite nelle API di gestione file
+	/**
+	 * This method calculates which File API types
+	 * are used by a test method
+	 * 
+	 * @param functionElement function XML element
+	 * @param typeResulta map testMethodName --> type uses list
 	 */
 	private void calculateFileApiTypes(Element functionElement,HashMap<String, ArrayList<String>> typeResult) {
 
