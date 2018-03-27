@@ -94,8 +94,8 @@ public class TestSmellsAnalyzer {
 //			detectors.add(new AssertionRouletteDetector(xmlTest));
 //			detectors.add(new EagerTestDetector(data)); //ok
 //			detectors.add(new GeneralFixtureDetector(xmlTest,callGraph));
-//			detectors.add(new MysteryGuestDetector(xmlTest));
-			detectors.add(new SensitiveEqualityDetector(data));
+			detectors.add(new MysteryGuestDetector(data)); //ok
+			detectors.add(new SensitiveEqualityDetector(data)); //ok
 //			detectors.add(new TestCodeDuplicationDetector(cloneFiles));
 //			detectors.add(new LazyTestDetector(data)); //ok
 			
