@@ -17,11 +17,13 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import result.AssertionRouletteResult;
 import util.AssertParameterChecker;
 import util.MethodMatcher;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
+import util.tooldata.ToolData;
 
 /**
  * 
@@ -30,28 +32,34 @@ import util.ToolConstant;
  */
 public class AssertionRouletteDetector extends Thread{
 
-	private File xml;
+	private ToolData data;
 	private DocumentBuilderFactory docbuilderFactory;
 	private DocumentBuilder documentBuilder;
 	private Document doc;
 	private TestMethodChecker testChecker;
 	private MethodMatcher methodMatcher;
 	private AssertParameterChecker assertChecker;
-	private HashMap<String, ArrayList<String>> result;
+	private ArrayList<AssertionRouletteResult> rouletteResults;
+
 	private static Logger log;
 
-	public AssertionRouletteDetector(File xml) {
-		this.xml = xml;
-		testChecker = new TestMethodChecker();
-		methodMatcher = new MethodMatcher();
-		assertChecker = new AssertParameterChecker();
+	/**
+	 * Constructor for AssertionRouletteDetector
+	 * 
+	 * @param data
+	 */
+	public AssertionRouletteDetector(ToolData data){
+		this.data = data;
+		this.rouletteResults = new ArrayList<AssertionRouletteResult>();
+		this.testChecker = new TestMethodChecker();
+		this.methodMatcher = new MethodMatcher();
+		this.assertChecker = new AssertParameterChecker();
 		log = LogManager.getLogger(AssertionRouletteDetector.class.getName());
 	}
 
-	public double analyze() {
-
-		log.info("*** START ASSERTION ROULETTE ANALYSIS ***");
-		result = new HashMap<String, ArrayList<String>>();
+	public double analyze(File xml) {
+		
+		HashMap<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
 		try {
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
@@ -67,11 +75,12 @@ public class AssertionRouletteDetector extends Thread{
 					// chiamate dei metodi assert e controllarle
 					if (testChecker.isTestMethod(functionElement)) {
 						// aggiungere check sugli assert
-						readNoMessageAsserts(functionElement);
+						readNoMessageAsserts(functionElement,result);
 					}
-
 				}
 			}
+			rouletteResults.add(new AssertionRouletteResult(xml.getName(),result));
+			
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);
 			e.printStackTrace();
@@ -82,23 +91,38 @@ public class AssertionRouletteDetector extends Thread{
 			System.out.println(ToolConstant.IO_EXCEPTION_MSG);
 			e.printStackTrace();
 		}
+		return 0;
+	}
+	
+	@Override
+	public void run() {
+		log.info("*** START ASSERTION ROULETTE ANALYSIS ***");
+		for (File file : data.getTestClasses())
+			this.analyze(file);
+		computeResults();
+		log.info("*** END ASSERTION ROULETTE ANALYSIS ***\n");
+	}
 
-		for(String m : result.keySet()){
-			ArrayList<String> array = result.get(m);
-			for(String s : array){
-				log.info("test method "+m+" calls "+s+" without message parameter");
+	private void computeResults() {
+		
+		for(AssertionRouletteResult arr : rouletteResults){
+			for(String testMethod : arr.getNoMessageAssertMap().keySet()){
+				ArrayList<String> noMsgAsserts = arr.getNoMessageAssertMap().get(testMethod);
+				for(String element : noMsgAsserts){
+					log.info("test method "+testMethod+" calls "+element+" without message parameter");
+				}
+				
 			}
+			
 		}
 		
-		log.info("*** END ASSERTION ROULETTE ANALYSIS ***\n");
-		return 0;
 	}
 
 	/*
 	 * metodo che individua gli assert per i quali non è specificato il
 	 * parametro message
 	 */
-	private void readNoMessageAsserts(Element functionElement) {
+	private void readNoMessageAsserts(Element functionElement, HashMap<String, ArrayList<String>> result) {
 
 		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 		result.put(methodName, new ArrayList<String>());
@@ -119,10 +143,4 @@ public class AssertionRouletteDetector extends Thread{
 			}
 		}
 	}
-
-	@Override
-	public void run() {
-		analyze();
-	}
-
 }
