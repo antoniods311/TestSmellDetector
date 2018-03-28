@@ -13,11 +13,6 @@ import com.harukizaemon.simian.StreamLoader;
 public class TestSmellCloneAnalyzer implements CloneAnalyzer{
 	
 	private static int numberOfCloneLines;
-	
-	@Override
-	public void setRootFile(File root) {
-		
-	}
 
 	@Override
 	public int getCloneLinesNumber(List<File> files) {
@@ -41,6 +36,12 @@ public class TestSmellCloneAnalyzer implements CloneAnalyzer{
 		return numberOfCloneLines;
 	}
 	
+	/**
+	 * This method is used to set number 
+	 * of clone lines by SIMIAN tool
+	 * 
+	 * @param resultNumber
+	 */
 	public static void setAnalysisResult(int resultNumber){
 		numberOfCloneLines = resultNumber;
 	}
