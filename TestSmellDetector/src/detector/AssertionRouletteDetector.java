@@ -56,7 +56,14 @@ public class AssertionRouletteDetector extends Thread{
 		this.assertChecker = new AssertParameterChecker();
 		log = LogManager.getLogger(AssertionRouletteDetector.class.getName());
 	}
-
+	
+	/**
+	 * This method returns results of the single 
+	 * XML file assertion roulette analysis
+	 * 
+	 * @param xml
+	 * @return
+	 */
 	public double analyze(File xml) {
 		
 		HashMap<String, ArrayList<String>> result = new HashMap<String, ArrayList<String>>();
@@ -103,6 +110,10 @@ public class AssertionRouletteDetector extends Thread{
 		log.info("*** END ASSERTION ROULETTE ANALYSIS ***\n");
 	}
 
+	/**
+	 * This method computes results for assertion
+	 * roulette analysis
+	 */
 	private void computeResults() {
 		
 		for(AssertionRouletteResult arr : rouletteResults){
@@ -110,17 +121,17 @@ public class AssertionRouletteDetector extends Thread{
 				ArrayList<String> noMsgAsserts = arr.getNoMessageAssertMap().get(testMethod);
 				for(String element : noMsgAsserts){
 					log.info("test method "+testMethod+" calls "+element+" without message parameter");
-				}
-				
-			}
-			
+				}	
+			}	
 		}
-		
 	}
 
-	/*
-	 * metodo che individua gli assert per i quali non è specificato il
-	 * parametro message
+	/**
+	 * This method finds assert methods that 
+	 * don't have "message" parameter
+	 * 
+	 * @param functionElement which represents the test method
+	 * @param result a map testMethodName --> asserts without "message" parameter
 	 */
 	private void readNoMessageAsserts(Element functionElement, HashMap<String, ArrayList<String>> result) {
 
