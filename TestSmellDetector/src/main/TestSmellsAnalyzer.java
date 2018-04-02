@@ -26,9 +26,6 @@ import util.tooldata.ToolData;
  */
 public class TestSmellsAnalyzer {
 
-	private static String fileName = "MyTest.java";
-//	private static String cloneFileName = "MyTestClone.java";
-	//private static String classFileName = "MyClass.java";
 	private static JavaToXmlTranslator jxmlTranslator;
 	private static Logger log;
 	
@@ -84,11 +81,6 @@ public class TestSmellsAnalyzer {
 			data.setTestClasses(xmlTestCases);
 			data.setProductionMethods(productionClassesMethods);
 				
-			//Costruzione ArrayList per clone detection
-//			ArrayList<File> cloneFiles = new ArrayList<File>();
-//			cloneFiles.add(new File(ToolConstant.TEST_CASES_JAVA_DIR+fileName));
-//			cloneFiles.add(new File(ToolConstant.TEST_CASES_JAVA_DIR+cloneFileName));
-			
 			//Esecuzione delle analisi usando i diversi detector
 			ArrayList<Thread> detectors = new ArrayList<Thread>();
 //			detectors.add(new AssertionRouletteDetector(data)); //ok
@@ -96,7 +88,7 @@ public class TestSmellsAnalyzer {
 //			detectors.add(new GeneralFixtureDetector(xmlTest,callGraph));
 //			detectors.add(new MysteryGuestDetector(data)); //ok
 //			detectors.add(new SensitiveEqualityDetector(data)); //ok
-			detectors.add(new TestCodeDuplicationDetector(data));
+//			detectors.add(new TestCodeDuplicationDetector(data)); //ok
 //			detectors.add(new LazyTestDetector(data)); //ok
 			
 			for(Thread d: detectors){

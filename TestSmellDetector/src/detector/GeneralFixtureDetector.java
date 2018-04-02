@@ -1,8 +1,19 @@
 package detector;
 
 import java.io.File;
+import java.io.IOException;
 
-import com.ibm.wala.ipa.callgraph.CallGraph;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
+
+import util.ToolConstant;
+import util.tooldata.ToolData;
 
 /**
  * 
@@ -11,20 +22,57 @@ import com.ibm.wala.ipa.callgraph.CallGraph;
  */
 public class GeneralFixtureDetector extends Thread {
 	
-private File xml;
+	private ToolData data;
+	private DocumentBuilderFactory docbuilderFactory;
+	private DocumentBuilder documentBuilder;
+	private Document doc;
+	private static Logger log;
 	
-	public GeneralFixtureDetector(File xml, CallGraph callGraph){
-		this.xml = xml;
+	/**
+	 * Constructor for GeneralFixtureDetector object
+	 * 
+	 * @param data
+	 */
+	public GeneralFixtureDetector(ToolData data){
+		this.data = data;
+		log = LogManager.getLogger(GeneralFixtureDetector.class.getName());
 	}
 
-	@Override
-	public void run(){
-		analyze();
+	
+	public double analyze(File xml) {
+		
+		docbuilderFactory = DocumentBuilderFactory.newInstance();
+		try {
+			documentBuilder = docbuilderFactory.newDocumentBuilder();
+			doc = documentBuilder.parse(xml);
+			doc.getDocumentElement().normalize();
+			
+			
+			
+			
+		} catch (ParserConfigurationException e) {
+			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);
+			e.printStackTrace();
+		} catch (SAXException e) {
+			System.out.println(ToolConstant.SAX_EXCEPTION_MSG);
+			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println(ToolConstant.IO_EXCEPTION_MSG);
+			e.printStackTrace();
+		}
+		
+		
+		
+		return 0;
 	}
 	
-	public double analyze() {
-		// TODO Auto-generated method stub
-		return 0;
+	@Override
+	public void run(){
+		log.info("*** START GENERAL FIXTURE ANALYSIS ***");
+		for (File file : data.getTestClasses())
+			this.analyze(file);
+//		computeResults();
+		log.info("*** END GENERAL FIXTURE ANALYSIS ***\n");
 	}
 
 }
