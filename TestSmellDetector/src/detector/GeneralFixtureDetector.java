@@ -2,6 +2,7 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashSet;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -67,6 +68,7 @@ public class GeneralFixtureDetector extends Thread {
 			 */
 			boolean isFirstMethod = true;
 			ClassFieldsReader fieldReader;
+			HashSet<String> fieldsSet;
 			NodeList functionList = doc.getElementsByTagName(ToolConstant.FUNCTION);
 			for (int i = 0; i < functionList.getLength(); i++) {
 				if (functionList.item(i).getNodeType() == Node.ELEMENT_NODE) {
@@ -79,7 +81,14 @@ public class GeneralFixtureDetector extends Thread {
 							/*
 							 * in questo punto vanno fatti 1, 2 e 3
 							 */
+							
+							// 1. calcolo i fields
 							fieldReader = new ClassFieldsReader(data,methodName);
+							fieldsSet = fieldReader.getClassFields();
+							
+							// 2. analizzo i setUp per creare il "createdSet"
+							
+							
 						}
 						
 					}

@@ -1,6 +1,5 @@
 package dataflowanalysis;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -37,6 +36,7 @@ public class ClassFieldsReader {
 	}
 	
 	/**
+	 * This method calculates class fields
 	 * 
 	 * @return method's class fields
 	 */
@@ -62,11 +62,6 @@ public class ClassFieldsReader {
 					fields.add(field.getName().toString());
 			}
 		}
-		
-		
-		
-		
-		
 		return fields;
 	}
 	
