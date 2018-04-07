@@ -86,7 +86,7 @@ public class GeneralFixtureDetector extends Thread {
 							fieldReader = new ClassFieldsReader(data,methodName);
 							fieldsSet = fieldReader.getClassFields();
 							
-							// 2. analizzo i setUp per creare il "createdSet"
+							// 2. trovo e analizzo i setUp per creare il "createdSet"
 							
 							
 						}
