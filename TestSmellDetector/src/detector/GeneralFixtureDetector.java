@@ -47,7 +47,16 @@ public class GeneralFixtureDetector extends Thread {
 			doc = documentBuilder.parse(xml);
 			doc.getDocumentElement().normalize();
 			
-			
+			/*
+			 * Quando analizzo il primo metodo di test della classe devo fare
+			 * diverse cose:
+			 * 1. chiamare ClassFieldReader per leggere i fields della classe
+			 * 2. analizzare tutti i metodoi di setUp per creare il set "createdSet"
+			 * 3. creare un sottoinsieme di elementi comuni a 1 e 2
+			 * 
+			 * Questi punti li devo fare solo per il primo metodo di test dal momento
+			 * che fatti una volta vanno bene per tutti i metodi di test.
+			 */
 			
 			
 		} catch (ParserConfigurationException e) {
