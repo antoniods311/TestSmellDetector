@@ -10,8 +10,14 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import dataflowanalysis.ClassFieldsReader;
+import util.TestMethodChecker;
+import util.TestParseTool;
 import util.ToolConstant;
 import util.tooldata.ToolData;
 
@@ -26,6 +32,7 @@ public class GeneralFixtureDetector extends Thread {
 	private DocumentBuilderFactory docbuilderFactory;
 	private DocumentBuilder documentBuilder;
 	private Document doc;
+	private TestMethodChecker testChecker;
 	private static Logger log;
 	
 	/**
@@ -35,6 +42,7 @@ public class GeneralFixtureDetector extends Thread {
 	 */
 	public GeneralFixtureDetector(ToolData data){
 		this.data = data;
+		this.testChecker = new TestMethodChecker();
 		log = LogManager.getLogger(GeneralFixtureDetector.class.getName());
 	}
 
@@ -57,6 +65,27 @@ public class GeneralFixtureDetector extends Thread {
 			 * Questi punti li devo fare solo per il primo metodo di test dal momento
 			 * che fatti una volta vanno bene per tutti i metodi di test.
 			 */
+			boolean isFirstMethod = true;
+			ClassFieldsReader fieldReader;
+			NodeList functionList = doc.getElementsByTagName(ToolConstant.FUNCTION);
+			for (int i = 0; i < functionList.getLength(); i++) {
+				if (functionList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+					Element functionElement = (Element) functionList.item(i);
+					// Se entro ho trovato un metodo di test
+					if (testChecker.isTestMethod(functionElement)) {
+						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
+						if(isFirstMethod){
+							isFirstMethod = false;
+							/*
+							 * in questo punto vanno fatti 1, 2 e 3
+							 */
+							fieldReader = new ClassFieldsReader(data,methodName);
+						}
+						
+					}
+				}
+			}
+			
 			
 			
 		} catch (ParserConfigurationException e) {
