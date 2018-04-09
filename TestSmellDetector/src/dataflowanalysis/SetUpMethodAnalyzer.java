@@ -116,7 +116,6 @@ public class SetUpMethodAnalyzer {
 				if(item.getNodeType() == Node.ELEMENT_NODE){
 					if(item.getNodeName().equalsIgnoreCase(ToolConstant.NAME)){
 						varName = item.getTextContent();
-						System.out.println("case 1: "+varName);
 					}
 				}
 			}
@@ -128,7 +127,6 @@ public class SetUpMethodAnalyzer {
 				if(item.getNodeType() == Node.ELEMENT_NODE){
 					if(item.getNodeName().equalsIgnoreCase(ToolConstant.NAME)){
 						varName = item.getTextContent();
-						System.out.println("case 2: "+varName);
 					}
 				}
 			}

@@ -2,6 +2,7 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -35,6 +36,7 @@ public class GeneralFixtureDetector extends Thread {
 	private DocumentBuilder documentBuilder;
 	private Document doc;
 	private TestMethodChecker testChecker;
+	private HashMap<String,HashMap<String,Boolean>> results;
 	private static Logger log;
 	
 	/**
@@ -81,10 +83,6 @@ public class GeneralFixtureDetector extends Thread {
 						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 						if(isFirstMethod){
 							isFirstMethod = false;
-						
-							/*
-							 * in questo punto vanno fatti 1, 2 e 3
-							 */
 							
 							// 1. calcolo i fields
 							fieldReader = new ClassFieldsReader(data,methodName);
@@ -94,14 +92,24 @@ public class GeneralFixtureDetector extends Thread {
 							setUpAnalyzer = new SetUpMethodAnalyzer(xml);
 							createdSet = setUpAnalyzer.getCreatedSet();
 							
+							// 3. trovo elementi comuni a 1 e 2
+							commonElements = new HashSet<String>();
+							for(String element : fieldsSet){
+								if(createdSet.contains(element))
+									commonElements.add(element);
+							}
 						}
+						
+						/*
+						 * gli elementi comuni sono quelli che devono
+						 * essere usati per valutare se c'è o meno un
+						 * general fixture
+						 */
+						
 						
 					}
 				}
 			}
-			
-			
-			
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);
 			e.printStackTrace();
