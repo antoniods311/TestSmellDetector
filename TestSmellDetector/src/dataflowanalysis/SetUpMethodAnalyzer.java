@@ -90,15 +90,14 @@ public class SetUpMethodAnalyzer {
 	 * @return variable which contains the "new" object
 	 * 
 	 * CASE 1:
-	 * 
 	 * decl
 	 * 	|--	init
 	 * 	|	|--	expr
 	 * 	|		|--	operator --> "new"
 	 * 	|--	name
 	 * 
-	 * CASE 2:
 	 * 
+	 * CASE 2:
 	 * expr
 	 * 	|--	name
 	 * 	|--	operator --> "new"
