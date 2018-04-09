@@ -61,6 +61,9 @@ public class ToolConstant {
 
 	// toString method
 	public static final String TO_STRING = "toString";
+	
+	// Operators
+	public static final String NEW_OPERATOR = "new";
 
 	// XML ELEMENTS NAME
 	public static final String ANNOTATION = "annotation";
@@ -72,6 +75,8 @@ public class ToolConstant {
 	public static final String ARGUMENT = "argument";
 	public static final String LITERAL = "literal";
 	public static final String UNIT = "unit";
+	public static final String OPERATOR = "operator";
+	public static final String BLOCK = "block";
 	
 	//XML ATTRIBUTES NAME
 	public static final String FILENAME_ATTRIBUTE = "filename";

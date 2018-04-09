@@ -71,7 +71,7 @@ public class GeneralFixtureDetector extends Thread {
 			ClassFieldsReader fieldReader;
 			
 			SetUpMethodAnalyzer setUpAnalyzer;
-			HashSet<String> fieldsSet;
+			HashSet<String> fieldsSet, createdSet, commonElements;
 			NodeList functionList = doc.getElementsByTagName(ToolConstant.FUNCTION);
 			for (int i = 0; i < functionList.getLength(); i++) {
 				if (functionList.item(i).getNodeType() == Node.ELEMENT_NODE) {
@@ -81,6 +81,7 @@ public class GeneralFixtureDetector extends Thread {
 						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 						if(isFirstMethod){
 							isFirstMethod = false;
+						
 							/*
 							 * in questo punto vanno fatti 1, 2 e 3
 							 */
@@ -90,7 +91,9 @@ public class GeneralFixtureDetector extends Thread {
 							fieldsSet = fieldReader.getClassFields();
 							
 							// 2. trovo e analizzo i setUp per creare il "createdSet"
-						
+							setUpAnalyzer = new SetUpMethodAnalyzer(xml);
+							createdSet = setUpAnalyzer.getCreatedSet();
+							
 						}
 						
 					}
