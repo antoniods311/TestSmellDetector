@@ -77,6 +77,7 @@ public class ToolConstant {
 	public static final String UNIT = "unit";
 	public static final String OPERATOR = "operator";
 	public static final String BLOCK = "block";
+	public static final String INIT = "init";
 	
 	//XML ATTRIBUTES NAME
 	public static final String FILENAME_ATTRIBUTE = "filename";

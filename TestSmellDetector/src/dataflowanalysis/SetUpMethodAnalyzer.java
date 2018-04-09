@@ -60,17 +60,15 @@ public class SetUpMethodAnalyzer {
 										if(blockChildList.item(k).getTextContent().equalsIgnoreCase(ToolConstant.NEW_OPERATOR)){
 											//trovato un new --> devo trovare la variabile
 											String varName = findVariableName(blockChildList.item(k));
-											createdSet.add(varName);
+											if(varName != null) 
+												createdSet.add(varName);
 										}
 									}
 								}
-
 							}
 						}
-
 					}
 				}
-
 			}
 
 		} catch (ParserConfigurationException e) {
@@ -88,15 +86,54 @@ public class SetUpMethodAnalyzer {
 
 	/**
 	 * 
-	 * @param item
+	 * @param newOperatorNode
 	 * @return variable which contains the "new" object
+	 * 
+	 * CASE 1:
+	 * 
+	 * decl
+	 * 	|--	init
+	 * 	|	|--	expr
+	 * 	|		|--	operator --> "new"
+	 * 	|--	name
+	 * 
+	 * CASE 2:
+	 * 
+	 * expr
+	 * 	|--	name
+	 * 	|--	operator --> "new"
 	 */
-	private String findVariableName(Node item) {
+	private String findVariableName(Node newOperatorNode) {
 		
 		String varName = null;
+		Node expr = newOperatorNode.getParentNode();
 		
-		
-		
+		if(expr.getParentNode().getNodeName().equalsIgnoreCase(ToolConstant.INIT)){
+			//Case 1
+			Node decl = expr.getParentNode().getParentNode();
+			NodeList declChildList = decl.getChildNodes();
+			for(int i=0; i< declChildList.getLength(); i++){
+				Node item = declChildList.item(i);
+				if(item.getNodeType() == Node.ELEMENT_NODE){
+					if(item.getNodeName().equalsIgnoreCase(ToolConstant.NAME)){
+						varName = item.getTextContent();
+						System.out.println("case 1: "+varName);
+					}
+				}
+			}
+		}else{
+			//Case 2
+			NodeList childList = expr.getChildNodes();
+			for(int i=0; i<childList.getLength(); i++){
+				Node item = childList.item(i);
+				if(item.getNodeType() == Node.ELEMENT_NODE){
+					if(item.getNodeName().equalsIgnoreCase(ToolConstant.NAME)){
+						varName = item.getTextContent();
+						System.out.println("case 2: "+varName);
+					}
+				}
+			}
+		}
 		return varName;
 	}
 
