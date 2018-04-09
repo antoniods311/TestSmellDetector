@@ -34,6 +34,8 @@ public class ToolConstant {
 	
 	// Annotations
 	public static final String TEST_ANNOTATION = "Test";
+	public static final String BEFORE_ANNOTATION = "Before";
+	public static final String BEFORE_CLASS_ANNOTATION = "BeforeClass";
 
 	// Assert Methods
 	public static final String[] ASSERT_METHODS = { "fail", "assertTrue", "assertFalse", "assertEquals", "assertNull",

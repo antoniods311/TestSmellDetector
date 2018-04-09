@@ -17,6 +17,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import dataflowanalysis.ClassFieldsReader;
+import dataflowanalysis.SetUpMethodAnalyzer;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
@@ -68,6 +69,8 @@ public class GeneralFixtureDetector extends Thread {
 			 */
 			boolean isFirstMethod = true;
 			ClassFieldsReader fieldReader;
+			
+			SetUpMethodAnalyzer setUpAnalyzer;
 			HashSet<String> fieldsSet;
 			NodeList functionList = doc.getElementsByTagName(ToolConstant.FUNCTION);
 			for (int i = 0; i < functionList.getLength(); i++) {
@@ -87,8 +90,7 @@ public class GeneralFixtureDetector extends Thread {
 							fieldsSet = fieldReader.getClassFields();
 							
 							// 2. trovo e analizzo i setUp per creare il "createdSet"
-							
-							
+						
 						}
 						
 					}

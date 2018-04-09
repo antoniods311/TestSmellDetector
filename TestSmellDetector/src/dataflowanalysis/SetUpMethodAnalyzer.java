@@ -9,8 +9,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import util.SetUpMethodChecker;
 import util.ToolConstant;
 
 public class SetUpMethodAnalyzer {
@@ -31,6 +35,7 @@ public class SetUpMethodAnalyzer {
 	public HashSet<String> getCreatedSet(){
 		
 		HashSet<String> createdSet = new HashSet<String>();
+		SetUpMethodChecker setUpChecker = new SetUpMethodChecker();
 		
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
 		try {
@@ -38,11 +43,18 @@ public class SetUpMethodAnalyzer {
 			doc = documentBuilder.parse(xml);
 			doc.getDocumentElement().normalize();
 			
-			/*
-			 *  far ricevere un parametro a questo metodo. Il
-			 *  parametro deve essere un element che sia
-			 *  un metodo di setUp in modo da poterlo analizzare 
-			 */
+			NodeList functionList = doc.getElementsByTagName(ToolConstant.FUNCTION);
+			for (int i = 0; i < functionList.getLength(); i++) {
+				if (functionList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+					Element functionElement = (Element) functionList.item(i);
+					if(setUpChecker.isSetUpMethod(functionElement)){ //ho trovato un setUp
+						//analizzare il setUp andando a vedere quali sono i new object
+						
+					}
+				}
+					
+			}
+			
 			
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);
