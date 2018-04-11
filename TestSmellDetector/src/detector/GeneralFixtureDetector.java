@@ -30,50 +30,52 @@ import util.tooldata.ToolData;
  *
  */
 public class GeneralFixtureDetector extends Thread {
-	
+
 	private ToolData data;
 	private DocumentBuilderFactory docbuilderFactory;
 	private DocumentBuilder documentBuilder;
 	private Document doc;
 	private TestMethodChecker testChecker;
-	private HashMap<String,HashMap<String,Boolean>> results;
+	HashMap<String, HashMap<String, Boolean>> results;
 	private static Logger log;
-	
+
 	/**
 	 * Constructor for GeneralFixtureDetector object
 	 * 
 	 * @param data
 	 */
-	public GeneralFixtureDetector(ToolData data){
+	public GeneralFixtureDetector(ToolData data) {
 		this.data = data;
 		this.testChecker = new TestMethodChecker();
 		log = LogManager.getLogger(GeneralFixtureDetector.class.getName());
 	}
 
-	
 	public double analyze(File xml) {
-		
+
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
+		HashMap<String, HashMap<String, Boolean>> results = new HashMap<String, HashMap<String, Boolean>>();
+
 		try {
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
 			doc = documentBuilder.parse(xml);
 			doc.getDocumentElement().normalize();
-			
+
 			/*
 			 * Quando analizzo il primo metodo di test della classe devo fare
-			 * diverse cose:
-			 * 1. chiamare ClassFieldReader per leggere i fields della classe
-			 * 2. analizzare tutti i metodoi di setUp per creare il set "createdSet"
-			 * 3. creare un sottoinsieme di elementi comuni a 1 e 2
+			 * diverse cose: 1. chiamare ClassFieldReader per leggere i fields
+			 * della classe 2. analizzare tutti i metodoi di setUp per creare il
+			 * set "createdSet" 3. creare un sottoinsieme di elementi comuni a 1
+			 * e 2
 			 * 
-			 * Questi punti li devo fare solo per il primo metodo di test dal momento
-			 * che fatti una volta vanno bene per tutti i metodi di test.
+			 * Questi punti li devo fare solo per il primo metodo di test dal
+			 * momento che fatti una volta vanno bene per tutti i metodi di
+			 * test.
 			 */
 			boolean isFirstMethod = true;
 			ClassFieldsReader fieldReader;
-			
+
 			SetUpMethodAnalyzer setUpAnalyzer;
-			HashSet<String> fieldsSet, createdSet, commonElements;
+			HashSet<String> fieldsSet, createdSet, commonElements = new HashSet<String>();
 			NodeList functionList = doc.getElementsByTagName(ToolConstant.FUNCTION);
 			for (int i = 0; i < functionList.getLength(); i++) {
 				if (functionList.item(i).getNodeType() == Node.ELEMENT_NODE) {
@@ -81,32 +83,38 @@ public class GeneralFixtureDetector extends Thread {
 					// Se entro ho trovato un metodo di test
 					if (testChecker.isTestMethod(functionElement)) {
 						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
-						if(isFirstMethod){
+						if (isFirstMethod) {
 							isFirstMethod = false;
-							
+
 							// 1. calcolo i fields
-							fieldReader = new ClassFieldsReader(data,methodName);
+							fieldReader = new ClassFieldsReader(data, methodName);
 							fieldsSet = fieldReader.getClassFields();
-							
-							// 2. trovo e analizzo i setUp per creare il "createdSet"
+
+							// 2. trovo e analizzo i setUp per creare il
+							// "createdSet"
 							setUpAnalyzer = new SetUpMethodAnalyzer(xml);
 							createdSet = setUpAnalyzer.getCreatedSet();
-							
+
 							// 3. trovo elementi comuni a 1 e 2
 							commonElements = new HashSet<String>();
-							for(String element : fieldsSet){
-								if(createdSet.contains(element))
+							for (String element : fieldsSet) {
+								if (createdSet.contains(element))
 									commonElements.add(element);
 							}
 						}
-						
+
 						/*
-						 * gli elementi comuni sono quelli che devono
-						 * essere usati per valutare se c'è o meno un
-						 * general fixture
+						 * gli elementi comuni sono quelli che devono essere
+						 * usati per valutare se c'è o meno un general fixture
 						 */
-						
-						
+
+						// inizializzo i risultati a false
+						results.put(methodName, initializeNewMap(commonElements));
+
+						// analizzo le call per trovare il nome della variabile
+						// chiamata
+						HashSet<String> callNames = findCallNames(functionElement);
+
 					}
 				}
 			}
@@ -120,18 +128,69 @@ public class GeneralFixtureDetector extends Thread {
 			System.out.println(ToolConstant.IO_EXCEPTION_MSG);
 			e.printStackTrace();
 		}
-		
-		
-		
+
 		return 0;
 	}
-	
+
+	/**
+	 * 
+	 * @param functionElement
+	 * @return all calls names in method
+	 * 
+	 *         call |--- name |----name -> "varName"
+	 * 
+	 */
+	private HashSet<String> findCallNames(Element functionElement) {
+
+		HashSet<String> result = new HashSet<String>();
+
+		NodeList funElChildList = functionElement.getElementsByTagName(ToolConstant.CALL);
+		for (int i = 0; i < funElChildList.getLength(); i++) {
+			if (funElChildList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+				Element call = (Element) funElChildList.item(i);
+				NodeList callChildList = call.getChildNodes();
+				for (int j = 0; j < callChildList.getLength(); j++) {
+					Node item = callChildList.item(j);
+					if (item.getNodeType() == Node.ELEMENT_NODE && item.getNodeName() == ToolConstant.NAME) {
+
+						NodeList nameChildList = item.getChildNodes();
+						if (nameChildList != null) {
+							for (int k = 0; k < nameChildList.getLength(); k++) {
+								Node nameVarNode = nameChildList.item(k);
+								if (nameVarNode.getNodeType() == Node.ELEMENT_NODE) {
+									result.add(nameVarNode.getTextContent());
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		return result;
+	}
+
+	/**
+	 * 
+	 * @param commonElements
+	 * @return a map common element --> false
+	 */
+	private HashMap<String, Boolean> initializeNewMap(HashSet<String> commonElements) {
+
+		HashMap<String, Boolean> newMap = new HashMap<String, Boolean>();
+		for (String element : commonElements)
+			newMap.put(element, false);
+
+		return newMap;
+
+	}
+
 	@Override
-	public void run(){
+	public void run() {
 		log.info("*** START GENERAL FIXTURE ANALYSIS ***");
 		for (File file : data.getTestClasses())
 			this.analyze(file);
-//		computeResults();
+		// computeResults();
 		log.info("*** END GENERAL FIXTURE ANALYSIS ***\n");
 	}
 
