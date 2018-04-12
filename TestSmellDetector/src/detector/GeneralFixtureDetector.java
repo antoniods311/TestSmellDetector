@@ -36,7 +36,6 @@ public class GeneralFixtureDetector extends Thread {
 	private DocumentBuilder documentBuilder;
 	private Document doc;
 	private TestMethodChecker testChecker;
-	HashMap<String, HashMap<String, Boolean>> results;
 	private static Logger log;
 
 	/**
@@ -101,6 +100,10 @@ public class GeneralFixtureDetector extends Thread {
 								if (createdSet.contains(element))
 									commonElements.add(element);
 							}
+//							for(String x : commonElements){
+//								System.out.println(methodName+" ce: "+x);
+//							}
+							
 						}
 
 						/*
@@ -114,7 +117,13 @@ public class GeneralFixtureDetector extends Thread {
 						// analizzo le call per trovare il nome della variabile
 						// chiamata
 						HashSet<String> callNames = findCallNames(functionElement);
-
+						for(String varName : callNames){
+							if(commonElements.contains(varName)){
+								results.get(methodName).remove(varName);
+								results.get(methodName).put(varName, true);
+							}
+						}
+					
 					}
 				}
 			}
@@ -129,6 +138,19 @@ public class GeneralFixtureDetector extends Thread {
 			e.printStackTrace();
 		}
 
+		for(String mn : results.keySet()){
+			
+			System.out.println(mn);
+			for(String var : results.get(mn).keySet()){
+				//if(results.get(mn).get(var)){
+					System.out.println(var+"->"+results.get(mn).get(var)+",");
+					
+				//}
+				
+			}
+			System.out.println("---------------");
+		}
+		
 		return 0;
 	}
 
@@ -137,7 +159,9 @@ public class GeneralFixtureDetector extends Thread {
 	 * @param functionElement
 	 * @return all calls names in method
 	 * 
-	 *         call |--- name |----name -> "varName"
+	 *         call 
+	 *        	 |--- name 
+	 *         			|--- name -> "varName"
 	 * 
 	 */
 	private HashSet<String> findCallNames(Element functionElement) {
