@@ -64,8 +64,8 @@ public class DataFlowMethodAnalyzer {
 	}
 	
 	/**
-	 * This method finds which production class methods (which
-	 * are not test method parameters) are tested by test method 
+	 * This method finds which production class 
+	 * methods are tested by test method 
 	 * 
 	 * @param data
 	 * @param testMethod
