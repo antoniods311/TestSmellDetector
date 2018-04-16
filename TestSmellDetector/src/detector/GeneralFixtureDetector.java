@@ -142,11 +142,7 @@ public class GeneralFixtureDetector extends Thread {
 			
 			System.out.println(mn);
 			for(String var : results.get(mn).keySet()){
-				//if(results.get(mn).get(var)){
-					System.out.println(var+"->"+results.get(mn).get(var)+",");
-					
-				//}
-				
+				System.out.println(var+"->"+results.get(mn).get(var)+",");				
 			}
 			System.out.println("---------------");
 		}
