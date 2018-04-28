@@ -84,10 +84,8 @@ public class IndirectTestingDetector extends Thread {
 									&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
 								methodAnalyzer = new DataFlowMethodAnalyzer(node);
 								
-								System.out.println("####  analyze di "+xml.getName()+" "+methodName);
-								
 								/*
-								 * 1. Analisi normale: recuper i metodi delle PC testati dal
+								 * 1. Analisi normale: recupero i metodi delle PC testati dal
 								 * metodo di test ottenendo [A]
 								 * 2. Per il metodo di test faccio analisi sui call-site: 
 								 * controllo se l'i-esimo elemento di [A] è il metodo chiamato nel
@@ -98,7 +96,7 @@ public class IndirectTestingDetector extends Thread {
 								 */
 								
 								/*
-								 * 1. Recuper i metodi della PC testati dal test method
+								 * 1. Recupero i metodi della PC testati dal test method
 								 */
 								HashSet<String> testedMethodsNames = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
 								
@@ -106,12 +104,8 @@ public class IndirectTestingDetector extends Thread {
 								 * 2. Analisi sui call-sites
 								 */
 								CallSiteAnalyzer callSiteAnalyzer = new CallSiteAnalyzer(data, node);
-								testedMethods = callSiteAnalyzer.analyzeCallSite(testedMethods,testedMethodsNames,xml,methodName);
+								testedMethods = callSiteAnalyzer.analyzeCallSite(testedMethods,testedMethodsNames);
 								 
-								
-//								for(String methName : testedMethodsNames){
-//									testedMethods.add(new ToolMethodType("CLASSE", methName));
-//								}
 							}
 						}
 					}
@@ -156,10 +150,9 @@ public class IndirectTestingDetector extends Thread {
 			}
 		}
 		
-		for(ToolMethodType t : testedMethods)
-			System.out.println("metodo testato: "+t);
-		
-		System.out.println("----------------------------------------------------------------------");
+//		for(ToolMethodType t : testedMethods)
+//			System.out.println("metodo testato: "+t);
+//		System.out.println("----------------------------------------------------------------------");
 		
 		for(ToolMethodType ntm : notTestedMethods)
 			System.out.println("metodo non testato: "+ntm);

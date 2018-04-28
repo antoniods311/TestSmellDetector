@@ -1,15 +1,10 @@
 package dataflowanalysis;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.Iterator;
 
 import com.ibm.wala.classLoader.CallSiteReference;
-import com.ibm.wala.classLoader.IMethod;
 import com.ibm.wala.ipa.callgraph.CGNode;
-import com.ibm.wala.types.ClassLoaderReference;
-import com.ibm.wala.types.MethodReference;
-import com.ibm.wala.types.TypeReference;
 
 import util.prodclass.ToolMethodType;
 import util.tooldata.ToolData;
@@ -22,20 +17,13 @@ import util.tooldata.ToolData;
 public class CallSiteAnalyzer {
 
 	private CGNode node;
-	private static int conto = 0;
 	
 	public CallSiteAnalyzer(ToolData data, CGNode node){
 		this.node = node;
 	}
 	
 	
-	public HashSet<ToolMethodType> analyzeCallSite(HashSet<ToolMethodType> testedMethods, HashSet<String> testedMethodsNames, File xml, String methodName2){
-		conto++;
-		
-		IMethod method = node.getMethod();
-    	MethodReference ref = method.getReference();
-    	TypeReference tr = ref.getDeclaringClass();
-    	ClassLoaderReference clr = tr.getClassLoader();
+	public HashSet<ToolMethodType> analyzeCallSite(HashSet<ToolMethodType> testedMethods, HashSet<String> testedMethodsNames){
 		
 		Iterator<CallSiteReference> csi = node.iterateCallSites();
 		while(csi.hasNext()){
@@ -48,11 +36,6 @@ public class CallSiteAnalyzer {
 					testedMethods.add(new ToolMethodType(className, methodName));
 				}
 			}
-		}
-		
-		System.out.println("Chiamata n "+conto+" --- file: "+xml.getName()+" --- "+methodName2);
-		for(ToolMethodType n : testedMethods){
-			System.out.println("*** "+n.getMethodName());
 		}
 		
 		return testedMethods;
