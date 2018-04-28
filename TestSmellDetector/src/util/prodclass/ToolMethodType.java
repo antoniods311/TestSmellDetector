@@ -49,6 +49,45 @@ public class ToolMethodType {
 		return classType+"."+methodName;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((classType == null) ? 0 : classType.hashCode());
+		result = prime * result + ((methodName == null) ? 0 : methodName.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ToolMethodType other = (ToolMethodType) obj;
+		if (classType == null) {
+			if (other.classType != null)
+				return false;
+		} else if (!classType.equals(other.classType))
+			return false;
+		if (methodName == null) {
+			if (other.methodName != null)
+				return false;
+		} else if (!methodName.equals(other.methodName))
+			return false;
+		return true;
+	}
+	
+	
+	
 	
 
 }

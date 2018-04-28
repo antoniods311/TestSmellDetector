@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.StringTokenizer;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -23,6 +24,7 @@ import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
 
+import dataflowanalysis.CallSiteAnalyzer;
 import dataflowanalysis.DataFlowMethodAnalyzer;
 import util.TestMethodChecker;
 import util.TestParseTool;
@@ -82,6 +84,8 @@ public class IndirectTestingDetector extends Thread {
 									&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
 								methodAnalyzer = new DataFlowMethodAnalyzer(node);
 								
+								System.out.println("####  analyze di "+xml.getName()+" "+methodName);
+								
 								/*
 								 * 1. Analisi normale: recuper i metodi delle PC testati dal
 								 * metodo di test ottenendo [A]
@@ -101,7 +105,9 @@ public class IndirectTestingDetector extends Thread {
 								/*
 								 * 2. Analisi sui call-sites
 								 */
-								
+								CallSiteAnalyzer callSiteAnalyzer = new CallSiteAnalyzer(data, node);
+								testedMethods = callSiteAnalyzer.analyzeCallSite(testedMethods,testedMethodsNames,xml,methodName);
+								 
 								
 //								for(String methName : testedMethodsNames){
 //									testedMethods.add(new ToolMethodType("CLASSE", methName));
@@ -132,8 +138,19 @@ public class IndirectTestingDetector extends Thread {
 	 * {production classes methods} - {tested methods}
 	 */
 	private void computeDifferenceSet() {
+		
+		/*
+		 * Modifico le informazioni sui production methods mantenendo
+		 * solo il nome della classe e quindi rimuovendo il path
+		 */
+		
+		HashSet<ToolMethodType> customPCMethods = customizePCMethodsSet(data.getProductionMethods()); 
+		
+		/*
+		 * Calcolo i metodi non testati
+		 */
 		HashSet<ToolMethodType> notTestedMethods = new HashSet<ToolMethodType>();
-		for(ToolMethodType tmt : data.getProductionMethods()){
+		for(ToolMethodType tmt : customPCMethods){
 			if(!testedMethods.contains(tmt)){
 				notTestedMethods.add(tmt);
 			}
@@ -150,6 +167,40 @@ public class IndirectTestingDetector extends Thread {
 		
 	}
 	
+	/**
+	 * 
+	 * @param productionMethods
+	 * @return
+	 */
+	private HashSet<ToolMethodType> customizePCMethodsSet(HashSet<ToolMethodType> productionMethods) {
+		
+		/*
+		 * Users/antoniods311/GitHub/TestSmellDetector/inputProductionClasses/Calculator.java
+		 */
+		
+		HashSet<ToolMethodType> customPCMethods = new HashSet<ToolMethodType>();
+		for(ToolMethodType tmt : productionMethods){
+			/*
+			 * rimuovo il path da ogni class e poi
+			 * aggiungo il nuovo elemento a customPCMethods 
+			 */
+			String completePath = tmt.getClassType();
+			StringTokenizer tokenizer = new StringTokenizer(completePath, "/");
+			String last = "";
+			while(tokenizer.hasMoreTokens())
+				last = tokenizer.nextToken();
+			
+			String className = "";
+			tokenizer = new StringTokenizer(last,".");
+			if(tokenizer.hasMoreElements())
+				className = tokenizer.nextToken();
+			
+			customPCMethods.add(new ToolMethodType(className, tmt.getMethodName()));
+		}
+
+		return customPCMethods;
+	}
+
 	@Override
 	public void run() {
 		log.info("*** START INDIRECT TESTING ANALYSIS ***");;
