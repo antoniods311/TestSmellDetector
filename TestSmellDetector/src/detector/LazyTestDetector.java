@@ -107,13 +107,13 @@ public class LazyTestDetector extends Thread {
 			
 			lazyTestResults.add(new ResultContainer(xml, testedMethods));
 			
-			for (String key : testedMethods.keySet()) {
-				System.out.print("TM: " + key + " -> ");
-				for (String meth : testedMethods.get(key)) {
-					System.out.print(meth + " ");
-				}
-				System.out.println();
-			}
+//			for (String key : testedMethods.keySet()) {
+//				String s = "TM: " + key + " -> "; 
+//				for (String meth : testedMethods.get(key)) {
+//					s = s + meth + " ";
+//				}
+//				log.info(s);
+//			}
 
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);

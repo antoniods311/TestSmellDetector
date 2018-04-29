@@ -37,6 +37,7 @@ public class GeneralFixtureDetector extends Thread {
 	private Document doc;
 	private TestMethodChecker testChecker;
 	private static Logger log;
+	private int threshold = 1;
 
 	/**
 	 * Constructor for GeneralFixtureDetector object
@@ -62,7 +63,7 @@ public class GeneralFixtureDetector extends Thread {
 			/*
 			 * Quando analizzo il primo metodo di test della classe devo fare
 			 * diverse cose: 1. chiamare ClassFieldReader per leggere i fields
-			 * della classe 2. analizzare tutti i metodoi di setUp per creare il
+			 * della classe 2. analizzare tutti i metododi di setUp per creare il
 			 * set "createdSet" 3. creare un sottoinsieme di elementi comuni a 1
 			 * e 2
 			 * 
@@ -123,7 +124,6 @@ public class GeneralFixtureDetector extends Thread {
 								results.get(methodName).put(varName, true);
 							}
 						}
-					
 					}
 				}
 			}
@@ -138,13 +138,25 @@ public class GeneralFixtureDetector extends Thread {
 			e.printStackTrace();
 		}
 
+//		for(String mn : results.keySet()){
+//			
+//			System.out.println(mn);
+//			for(String var : results.get(mn).keySet()){
+//				System.out.println(var+"->"+results.get(mn).get(var)+",");				
+//			}
+//			System.out.println("---------------");
+//		}
+		
+		
 		for(String mn : results.keySet()){
-			
-			System.out.println(mn);
+			int numOfNoUse = 0;
 			for(String var : results.get(mn).keySet()){
-				System.out.println(var+"->"+results.get(mn).get(var)+",");				
+				if(!results.get(mn).get(var)) numOfNoUse++;
 			}
-			System.out.println("---------------");
+			
+			if(numOfNoUse >= threshold)
+				log.info("Found General Fixture for "+ mn + " method");
+			
 		}
 		
 		return 0;

@@ -34,6 +34,7 @@ public class TestSmellsAnalyzer {
 		log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
 		jxmlTranslator = new JavaToXmlTranslator();
 		log.info("Start analysis...\n");
+		String jarFileParameter = args[0];
 		
 		/*
 		 * 1. costruire call graph
@@ -45,7 +46,7 @@ public class TestSmellsAnalyzer {
 		 * 6. lanciare i detector
 		 */
 		
-		File jarInput = new File(ToolConstant.TEST_CASES_JAR_DIR+"calc.jar");
+		File jarInput = new File(ToolConstant.TEST_CASES_JAR_DIR+jarFileParameter);
 		WalaCallGraphBuilder builder;
 		try {
 			// 1.Costruzione Call Graph
@@ -83,14 +84,14 @@ public class TestSmellsAnalyzer {
 				
 			//Esecuzione delle analisi usando i diversi detector
 			ArrayList<Thread> detectors = new ArrayList<Thread>();
-//			detectors.add(new AssertionRouletteDetector(data)); //ok
-//			detectors.add(new EagerTestDetector(data)); //ok
+			detectors.add(new AssertionRouletteDetector(data)); //ok
+			detectors.add(new EagerTestDetector(data)); //ok
 			detectors.add(new IndirectTestingDetector(data));
-//			detectors.add(new GeneralFixtureDetector(data));
-//			detectors.add(new MysteryGuestDetector(data)); //ok
-//			detectors.add(new SensitiveEqualityDetector(data)); //ok
-//			detectors.add(new TestCodeDuplicationDetector(data)); //ok
-//			detectors.add(new LazyTestDetector(data)); //ok
+			detectors.add(new GeneralFixtureDetector(data));
+			detectors.add(new MysteryGuestDetector(data)); //ok
+			detectors.add(new SensitiveEqualityDetector(data)); //ok
+			detectors.add(new TestCodeDuplicationDetector(data)); //ok
+			detectors.add(new LazyTestDetector(data)); //ok
 			
 			for(Thread d: detectors){
 				d.run();
