@@ -164,9 +164,11 @@ public class LazyTestDetector extends Thread {
 			}
 		}
 		for (String key : tot.keySet()) {
-			if (tot.get(key) > 0)
+			if (tot.get(key) > 0){
 				isLazyTest = true;
-			log.info("PC method " + key + " is tested " + tot.get(key)+" times");
+				log.info("PC method " + key + " is tested " + tot.get(key)+" times");
+			}
+				
 		}
 
 		if (isLazyTest)

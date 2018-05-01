@@ -88,5 +88,8 @@ public class ToolConstant {
 	//Types
 	public static final String STRING_TYPE_LOWER = "string";
 	public static final String STRING_TYPE_UPPER = "String";
+	
+	//Extension
+	public static final String JAVA_EXTENSION = "java";
 
 }

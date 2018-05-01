@@ -18,5 +18,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wala.ide.tests"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wala.shrike"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/com.ibm.wala.util"/>
+	<classpathentry kind="lib" path="/Users/antoniods311/Downloads/commons-io-2.6/commons-io-2.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

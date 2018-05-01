@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,24 +53,34 @@ public class TestSmellsAnalyzer {
 			// 1.Costruzione Call Graph
 			builder = new WalaCallGraphBuilder(jarInput);
 			CallGraph callGraph = builder.buildCallGraph();
+			log.info("Call Graph build done\n");
 			
 			// 2.Traduzione delle production classes
 			ArrayList<File> xmlProdClasses = new ArrayList<File>();
 			File prodClassDir = new File(ToolConstant.PRODUCTION_CLASS_DIR);
 			String prodClasses[] = prodClassDir.list();
 			for(int i=0; i<prodClasses.length; i++){
-				jxmlTranslator.load(new File(prodClasses[i]), ToolConstant.PRODUCTION_CLASS);
-				xmlProdClasses.add(jxmlTranslator.translate());
+				if(FilenameUtils.getExtension(prodClasses[i]).equalsIgnoreCase(ToolConstant.JAVA_EXTENSION)){
+					jxmlTranslator.load(new File(prodClasses[i]), ToolConstant.PRODUCTION_CLASS);
+					xmlProdClasses.add(jxmlTranslator.translate());
+					//log.info(prodClasses[i]+"...done");
+				}
 			}
+			log.info("Production classes translation completed\n");			
 			
 			// 3.Traduzione dei casi di test
 			ArrayList<File> xmlTestCases = new ArrayList<File>();
 			File testCasesDir = new File(ToolConstant.TEST_CASES_JAVA_DIR);
 			String testCases[] = testCasesDir.list();
 			for(int i=0; i<testCases.length; i++){
-				jxmlTranslator.load(new File(testCases[i]), ToolConstant.TEST_CLASS);
-				xmlTestCases.add(jxmlTranslator.translate());
+				if(FilenameUtils.getExtension(testCases[i]).equalsIgnoreCase(ToolConstant.JAVA_EXTENSION)){
+					jxmlTranslator.load(new File(testCases[i]), ToolConstant.TEST_CLASS);
+					xmlTestCases.add(jxmlTranslator.translate());
+					//log.info(testCases[i]+"...done");
+				}
 			}
+			log.info("Test classes transaltion completed\n");
+			
 			
 			// 3a. Calcolo di tutti i metodi delle production class
 			ProductionClassAnalyzer prodClassAnalyzer = new ProductionClassAnalyzer(xmlProdClasses);
