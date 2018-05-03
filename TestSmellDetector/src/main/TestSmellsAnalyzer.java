@@ -97,8 +97,8 @@ public class TestSmellsAnalyzer {
 			ArrayList<Thread> detectors = new ArrayList<Thread>();
 			detectors.add(new AssertionRouletteDetector(data)); //ok
 			detectors.add(new EagerTestDetector(data)); //ok
-			detectors.add(new IndirectTestingDetector(data));
-			detectors.add(new GeneralFixtureDetector(data));
+			detectors.add(new IndirectTestingDetector(data));//ok
+			detectors.add(new GeneralFixtureDetector(data)); //ok
 			detectors.add(new MysteryGuestDetector(data)); //ok
 			detectors.add(new SensitiveEqualityDetector(data)); //ok
 			detectors.add(new TestCodeDuplicationDetector(data)); //ok

@@ -35,6 +35,7 @@ public class SensitiveEqualityDetector extends Thread {
 	private TestMethodChecker testChecker;
 	private MethodMatcher methodMatcher;
 	private static Logger log;
+	private int threshold = 1;
 	
 	public SensitiveEqualityDetector(ToolData data){
 		this.data = data;
@@ -133,7 +134,8 @@ public class SensitiveEqualityDetector extends Thread {
 			HashMap<String,Integer> result = sensitiveEqualityResults.get(testCaseName);
 			for(String testMethod : result.keySet()){
 				int numToString = result.get(testMethod);
-				log.info(testMethod+" calls toString() "+numToString+" times");
+				if(numToString >= threshold)
+					log.info(testMethod+" calls toString() "+numToString+" times");
 			}
 			
 		}

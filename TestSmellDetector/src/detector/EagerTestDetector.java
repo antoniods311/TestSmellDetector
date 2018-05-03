@@ -46,6 +46,7 @@ public class EagerTestDetector extends Thread {
 	private static Logger log;
 	private DataFlowMethodAnalyzer methodAnalyzer;
 	private ArrayList<ResultContainer> eagerTestResults;
+	private int threshold = 1;
 	
 	public EagerTestDetector(ToolData data){
 		this.data = data;
@@ -127,7 +128,7 @@ public class EagerTestDetector extends Thread {
 		for(ResultContainer eager : eagerTestResults){
 			for(String testMtd : eager.getTestedMethods().keySet()){
 				int numberOfTestedMethods = eager.getTestedMethods().get(testMtd).size();
-				if(numberOfTestedMethods > 1){
+				if(numberOfTestedMethods > threshold){
 					log.info("Eager Test found! "+testMtd+" tests "+numberOfTestedMethods+" PC methods");
 				}
 			}
