@@ -53,7 +53,7 @@ public class TestSmellsAnalyzer {
 			// 1.Costruzione Call Graph
 			builder = new WalaCallGraphBuilder(jarInput);
 			CallGraph callGraph = builder.buildCallGraph();
-			log.info("Call Graph build done\n");
+			log.info("Call Graph built\n");
 			
 			// 2.Traduzione delle production classes
 			ArrayList<File> xmlProdClasses = new ArrayList<File>();
