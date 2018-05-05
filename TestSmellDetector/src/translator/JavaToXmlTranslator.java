@@ -1,7 +1,10 @@
 package translator;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,19 +22,52 @@ public class JavaToXmlTranslator implements Translator {
 	private File sourceFile, xmlFile;
 	private String input, output;
 	private static Logger log;
-
+	private static String SRCML_DIR;
+	private static String TEST_CASES_JAVA_DIR;
+	private static String PRODUCTION_CLASS_DIR;
+	private static String PRODUCTION_CLASSES_XML_DIR;
+	private static String TEST_CASE_XML_DIR;
+	
 	public JavaToXmlTranslator() {
+		/*
+		 * Lettura delle info di configurazione
+		 */
+		Properties prop = new Properties();
+		InputStream input = null;
+		try{
+			input = new FileInputStream(ToolConstant.CONFIG_FILE_PATH);
+			prop.load(input);
+			
+			SRCML_DIR = prop.getProperty("srcML_path");
+			PRODUCTION_CLASS_DIR = prop.getProperty("java_pc_dir");
+			TEST_CASES_JAVA_DIR = prop.getProperty("java_tc_dir");
+			PRODUCTION_CLASSES_XML_DIR = prop.getProperty("xml_pc_dir");
+			TEST_CASE_XML_DIR = prop.getProperty("xml_tc_dir");
+		}
+		catch(IOException io){
+			log.info("Error reading configuration file!");
+			io.printStackTrace();
+		}
+		finally{
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		
 		log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
 	}
 
-	public JavaToXmlTranslator(File sourceFile, String input, String output) {
-		super();
-		this.sourceFile = sourceFile;
-		this.input = input;
-		this.output = output;
-		log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
-	}
-
+//	public JavaToXmlTranslator(File sourceFile, String input, String output) {
+//		super();
+//		this.sourceFile = sourceFile;
+//		this.input = input;
+//		this.output = output;
+//		log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
+//	}
 
 	/* (non-Javadoc)
 	 * @see translator.Translator#translate()
@@ -39,10 +75,10 @@ public class JavaToXmlTranslator implements Translator {
 	@Override
 	public File translate() {
 
-		String command = ToolConstant.SRCML_DIR + ToolConstant.SRCML_COMMAND;
+		String command = SRCML_DIR + ToolConstant.SRCML_COMMAND;
 		try {
 			ProcessBuilder procBuilder = new ProcessBuilder(command, input, ToolConstant.SRCML_OUTPUT_OPTION, output);
-			procBuilder = procBuilder.directory(new File(ToolConstant.SRCML_DIR));
+			procBuilder = procBuilder.directory(new File(SRCML_DIR));
 			Process process = procBuilder.start();
 			process.waitFor(); //wait process termination
 			xmlFile = new File(output);
@@ -61,11 +97,11 @@ public class JavaToXmlTranslator implements Translator {
 	public void load(File file, int type) {
 		this.setSourceFile(file);
 		if(type == ToolConstant.PRODUCTION_CLASS){
-			this.input = ToolConstant.PRODUCTION_CLASS_DIR + file.getName();
-			this.output = ToolConstant.PRODUCTION_CLASSES_XML_DIR + file.getName() + ".xml";
+			this.input = PRODUCTION_CLASS_DIR + file.getName();
+			this.output = PRODUCTION_CLASSES_XML_DIR + file.getName() + ".xml";
 		}else{
-			this.input = ToolConstant.TEST_CASES_JAVA_DIR + file.getName();
-			this.output = ToolConstant.TEST_CASE_XML_DIR + file.getName() + ".xml";
+			this.input = TEST_CASES_JAVA_DIR + file.getName();
+			this.output = TEST_CASE_XML_DIR + file.getName() + ".xml";
 		}
 		
 	}

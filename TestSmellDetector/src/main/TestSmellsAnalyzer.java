@@ -2,9 +2,12 @@ package main;
 
 import detector.*;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Properties;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
@@ -29,14 +32,48 @@ public class TestSmellsAnalyzer {
 
 	private static JavaToXmlTranslator jxmlTranslator;
 	private static Logger log;
+	private static String TEST_CASES_JAVA_DIR;
+	private static String PRODUCTION_CLASS_DIR;
+	private static String TEST_CASES_JAR_PATH;
+	private static String EXCLUSION_FILE;
 	
 	public static void main(String[] args) {
+		
+		String configFileParam = args[0];
+		ToolConstant.CONFIG_FILE_PATH = configFileParam;
 		
 		log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
 		jxmlTranslator = new JavaToXmlTranslator();
 		log.info("Start analysis...\n");
-		String jarFileParameter = args[0];
 		
+		/*
+		 * 0. Lettura delle properties per settare le directories
+		 * di input/output e le soglie per il tool
+		 */
+		Properties prop = new Properties();
+		InputStream input = null;
+		try{
+			input = new FileInputStream(configFileParam);
+			prop.load(input);
+			TEST_CASES_JAR_PATH = prop.getProperty("jar_file");
+			PRODUCTION_CLASS_DIR = prop.getProperty("java_pc_dir");
+			TEST_CASES_JAVA_DIR = prop.getProperty("java_tc_dir");
+			EXCLUSION_FILE = prop.getProperty("exclusion_file");
+		}
+		catch(IOException io){
+			log.info("Error reading configuration file!");
+			io.printStackTrace();
+		}
+		finally{
+			if (input != null) {
+				try {
+					input.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
 		/*
 		 * 1. costruire call graph
 		 * 2. traduzione production classes
@@ -47,17 +84,17 @@ public class TestSmellsAnalyzer {
 		 * 6. lanciare i detector
 		 */
 		
-		File jarInput = new File(ToolConstant.TEST_CASES_JAR_DIR+jarFileParameter);
+		File jarInput = new File(TEST_CASES_JAR_PATH);
 		WalaCallGraphBuilder builder;
 		try {
 			// 1.Costruzione Call Graph
-			builder = new WalaCallGraphBuilder(jarInput);
+			builder = new WalaCallGraphBuilder(jarInput,EXCLUSION_FILE);
 			CallGraph callGraph = builder.buildCallGraph();
 			log.info("Call Graph built\n");
 			
 			// 2.Traduzione delle production classes
 			ArrayList<File> xmlProdClasses = new ArrayList<File>();
-			File prodClassDir = new File(ToolConstant.PRODUCTION_CLASS_DIR);
+			File prodClassDir = new File(PRODUCTION_CLASS_DIR);
 			String prodClasses[] = prodClassDir.list();
 			for(int i=0; i<prodClasses.length; i++){
 				if(FilenameUtils.getExtension(prodClasses[i]).equalsIgnoreCase(ToolConstant.JAVA_EXTENSION)){
@@ -70,7 +107,7 @@ public class TestSmellsAnalyzer {
 			
 			// 3.Traduzione dei casi di test
 			ArrayList<File> xmlTestCases = new ArrayList<File>();
-			File testCasesDir = new File(ToolConstant.TEST_CASES_JAVA_DIR);
+			File testCasesDir = new File(TEST_CASES_JAVA_DIR);
 			String testCases[] = testCasesDir.list();
 			for(int i=0; i<testCases.length; i++){
 				if(FilenameUtils.getExtension(testCases[i]).equalsIgnoreCase(ToolConstant.JAVA_EXTENSION)){
