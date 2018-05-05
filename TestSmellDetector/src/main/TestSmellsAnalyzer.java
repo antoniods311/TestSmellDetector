@@ -64,8 +64,8 @@ public class TestSmellsAnalyzer {
 			 * Log4j setup
 			 */
 			LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
-			File file = new File(log4jConfig);
-			context.setConfigLocation(file.toURI());
+			File logConfigFile = new File(log4jConfig);
+			context.setConfigLocation(logConfigFile.toURI());
 			log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
 			
 		}
@@ -83,7 +83,6 @@ public class TestSmellsAnalyzer {
 			}
 		}
 
-		
 		jxmlTranslator = new JavaToXmlTranslator();
 		log.info("-------------------------------------START ANALYSIS-------------------------------------\n");
 		
@@ -133,7 +132,6 @@ public class TestSmellsAnalyzer {
 				}
 			}
 			log.info("done\n");
-			
 			
 			// 3a. Calcolo di tutti i metodi delle production class
 			ProductionClassAnalyzer prodClassAnalyzer = new ProductionClassAnalyzer(xmlProdClasses);
