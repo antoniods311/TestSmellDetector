@@ -13,7 +13,7 @@ public class ToolConstant {
 //	public static final String SRCML_DIR = WORKING_DIR + "/srcML/bin/";
 //	public static final String EXCLUSION_FILE = WORKING_DIR + "/Java60RegressionExclusions.txt";
 	
-	//Configuration properties
+	// Configuration properties
 	public static final String TEST_CASES_JAR_DIR = "jar_file";
 	public static final String TEST_CASES_JAVA_DIR = "java_tc_dir";
 	public static final String PRODUCTION_CLASS_JAVA_DIR = "java_pc_dir";
@@ -23,7 +23,27 @@ public class ToolConstant {
 	public static final String LOG4J_CONFIG = "log4j_config";
 	public static final String SRCML_DIR = "srcML_path";
 	
-	//Translator
+	// Thresholds absolute values
+	public static final String ASSERTION_ROULETTE_ABS = "assertion_roulette_abs";
+	public static final String EAGER_TEST_ABS = "eager_test_abs";
+	public static final String INDIRECT_TESTING_ABS = "indirect_testing_abs";
+	public static final String GENERAL_FIXTURE_ABS = "general_fixture_abs";
+	public static final String MYSTERY_GUEST_ABS = "mystery_guest_abs";
+	public static final String SENSITIVE_EQUALITY_ABS = "sensitive_equality_abs";
+	public static final String CODE_DUPLICATION_ABS = "code_duplication_abs";
+	public static final String LAZY_TEST_ABS = "lazy_test_abs";
+	
+	//Thresholds percentage values
+	public static final String ASSERTION_ROULETTE_PERC = "assertion_roulette_perc";
+	public static final String EAGER_TEST_PERC = "eager_test_perc";
+	public static final String INDIRECT_TESTING_PERC = "indirect_testing_perc";
+	public static final String GENERAL_FIXTURE_PERC  = "general_fixture_perc";
+	public static final String MYSTERY_GUEST_PERC  = "mystery_guest_perc";
+	public static final String SENSITIVE_EQUALITY_PERC  = "sensitive_equality_perc";
+	public static final String CODE_DUPLICATION_PERC  = "code_duplication_perc";
+	public static final String LAZY_TEST_PERC = "lazy_test_perc";
+	
+	// Translator
 	public static final int PRODUCTION_CLASS = 0;
 	public static final int TEST_CLASS = 1;
 
