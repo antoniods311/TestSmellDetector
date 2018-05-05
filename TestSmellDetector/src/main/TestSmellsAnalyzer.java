@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
@@ -86,7 +85,7 @@ public class TestSmellsAnalyzer {
 
 		
 		jxmlTranslator = new JavaToXmlTranslator();
-		log.info("Start analysis...\n");
+		log.info("-------------------------------------START ANALYSIS-------------------------------------\n");
 		
 		/*
 		 * 1. costruire call graph
@@ -102,11 +101,13 @@ public class TestSmellsAnalyzer {
 		WalaCallGraphBuilder builder;
 		try {
 			// 1.Costruzione Call Graph
+			log.info("Building Call Graph...");
 			builder = new WalaCallGraphBuilder(jarInput,EXCLUSION_FILE);
 			CallGraph callGraph = builder.buildCallGraph();
-			log.info("Call Graph built\n");
+			log.info("done\n");
 			
 			// 2.Traduzione delle production classes
+			log.info("Production classes translation...");
 			ArrayList<File> xmlProdClasses = new ArrayList<File>();
 			File prodClassDir = new File(PRODUCTION_CLASS_DIR);
 			String prodClasses[] = prodClassDir.list();
@@ -117,9 +118,10 @@ public class TestSmellsAnalyzer {
 					//log.info(prodClasses[i]+"...done");
 				}
 			}
-			log.info("Production classes translation completed\n");			
+			log.info("done\n");			
 			
 			// 3.Traduzione dei casi di test
+			log.info("Test classes transaltion...");
 			ArrayList<File> xmlTestCases = new ArrayList<File>();
 			File testCasesDir = new File(TEST_CASES_JAVA_DIR);
 			String testCases[] = testCasesDir.list();
@@ -130,7 +132,7 @@ public class TestSmellsAnalyzer {
 					//log.info(testCases[i]+"...done");
 				}
 			}
-			log.info("Test classes transaltion completed\n");
+			log.info("done\n");
 			
 			
 			// 3a. Calcolo di tutti i metodi delle production class
@@ -167,7 +169,7 @@ public class TestSmellsAnalyzer {
 		}
 		
 		//Restituzione dei risultati.
-		log.info("...End analysis\n");
+		log.info("-------------------------------------END ANALYSIS-------------------------------------\n");
 	}
 
 }
