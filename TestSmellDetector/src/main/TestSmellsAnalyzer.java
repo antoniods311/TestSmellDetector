@@ -34,10 +34,11 @@ public class TestSmellsAnalyzer {
 
 	private static JavaToXmlTranslator jxmlTranslator;
 	private static Logger log;
-	private static String TEST_CASES_JAVA_DIR;
-	private static String PRODUCTION_CLASS_DIR;
-	private static String TEST_CASES_JAR_PATH;
-	private static String EXCLUSION_FILE;
+	private static String test_cases_java_dir;
+	private static String production_classes_dir;
+	private static String test_cases_jar_path;
+	private static String exclusion_file;
+	private static String log4jConfig;
 	
 	public static void main(String[] args) throws URISyntaxException {	
 		
@@ -54,15 +55,18 @@ public class TestSmellsAnalyzer {
 		try{
 			input = new FileInputStream(configFileParam);
 			prop.load(input);
-			TEST_CASES_JAR_PATH = prop.getProperty("jar_file");
-			PRODUCTION_CLASS_DIR = prop.getProperty("java_pc_dir");
-			TEST_CASES_JAVA_DIR = prop.getProperty("java_tc_dir");
-			EXCLUSION_FILE = prop.getProperty("exclusion_file");
-			String log4jConfig = prop.getProperty("log4j_config");
 			
-			/*
-			 * Log4j setup
-			 */
+			//directories
+			test_cases_jar_path = prop.getProperty(ToolConstant.TEST_CASES_JAR_DIR);
+			production_classes_dir = prop.getProperty(ToolConstant.PRODUCTION_CLASS_JAVA_DIR);
+			test_cases_java_dir = prop.getProperty(ToolConstant.TEST_CASES_JAVA_DIR);
+			exclusion_file = prop.getProperty(ToolConstant.EXCLUSION_FILE);
+			log4jConfig = prop.getProperty(ToolConstant.LOG4J_CONFIG);
+			
+			//Thresholds
+			
+			
+			//Log4j setup
 			LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
 			File logConfigFile = new File(log4jConfig);
 			context.setConfigLocation(logConfigFile.toURI());
@@ -96,25 +100,24 @@ public class TestSmellsAnalyzer {
 		 * 6. lanciare i detector
 		 */
 		
-		File jarInput = new File(TEST_CASES_JAR_PATH);
+		File jarInput = new File(test_cases_jar_path);
 		WalaCallGraphBuilder builder;
 		try {
 			// 1.Costruzione Call Graph
 			log.info("Building Call Graph...");
-			builder = new WalaCallGraphBuilder(jarInput,EXCLUSION_FILE);
+			builder = new WalaCallGraphBuilder(jarInput,exclusion_file);
 			CallGraph callGraph = builder.buildCallGraph();
 			log.info("done\n");
 			
 			// 2.Traduzione delle production classes
 			log.info("Production classes translation...");
 			ArrayList<File> xmlProdClasses = new ArrayList<File>();
-			File prodClassDir = new File(PRODUCTION_CLASS_DIR);
+			File prodClassDir = new File(production_classes_dir);
 			String prodClasses[] = prodClassDir.list();
 			for(int i=0; i<prodClasses.length; i++){
 				if(FilenameUtils.getExtension(prodClasses[i]).equalsIgnoreCase(ToolConstant.JAVA_EXTENSION)){
 					jxmlTranslator.load(new File(prodClasses[i]), ToolConstant.PRODUCTION_CLASS);
 					xmlProdClasses.add(jxmlTranslator.translate());
-					//log.info(prodClasses[i]+"...done");
 				}
 			}
 			log.info("done\n");			
@@ -122,13 +125,12 @@ public class TestSmellsAnalyzer {
 			// 3.Traduzione dei casi di test
 			log.info("Test classes transaltion...");
 			ArrayList<File> xmlTestCases = new ArrayList<File>();
-			File testCasesDir = new File(TEST_CASES_JAVA_DIR);
+			File testCasesDir = new File(test_cases_java_dir);
 			String testCases[] = testCasesDir.list();
 			for(int i=0; i<testCases.length; i++){
 				if(FilenameUtils.getExtension(testCases[i]).equalsIgnoreCase(ToolConstant.JAVA_EXTENSION)){
 					jxmlTranslator.load(new File(testCases[i]), ToolConstant.TEST_CLASS);
 					xmlTestCases.add(jxmlTranslator.translate());
-					//log.info(testCases[i]+"...done");
 				}
 			}
 			log.info("done\n");

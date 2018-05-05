@@ -22,11 +22,11 @@ public class JavaToXmlTranslator implements Translator {
 	private File sourceFile, xmlFile;
 	private String input, output;
 	private static Logger log;
-	private static String SRCML_DIR;
-	private static String TEST_CASES_JAVA_DIR;
-	private static String PRODUCTION_CLASS_DIR;
-	private static String PRODUCTION_CLASSES_XML_DIR;
-	private static String TEST_CASE_XML_DIR;
+	private static String srcML_dir;
+	private static String test_cases_java_dir;
+	private static String production_classes_java_dir;
+	private static String production_classes_xml_dir;
+	private static String test_case_xml_dir;
 	
 	public JavaToXmlTranslator() {
 		/*
@@ -38,11 +38,11 @@ public class JavaToXmlTranslator implements Translator {
 			input = new FileInputStream(ToolConstant.CONFIG_FILE_PATH);
 			prop.load(input);
 			
-			SRCML_DIR = prop.getProperty("srcML_path");
-			PRODUCTION_CLASS_DIR = prop.getProperty("java_pc_dir");
-			TEST_CASES_JAVA_DIR = prop.getProperty("java_tc_dir");
-			PRODUCTION_CLASSES_XML_DIR = prop.getProperty("xml_pc_dir");
-			TEST_CASE_XML_DIR = prop.getProperty("xml_tc_dir");
+			srcML_dir = prop.getProperty(ToolConstant.SRCML_DIR);
+			production_classes_java_dir = prop.getProperty(ToolConstant.PRODUCTION_CLASS_JAVA_DIR);
+			test_cases_java_dir = prop.getProperty(ToolConstant.TEST_CASES_JAVA_DIR);
+			production_classes_xml_dir = prop.getProperty(ToolConstant.PRODUCTION_CLASSES_XML_DIR);
+			test_case_xml_dir = prop.getProperty(ToolConstant.TEST_CASE_XML_DIR);
 		}
 		catch(IOException io){
 			log.info("Error reading configuration file!");
@@ -75,10 +75,10 @@ public class JavaToXmlTranslator implements Translator {
 	@Override
 	public File translate() {
 
-		String command = SRCML_DIR + ToolConstant.SRCML_COMMAND;
+		String command = srcML_dir + ToolConstant.SRCML_COMMAND;
 		try {
 			ProcessBuilder procBuilder = new ProcessBuilder(command, input, ToolConstant.SRCML_OUTPUT_OPTION, output);
-			procBuilder = procBuilder.directory(new File(SRCML_DIR));
+			procBuilder = procBuilder.directory(new File(srcML_dir));
 			Process process = procBuilder.start();
 			process.waitFor(); //wait process termination
 			xmlFile = new File(output);
@@ -97,11 +97,11 @@ public class JavaToXmlTranslator implements Translator {
 	public void load(File file, int type) {
 		this.setSourceFile(file);
 		if(type == ToolConstant.PRODUCTION_CLASS){
-			this.input = PRODUCTION_CLASS_DIR + file.getName();
-			this.output = PRODUCTION_CLASSES_XML_DIR + file.getName() + ".xml";
+			this.input = production_classes_java_dir + file.getName();
+			this.output = production_classes_xml_dir + file.getName() + ".xml";
 		}else{
-			this.input = TEST_CASES_JAVA_DIR + file.getName();
-			this.output = TEST_CASE_XML_DIR + file.getName() + ".xml";
+			this.input = test_cases_java_dir + file.getName();
+			this.output = test_case_xml_dir + file.getName() + ".xml";
 		}
 		
 	}

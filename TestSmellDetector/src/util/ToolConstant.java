@@ -13,6 +13,16 @@ public class ToolConstant {
 //	public static final String SRCML_DIR = WORKING_DIR + "/srcML/bin/";
 //	public static final String EXCLUSION_FILE = WORKING_DIR + "/Java60RegressionExclusions.txt";
 	
+	//Configuration properties
+	public static final String TEST_CASES_JAR_DIR = "jar_file";
+	public static final String TEST_CASES_JAVA_DIR = "java_tc_dir";
+	public static final String PRODUCTION_CLASS_JAVA_DIR = "java_pc_dir";
+	public static final String TEST_CASE_XML_DIR = "xml_tc_dir";
+	public static final String PRODUCTION_CLASSES_XML_DIR = "xml_pc_dir";
+	public static final String EXCLUSION_FILE = "exclusion_file";
+	public static final String LOG4J_CONFIG = "log4j_config";
+	public static final String SRCML_DIR = "srcML_path";
+	
 	//Translator
 	public static final int PRODUCTION_CLASS = 0;
 	public static final int TEST_CLASS = 1;
