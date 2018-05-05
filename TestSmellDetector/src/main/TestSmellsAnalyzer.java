@@ -78,12 +78,12 @@ public class TestSmellsAnalyzer {
 			container.setGeneralFixturePerc(Double.parseDouble(prop.getProperty(ToolConstant.GENERAL_FIXTURE_PERC)));
 			container.setMysteryGuestAbs(Integer.parseInt(prop.getProperty(ToolConstant.MYSTERY_GUEST_ABS)));
 			container.setMysteryGuestPerc(Double.parseDouble(prop.getProperty(ToolConstant.MYSTERY_GUEST_PERC)));
-			container.setSensitiveEqualityAbs(Integer.parseInt(ToolConstant.SENSITIVE_EQUALITY_ABS));
-			container.setSensitiveEqualityPerc(Double.parseDouble(ToolConstant.SENSITIVE_EQUALITY_PERC));
-			container.setCodeDuplicationAbs(Integer.parseInt(ToolConstant.CODE_DUPLICATION_ABS));
-			container.setCodeDuplicationPerc(Double.parseDouble(ToolConstant.CODE_DUPLICATION_PERC));
-			container.setLazyTestAbs(Integer.parseInt(ToolConstant.LAZY_TEST_ABS));
-			container.setLazyTestPerc(Double.parseDouble(ToolConstant.LAZY_TEST_PERC));
+			container.setSensitiveEqualityAbs(Integer.parseInt(prop.getProperty(ToolConstant.SENSITIVE_EQUALITY_ABS)));
+			container.setSensitiveEqualityPerc(Double.parseDouble(prop.getProperty(ToolConstant.SENSITIVE_EQUALITY_PERC)));
+			container.setCodeDuplicationAbs(Integer.parseInt(prop.getProperty(ToolConstant.CODE_DUPLICATION_ABS)));
+			container.setCodeDuplicationPerc(Double.parseDouble(prop.getProperty(ToolConstant.CODE_DUPLICATION_PERC)));
+			container.setLazyTestAbs(Integer.parseInt(prop.getProperty(ToolConstant.LAZY_TEST_ABS)));
+			container.setLazyTestPerc(Double.parseDouble(prop.getProperty(ToolConstant.LAZY_TEST_PERC)));
 			
 			//Log4j setup
 			LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);

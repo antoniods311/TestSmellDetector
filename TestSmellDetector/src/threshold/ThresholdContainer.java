@@ -221,6 +221,21 @@ public class ThresholdContainer {
 	public void setLazyTestPerc(double lazyTestPerc) {
 		this.lazyTestPerc = lazyTestPerc;
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "ThresholdContainer [assertionRouletteAbs=" + assertionRouletteAbs + ", eagerTestAbs=" + eagerTestAbs
+				+ ", indirectTestingAbs=" + indirectTestingAbs + ", generalFixtureAbs=" + generalFixtureAbs
+				+ ", mysteryGuestAbs=" + mysteryGuestAbs + ", sensitiveEqualityAbs=" + sensitiveEqualityAbs
+				+ ", codeDuplicationAbs=" + codeDuplicationAbs + ", lazyTestAbs=" + lazyTestAbs
+				+ ", assertionRoulettePerc=" + assertionRoulettePerc + ", eagerTestPerc=" + eagerTestPerc
+				+ ", indirectTestingPerc=" + indirectTestingPerc + ", generalFixturePerc=" + generalFixturePerc
+				+ ", mysteryGuestPerc=" + mysteryGuestPerc + ", sensitiveEqualityPerc=" + sensitiveEqualityPerc
+				+ ", codeDuplicationPerc=" + codeDuplicationPerc + ", lazyTestPerc=" + lazyTestPerc + "]";
+	}
 	
 	
 }
