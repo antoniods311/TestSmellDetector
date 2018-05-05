@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Properties;
@@ -12,6 +14,7 @@ import java.util.Properties;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 
 import com.ibm.wala.ipa.callgraph.CallGraph;
 import com.ibm.wala.util.WalaException;
@@ -37,18 +40,15 @@ public class TestSmellsAnalyzer {
 	private static String TEST_CASES_JAR_PATH;
 	private static String EXCLUSION_FILE;
 	
-	public static void main(String[] args) {
+	public static void main(String[] args) throws URISyntaxException {	
 		
 		String configFileParam = args[0];
 		ToolConstant.CONFIG_FILE_PATH = configFileParam;
 		
-		log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
-		jxmlTranslator = new JavaToXmlTranslator();
-		log.info("Start analysis...\n");
-		
 		/*
 		 * 0. Lettura delle properties per settare le directories
-		 * di input/output e le soglie per il tool
+		 * di input/output e le soglie per il tool e settaggio
+		 * dei parametri (anche log4j)
 		 */
 		Properties prop = new Properties();
 		InputStream input = null;
@@ -59,6 +59,16 @@ public class TestSmellsAnalyzer {
 			PRODUCTION_CLASS_DIR = prop.getProperty("java_pc_dir");
 			TEST_CASES_JAVA_DIR = prop.getProperty("java_tc_dir");
 			EXCLUSION_FILE = prop.getProperty("exclusion_file");
+			String log4jConfig = prop.getProperty("log4j_config");
+			
+			/*
+			 * Log4j setup
+			 */
+			LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
+			File file = new File(log4jConfig);
+			context.setConfigLocation(file.toURI());
+			log = LogManager.getLogger(TestSmellsAnalyzer.class.getName());
+			
 		}
 		catch(IOException io){
 			log.info("Error reading configuration file!");
@@ -74,6 +84,10 @@ public class TestSmellsAnalyzer {
 			}
 		}
 
+		
+		jxmlTranslator = new JavaToXmlTranslator();
+		log.info("Start analysis...\n");
+		
 		/*
 		 * 1. costruire call graph
 		 * 2. traduzione production classes
