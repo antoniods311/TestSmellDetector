@@ -1,6 +1,8 @@
 package main;
 
 import detector.*;
+import threshold.ThresholdContainer;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -52,6 +54,7 @@ public class TestSmellsAnalyzer {
 		 */
 		Properties prop = new Properties();
 		InputStream input = null;
+		ThresholdContainer container = null;
 		try{
 			input = new FileInputStream(configFileParam);
 			prop.load(input);
@@ -64,7 +67,23 @@ public class TestSmellsAnalyzer {
 			log4jConfig = prop.getProperty(ToolConstant.LOG4J_CONFIG);
 			
 			//Thresholds
-			
+			container = new ThresholdContainer();
+			container.setAssertionRouletteAbs(Integer.parseInt(prop.getProperty(ToolConstant.ASSERTION_ROULETTE_ABS)));
+			container.setAssertionRoulettePerc(Double.parseDouble(prop.getProperty(ToolConstant.ASSERTION_ROULETTE_PERC)));
+			container.setEagerTestAbs(Integer.parseInt(prop.getProperty(ToolConstant.EAGER_TEST_ABS)));
+			container.setEagerTestPerc(Double.parseDouble(prop.getProperty(ToolConstant.EAGER_TEST_PERC)));
+			container.setIndirectTestingAbs(Integer.parseInt(prop.getProperty(ToolConstant.INDIRECT_TESTING_ABS)));
+			container.setIndirectTestingPerc(Double.parseDouble(prop.getProperty(ToolConstant.INDIRECT_TESTING_PERC)));
+			container.setGeneralFixtureAbs(Integer.parseInt(prop.getProperty(ToolConstant.GENERAL_FIXTURE_ABS)));
+			container.setGeneralFixturePerc(Double.parseDouble(prop.getProperty(ToolConstant.GENERAL_FIXTURE_PERC)));
+			container.setMysteryGuestAbs(Integer.parseInt(prop.getProperty(ToolConstant.MYSTERY_GUEST_ABS)));
+			container.setMysteryGuestPerc(Double.parseDouble(prop.getProperty(ToolConstant.MYSTERY_GUEST_PERC)));
+			container.setSensitiveEqualityAbs(Integer.parseInt(ToolConstant.SENSITIVE_EQUALITY_ABS));
+			container.setSensitiveEqualityPerc(Double.parseDouble(ToolConstant.SENSITIVE_EQUALITY_PERC));
+			container.setCodeDuplicationAbs(Integer.parseInt(ToolConstant.CODE_DUPLICATION_ABS));
+			container.setCodeDuplicationPerc(Double.parseDouble(ToolConstant.CODE_DUPLICATION_PERC));
+			container.setLazyTestAbs(Integer.parseInt(ToolConstant.LAZY_TEST_ABS));
+			container.setLazyTestPerc(Double.parseDouble(ToolConstant.LAZY_TEST_PERC));
 			
 			//Log4j setup
 			LoggerContext context = (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
@@ -145,6 +164,7 @@ public class TestSmellsAnalyzer {
 			data.setProductionClasses(xmlProdClasses);
 			data.setTestClasses(xmlTestCases);
 			data.setProductionMethods(productionClassesMethods);
+			data.setThresholdsContainer(container);
 				
 			//Esecuzione delle analisi usando i diversi detector
 			ArrayList<Thread> detectors = new ArrayList<Thread>();

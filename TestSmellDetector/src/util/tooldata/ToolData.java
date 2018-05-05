@@ -6,6 +6,7 @@ import java.util.HashSet;
 
 import com.ibm.wala.ipa.callgraph.CallGraph;
 
+import threshold.ThresholdContainer;
 import util.prodclass.ToolMethodType;
 
 /**
@@ -18,6 +19,7 @@ public class ToolData {
 	private ArrayList<File> productionClasses = null;
 	private HashSet<ToolMethodType> productionMethods;
 	private CallGraph callGraph = null;
+	private ThresholdContainer container = null;
 	
 	/**
 	 * empty constructor
@@ -29,11 +31,12 @@ public class ToolData {
 	 * @param testClasses
 	 * @param callGraph
 	 */
-	public ToolData(ArrayList<File> productioClasses, ArrayList<File> testClasses, CallGraph callGraph) {
+	public ToolData(ArrayList<File> productioClasses, ArrayList<File> testClasses, CallGraph callGraph, ThresholdContainer container) {
 		super();
 		this.productionClasses = productioClasses;
 		this.testClasses = testClasses;
 		this.callGraph = callGraph;
+		this.setThresholdsContainer(container);
 	}
 
 	/**
@@ -90,6 +93,14 @@ public class ToolData {
 	 */
 	public void setProductionMethods(HashSet<ToolMethodType> productionMethods) {
 		this.productionMethods = productionMethods;
+	}
+
+	public ThresholdContainer getThresholdsContainer() {
+		return container;
+	}
+
+	public void setThresholdsContainer(ThresholdContainer container) {
+		this.container = container;
 	}
 	
 	
