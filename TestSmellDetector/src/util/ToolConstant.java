@@ -57,7 +57,6 @@ public class ToolConstant {
 	public static final String CALL_GRAPH_BUILDER_ERROR = "Call graph builder cancel exception!";
 	public static final String BUILD_CALL_GRAPH_ERROR = "Problem with jar file or in graph building";
 	
-
 	// XML Parser Errors
 	public static final String PARSE_EXCEPTION_MSG = "ParserConfigurationException, document builder error!";
 	public static final String SAX_EXCEPTION_MSG = "SAX Exception, parse method error!";
