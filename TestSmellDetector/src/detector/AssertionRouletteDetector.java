@@ -126,7 +126,8 @@ public class AssertionRouletteDetector extends Thread{
 			for(String testMethod : arr.getNoMessageAssertMap().keySet()){
 				ArrayList<String> noMsgAsserts = arr.getNoMessageAssertMap().get(testMethod);
 				for(String element : noMsgAsserts){
-					log.info(arr.getTestCasesFile()+"."+testMethod+" calls "+element+" without message parameter");
+					//log.info(arr.getTestCasesFile()+"."+testMethod+" calls "+element+" without message parameter");
+					log.info("Assertion Roulette found in "+arr.getTestCasesFile()+"."+testMethod);
 				}	
 			}	
 		}
@@ -145,6 +146,7 @@ public class AssertionRouletteDetector extends Thread{
 		result.put(methodName, new ArrayList<String>());
 
 		// devo scorrere i name della function
+		int numberOfAssertNoMsg = 0;
 		NodeList nameList = functionElement.getElementsByTagName(ToolConstant.NAME);
 		for (int j = 0; j < nameList.getLength(); j++) {
 			Element nameElement = (Element) nameList.item(j);
@@ -154,8 +156,11 @@ public class AssertionRouletteDetector extends Thread{
 				// e quindi devo vedere se ho il parametro message o meno
 				if (nameElement.getParentNode().getNodeType() == Node.ELEMENT_NODE) {
 					Element call = (Element) nameElement.getParentNode();
-					if (!assertChecker.hasMessageParameter(call, nameElementContent)) 
-						result.get(methodName).add(nameElement.getTextContent());
+					if (!assertChecker.hasMessageParameter(call, nameElementContent)) {
+						numberOfAssertNoMsg++;
+						if(numberOfAssertNoMsg >= assertionRouletteAbs)
+							result.get(methodName).add(nameElement.getTextContent());
+					}
 				}
 			}
 		}
