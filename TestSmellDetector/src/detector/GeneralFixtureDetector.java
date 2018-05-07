@@ -38,6 +38,8 @@ public class GeneralFixtureDetector extends Thread {
 	private TestMethodChecker testChecker;
 	private static Logger log;
 	private int threshold = 1;
+	private int generalFixtureAbs;
+	private double generalFixturePerc;
 
 	/**
 	 * Constructor for GeneralFixtureDetector object
@@ -46,6 +48,8 @@ public class GeneralFixtureDetector extends Thread {
 	 */
 	public GeneralFixtureDetector(ToolData data) {
 		this.data = data;
+		this.generalFixtureAbs = data.getThresholdsContainer().getGeneralFixtureAbs();
+		this.generalFixturePerc = data.getThresholdsContainer().getGeneralFixturePerc();
 		this.testChecker = new TestMethodChecker();
 		log = LogManager.getLogger(GeneralFixtureDetector.class.getName());
 	}

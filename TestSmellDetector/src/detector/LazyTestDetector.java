@@ -45,12 +45,16 @@ public class LazyTestDetector extends Thread {
 	// private HashMap<String,HashSet<String>> callPaths; //metodi chiamati dal// metodo di test
 	private ArrayList<ResultContainer> lazyTestResults;
 	private static Logger log;
+	private int lazyTestAbs;
+	private double lazyTestPerc;
 
 	/**
 	 * @param data
 	 */
 	public LazyTestDetector(ToolData data) {
 		this.data = data;
+		this.lazyTestAbs = data.getThresholdsContainer().getLazyTestAbs();
+		this.lazyTestPerc = data.getThresholdsContainer().getLazyTestPerc();
 		this.testChecker = new TestMethodChecker();
 		this.methodAnalyzer = null;
 		// this.callPaths = new HashMap<String,HashSet<String>>();

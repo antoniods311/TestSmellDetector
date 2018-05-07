@@ -37,9 +37,13 @@ public class MysteryGuestDetector extends Thread {
 	private Document doc;
 	private FileApiChecker fileApiChecker;
 	private static Logger log;
+	private int mysteryGuestAbs;
+	private double mysteryGuestPerc;
 
 	public MysteryGuestDetector(ToolData data) {
 		this.data = data;
+		this.mysteryGuestAbs = data.getThresholdsContainer().getMysteryGuestAbs();
+		this.mysteryGuestPerc = data.getThresholdsContainer().getMysteryGuestPerc();
 		this.results = new ArrayList<MysteryGuestResult>();
 		this.fileApiChecker = new FileApiChecker();
 		log = LogManager.getLogger(MysteryGuestDetector.class.getName());

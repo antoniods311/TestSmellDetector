@@ -49,9 +49,13 @@ public class IndirectTestingDetector extends Thread {
 	private DataFlowMethodAnalyzer methodAnalyzer;
 	private HashSet<ToolMethodType> testedMethods;
 	private HashSet<ToolMethodType> notTestedMethods;
+	private int indirectTestingAbs;
+	private double indirectTestingPerc;
 
 	public IndirectTestingDetector(ToolData data) {
 		this.data = data;
+		this.indirectTestingAbs = data.getThresholdsContainer().getIndirectTestingAbs();
+		this.indirectTestingPerc = data.getThresholdsContainer().getIndirectTestingPerc();
 		this.testChecker = new TestMethodChecker();
 		this.testedMethods = new HashSet<ToolMethodType>();
 		this.notTestedMethods = new HashSet<ToolMethodType>();

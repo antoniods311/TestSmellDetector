@@ -16,6 +16,8 @@ public class TestCodeDuplicationDetector extends Thread {
 	private ToolData data;
 	private static Logger log;
 	private CloneAnalyzer duplicationAnalyzer;
+	private int codeDuplicationAbs;
+	private double codeDuplicationPerc;
 
 	/**
 	 * Constructor for TestCloneDetector class
@@ -24,6 +26,8 @@ public class TestCodeDuplicationDetector extends Thread {
 	 */
 	public TestCodeDuplicationDetector(ToolData data) {
 		this.data = data;
+		this.codeDuplicationAbs = data.getThresholdsContainer().getCodeDuplicationAbs();
+		this.codeDuplicationPerc = data.getThresholdsContainer().getCodeDuplicationPerc();
 		this.duplicationAnalyzer = new TestSmellCloneAnalyzer();
 		log = LogManager.getLogger(TestCodeDuplicationDetector.class.getName());
 	}

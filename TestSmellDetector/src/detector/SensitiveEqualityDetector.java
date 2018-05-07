@@ -36,9 +36,13 @@ public class SensitiveEqualityDetector extends Thread {
 	private MethodMatcher methodMatcher;
 	private static Logger log;
 	private int threshold = 1;
+	private int sensitiveEqualityAbs;
+	private double sensitiveEqualityPerc;
 	
 	public SensitiveEqualityDetector(ToolData data){
 		this.data = data;
+		this.sensitiveEqualityAbs = data.getThresholdsContainer().getSensitiveEqualityAbs();
+		this.sensitiveEqualityPerc = data.getThresholdsContainer().getSensitiveEqualityPerc();
 		this.testChecker = new TestMethodChecker();
 		this.methodMatcher = new MethodMatcher();
 		this.sensitiveEqualityResults = new HashMap<String,HashMap<String,Integer>>();

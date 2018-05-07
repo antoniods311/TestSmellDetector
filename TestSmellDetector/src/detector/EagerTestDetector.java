@@ -47,9 +47,13 @@ public class EagerTestDetector extends Thread {
 	private DataFlowMethodAnalyzer methodAnalyzer;
 	private ArrayList<ResultContainer> eagerTestResults;
 	private int threshold = 1;
+	private int eagerTestAbs;
+	private double eagerTestPerc;
 	
 	public EagerTestDetector(ToolData data){
 		this.data = data;
+		this.eagerTestAbs = data.getThresholdsContainer().getEagerTestAbs();
+		this.eagerTestPerc = data.getThresholdsContainer().getEagerTestPerc();
 		this.testChecker = new TestMethodChecker();
 		this.eagerTestResults = new ArrayList<ResultContainer>(); 
 		log = LogManager.getLogger(EagerTestDetector.class.getName());

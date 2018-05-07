@@ -40,6 +40,8 @@ public class AssertionRouletteDetector extends Thread{
 	private MethodMatcher methodMatcher;
 	private AssertParameterChecker assertChecker;
 	private ArrayList<AssertionRouletteResult> rouletteResults;
+	private int assertionRouletteAbs;
+	private double assertionRoulettePerc;
 
 	private static Logger log;
 
@@ -50,6 +52,8 @@ public class AssertionRouletteDetector extends Thread{
 	 */
 	public AssertionRouletteDetector(ToolData data){
 		this.data = data;
+		this.assertionRouletteAbs = data.getThresholdsContainer().getAssertionRouletteAbs();
+		this.assertionRoulettePerc = data.getThresholdsContainer().getAssertionRoulettePerc();
 		this.rouletteResults = new ArrayList<AssertionRouletteResult>();
 		this.testChecker = new TestMethodChecker();
 		this.methodMatcher = new MethodMatcher();
