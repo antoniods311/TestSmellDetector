@@ -19,6 +19,7 @@ import org.xml.sax.SAXException;
 
 import result.AssertionRouletteResult;
 import util.AssertParameterChecker;
+import util.ClassNameExtractor;
 import util.MethodMatcher;
 import util.TestMethodChecker;
 import util.TestParseTool;
@@ -90,7 +91,8 @@ public class AssertionRouletteDetector extends Thread{
 					}
 				}
 			}
-			rouletteResults.add(new AssertionRouletteResult(xml.getName(),result));
+			String className = ClassNameExtractor.extractClassNameFromPath(xml.getName());
+			rouletteResults.add(new AssertionRouletteResult(className,result));
 			
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);
@@ -124,7 +126,7 @@ public class AssertionRouletteDetector extends Thread{
 			for(String testMethod : arr.getNoMessageAssertMap().keySet()){
 				ArrayList<String> noMsgAsserts = arr.getNoMessageAssertMap().get(testMethod);
 				for(String element : noMsgAsserts){
-					log.info("test method "+testMethod+" calls "+element+" without message parameter");
+					log.info(arr.getTestCasesFile()+"."+testMethod+" calls "+element+" without message parameter");
 				}	
 			}	
 		}

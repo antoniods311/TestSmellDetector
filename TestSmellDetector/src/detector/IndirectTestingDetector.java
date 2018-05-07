@@ -123,7 +123,7 @@ public class IndirectTestingDetector extends Thread {
 					}
 				}
 			}
-
+			
 		} catch (ParserConfigurationException e) {
 			log.error(ToolConstant.PARSE_EXCEPTION_MSG);
 			e.printStackTrace();
