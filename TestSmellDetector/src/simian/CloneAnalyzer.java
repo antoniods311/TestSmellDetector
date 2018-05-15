@@ -3,6 +3,8 @@ package simian;
 import java.io.File;
 import java.util.List;
 
+import com.harukizaemon.simian.CheckSummary;
+
 public interface CloneAnalyzer {
 
 	/**
@@ -12,6 +14,6 @@ public interface CloneAnalyzer {
 	 * @param files
 	 * @return the number of clone lines
 	 */
-	public int getCloneLinesNumber(List<File> files);
+	public SimianResult execSimianAnalysis(List<File> files);
 	
 }

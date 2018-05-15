@@ -19,6 +19,7 @@ import org.xml.sax.SAXException;
 
 import dataflowanalysis.ClassFieldsReader;
 import dataflowanalysis.SetUpMethodAnalyzer;
+import util.ClassNameExtractor;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
@@ -37,7 +38,6 @@ public class GeneralFixtureDetector extends Thread {
 	private Document doc;
 	private TestMethodChecker testChecker;
 	private static Logger log;
-	private int threshold = 1;
 	private int generalFixtureAbs;
 	private double generalFixturePerc;
 
@@ -151,6 +151,7 @@ public class GeneralFixtureDetector extends Thread {
 //			System.out.println("---------------");
 //		}
 		
+		String testClassName = ClassNameExtractor.extractClassNameFromPath(xml.getName());
 		
 		for(String mn : results.keySet()){
 			int numOfNoUse = 0;
@@ -158,8 +159,8 @@ public class GeneralFixtureDetector extends Thread {
 				if(!results.get(mn).get(var)) numOfNoUse++;
 			}
 			
-			if(numOfNoUse >= threshold)
-				log.info("Found General Fixture for "+ mn + " method");
+			if(numOfNoUse >= generalFixtureAbs)
+				log.info("Found General Fixture for "+ testClassName+"."+mn + " method");
 			
 		}
 		

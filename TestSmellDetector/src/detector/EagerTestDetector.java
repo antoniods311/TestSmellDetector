@@ -10,6 +10,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.soap.Node;
+
+import util.ClassNameExtractor;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
@@ -46,7 +48,6 @@ public class EagerTestDetector extends Thread {
 	private static Logger log;
 	private DataFlowMethodAnalyzer methodAnalyzer;
 	private ArrayList<ResultContainer> eagerTestResults;
-	private int threshold = 1;
 	private int eagerTestAbs;
 	private double eagerTestPerc;
 	
@@ -99,7 +100,7 @@ public class EagerTestDetector extends Thread {
 				}
 			}
 			
-			eagerTestResults.add(new ResultContainer(xml, testedMethods));
+			eagerTestResults.add(new ResultContainer(ClassNameExtractor.extractClassNameFromPath(xml.getName()), testedMethods));
 
 		} catch (ParserConfigurationException e) {
 			log.error(ToolConstant.PARSE_EXCEPTION_MSG);
@@ -132,8 +133,8 @@ public class EagerTestDetector extends Thread {
 		for(ResultContainer eager : eagerTestResults){
 			for(String testMtd : eager.getTestedMethods().keySet()){
 				int numberOfTestedMethods = eager.getTestedMethods().get(testMtd).size();
-				if(numberOfTestedMethods > threshold){
-					log.info("Eager Test found! "+testMtd+" tests "+numberOfTestedMethods+" PC methods");
+				if(numberOfTestedMethods >= eagerTestAbs){
+					log.info("Eager Test found! "+eager.getTestCasesFile()+"."+testMtd+" tests "+numberOfTestedMethods+" PC methods");
 				}
 			}
 		}

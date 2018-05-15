@@ -119,7 +119,7 @@ public class IndirectTestingDetector extends Thread {
 								testedMethods = callSiteAnalyzer.analyzeCallSite(testedMethods, testedMethodsNames);
 
 							}
-						}
+						}	
 					}
 				}
 			}
@@ -247,14 +247,19 @@ public class IndirectTestingDetector extends Thread {
 	@Override
 	public void run() {
 		log.info("*** START INDIRECT TESTING ANALYSIS ***");
-		;
+		
 		for (File file : data.getTestClasses())
 			this.analyze(file);
 
 		computeDifferenceSet();
 		HashSet<ToolMethodType> indirectTestedMethod = chekIndirectTesting();
-		if(indirectTestedMethod.size() > 0)
-			log.info("Indirect Tested Methods Found: "+indirectTestedMethod.size());
+		if(indirectTestedMethod.size() >= indirectTestingAbs){
+			for(ToolMethodType tmt : indirectTestedMethod){
+				log.info("Indirect Tested Methods Found: "+tmt.getClassType()+"."+tmt.getMethodName());
+			}
+			
+		}
+			
 
 		log.info("*** END INDIRECT TESTING ANALYSIS ***\n");
 	}

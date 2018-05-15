@@ -15,6 +15,7 @@ import util.prodclass.ToolMethodType;
  */
 public class ToolData {
 	
+	private ArrayList<File> javaTestClasses = null;
 	private ArrayList<File> testClasses = null;
 	private ArrayList<File> productionClasses = null;
 	private HashSet<ToolMethodType> productionMethods;
@@ -103,8 +104,33 @@ public class ToolData {
 		this.container = container;
 	}
 	
-	
-	
+	/**
+	 * @return the javaTestClasses
+	 */
+	public ArrayList<File> getJavaTestClasses() {
+		return javaTestClasses;
+	}
+
+	/**
+	 * @param javaTestClasses the javaTestClasses to set
+	 */
+	public void setJavaTestClasses(ArrayList<File> javaTestClasses) {
+		this.javaTestClasses = javaTestClasses;
+	}
+
+	/**
+	 * @return the container
+	 */
+	public ThresholdContainer getContainer() {
+		return container;
+	}
+
+	/**
+	 * @param container the container to set
+	 */
+	public void setContainer(ThresholdContainer container) {
+		this.container = container;
+	}
 	
 	
 

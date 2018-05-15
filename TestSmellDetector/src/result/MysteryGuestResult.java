@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class MysteryGuestResult {
 
-	private String testCase;
+	private String testClassName;
 	private HashMap<String, ArrayList<String>> typeResult;
 	private HashMap<String, ArrayList<String>> callResult;
 	
@@ -19,7 +19,7 @@ public class MysteryGuestResult {
 	public MysteryGuestResult(String testCase, HashMap<String, ArrayList<String>> typeResult,
 			HashMap<String, ArrayList<String>> callResult) {
 		super();
-		this.testCase = testCase;
+		this.testClassName = testCase;
 		this.typeResult = typeResult;
 		this.callResult = callResult;
 	}
@@ -27,15 +27,15 @@ public class MysteryGuestResult {
 	/**
 	 * @return the testCase
 	 */
-	public String getTestCase() {
-		return testCase;
+	public String getTestClassName() {
+		return testClassName;
 	}
 
 	/**
 	 * @param testCase the testCase to set
 	 */
-	public void setTestCase(String testCase) {
-		this.testCase = testCase;
+	public void setTestClassName(String testCase) {
+		this.testClassName = testCase;
 	}
 
 	/**

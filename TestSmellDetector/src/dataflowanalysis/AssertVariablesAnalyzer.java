@@ -45,7 +45,7 @@ public class AssertVariablesAnalyzer {
 		/*
 		 * A. controllo se l'istruzione def contiene o meno la chiamata ad un
 		 * metodo della PC (es: sum()). altrimenti pmCallFound resta false e
-		 * quindi entro nell'if del punto B.
+		 * quindi entro nell'if al punto B.
 		 */
 		while (index < size && !pmCallFound) {
 			String pcMethod = prodMethods.get(index).getMethodName();

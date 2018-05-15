@@ -3,6 +3,9 @@ package detector;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -14,10 +17,19 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.ibm.wala.classLoader.IMethod;
+import com.ibm.wala.ipa.callgraph.CGNode;
+import com.ibm.wala.types.ClassLoaderReference;
+import com.ibm.wala.types.MethodReference;
+import com.ibm.wala.types.TypeReference;
+
+import dataflowanalysis.DataFlowMethodAnalyzer;
+import util.ClassNameExtractor;
 import util.MethodMatcher;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
+import util.prodclass.ToolMethodType;
 import util.tooldata.ToolData;
 
 /**
@@ -35,7 +47,8 @@ public class SensitiveEqualityDetector extends Thread {
 	private TestMethodChecker testChecker;
 	private MethodMatcher methodMatcher;
 	private static Logger log;
-	private int threshold = 1;
+	private DataFlowMethodAnalyzer methodAnalyzer;
+	private HashSet<ToolMethodType> customToString;
 	private int sensitiveEqualityAbs;
 	private double sensitiveEqualityPerc;
 	
@@ -45,20 +58,20 @@ public class SensitiveEqualityDetector extends Thread {
 		this.sensitiveEqualityPerc = data.getThresholdsContainer().getSensitiveEqualityPerc();
 		this.testChecker = new TestMethodChecker();
 		this.methodMatcher = new MethodMatcher();
+		this.customToString = new HashSet<ToolMethodType>();
 		this.sensitiveEqualityResults = new HashMap<String,HashMap<String,Integer>>();
 		log = LogManager.getLogger(EagerTestDetector.class.getName());
 	}
 
 	/**
 	 * This method computes sensitive equality analysis
-	 * for a single test case (xml file)
+	 * for a single test case (XML file)
 	 * 
 	 * @param xml
 	 * @return
 	 */
 	public double analyze(File xml) {
 
-		
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
 		HashMap<String, Integer> result = new HashMap<String, Integer>();
 
@@ -76,14 +89,15 @@ public class SensitiveEqualityDetector extends Thread {
 					// chiamate dei metodi toString
 					if (testChecker.isTestMethod(functionElement)) {
 						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
-						int numberOfToString = checkToString(functionElement);
+						//int numberOfToString = checkToString(functionElement);
+						int numberOfToString = getNumOfToStringAssertParams(methodName);
 						result.put(methodName, numberOfToString);
 						
 					}
 				}
 			}
 
-			sensitiveEqualityResults.put(xml.getName(), result);
+			sensitiveEqualityResults.put(ClassNameExtractor.extractClassNameFromPath(xml.getName()), result);
 			
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);
@@ -98,6 +112,57 @@ public class SensitiveEqualityDetector extends Thread {
 		
 		return 0;
 	}
+	
+	
+	/**
+	 * This method calculates how many times a test
+	 * method uses toString() as assert method parameter
+	 * 
+	 * @param methodName
+	 * @return numOfToString
+	 */
+	private int getNumOfToStringAssertParams(String methodName){
+		
+		int numOfToString = 0;
+		//1. trovare il nodo corrispondente al metodo di test
+		CGNode node;
+		Iterator<CGNode> iter = data.getCallGraph().iterator();
+		while (iter.hasNext()) {
+			node = iter.next();
+			IMethod iMethod = node.getMethod();
+			MethodReference methodRef = iMethod.getReference();
+			TypeReference typeRef = methodRef.getDeclaringClass();
+			ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
+
+			if (classLoaderRef.getName().toString()
+					.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
+					&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
+				methodAnalyzer = new DataFlowMethodAnalyzer(node);
+				
+				//2. customizzare ToolData
+				customToString.add(new ToolMethodType(ToolConstant.OBJECT_CLASS, ToolConstant.TO_STRING));
+				ToolData customData = new ToolData();
+				customData.setCallGraph(data.getCallGraph());
+				customData.setProductionClasses(data.getProductionClasses());
+				customData.setTestClasses(data.getTestClasses());
+				customData.setThresholdsContainer(data.getThresholdsContainer());
+				customData.setProductionMethods(customToString);
+				
+				//3. fare l'analisi
+				HashSet<String> toStringCalls = methodAnalyzer.getPCMethodsTestedByTestMethod(customData,
+						methodName);
+				
+				for(String s : toStringCalls){
+					if(s!=null && s.equals(ToolConstant.TO_STRING))
+						numOfToString++;
+				}	
+			}
+		}
+		
+		return numOfToString;
+	}
+	
+	
 
 	/**
 	 * This method calculates how many times a test
@@ -138,8 +203,10 @@ public class SensitiveEqualityDetector extends Thread {
 			HashMap<String,Integer> result = sensitiveEqualityResults.get(testCaseName);
 			for(String testMethod : result.keySet()){
 				int numToString = result.get(testMethod);
-				if(numToString >= threshold)
-					log.info(testMethod+" calls toString() "+numToString+" times");
+				if(numToString >= sensitiveEqualityAbs){
+					log.info("Sensitive Equality found: "+testCaseName+"."+testMethod);
+					//log.info(testMethod+" uses toString() "+numToString+" times");
+				}
 			}
 			
 		}

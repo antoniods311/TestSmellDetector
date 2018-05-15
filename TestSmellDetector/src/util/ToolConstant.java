@@ -87,10 +87,13 @@ public class ToolConstant {
 			"FileWriter", "PrintWriter", "Scanner" };
 
 	// File API methods
-	public static final String[] FILE_API_METHODS = { "readLine", "nextLine", "close", "read" };
+	public static final String[] FILE_API_METHODS = { "readLine", "nextLine", /*"close",*/ "read" };
 
 	// toString method
 	public static final String TO_STRING = "toString";
+	
+	// Object class
+	public static final String OBJECT_CLASS = "Object";
 	
 	// Operators
 	public static final String NEW_OPERATOR = "new";

@@ -18,6 +18,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import result.MysteryGuestResult;
+import util.ClassNameExtractor;
 import util.FileApiChecker;
 import util.TestParseTool;
 import util.ToolConstant;
@@ -112,26 +113,43 @@ public class MysteryGuestDetector extends Thread {
 	}
 
 	/**
-	 * This method prints if a test method calls a 
-	 * File API method or if it uses a File API object 
+	 * This method prints if a test method calls 
+	 * File API methods or if it uses File API objects 
 	 */
 	private void computeResults() {
 		
-		for(MysteryGuestResult testCase : results){
-			for(String methodName : testCase.getCallResult().keySet()){
-				ArrayList<String> apiCalls = testCase.getCallResult().get(methodName);
-				for(String call : apiCalls){
-					log.info("File API method use: "+methodName+" calls "+call);
+		int numOfCalls = 0;
+		int numOfTypes = 0;
+		
+//		for(MysteryGuestResult testCase : results){
+//			for(String methodName : testCase.getCallResult().keySet()){
+//				ArrayList<String> apiCalls = testCase.getCallResult().get(methodName);
+//				for(String call : apiCalls){
+//					numOfCalls++;
+//					log.info("File API method use: "+methodName+" calls "+call);
+//				}
+//			}
+//			for(String methodName : testCase.getTypeResult().keySet()){
+//				ArrayList<String> typeUses = testCase.getTypeResult().get(methodName);
+//				for(String use : typeUses){
+//					numOfTypes++;
+//					log.info("File API type use: "+methodName+" uses "+use);
+//				}
+//			}
+//			if((numOfCalls+numOfTypes) >= mysteryGuestAbs){
+//				log.info("Mystery Guest found! ");
+//			}
+//		}
+		
+		for(MysteryGuestResult result : results){
+			for(String methodName : result.getCallResult().keySet()){
+				numOfCalls = result.getCallResult().get(methodName).size();
+				numOfTypes = result.getTypeResult().get(methodName).size();
+				if((numOfCalls+numOfTypes) >= mysteryGuestAbs){
+					log.info("Mystery Guest found: "+ClassNameExtractor.extractClassNameFromPath(result.getTestClassName())+"."+methodName);
 				}
 			}
-			
-			for(String methodName : testCase.getTypeResult().keySet()){
-				ArrayList<String> typeUses = testCase.getTypeResult().get(methodName);
-				for(String use : typeUses){
-					log.info("File API type use: "+methodName+" uses "+use);
-				}
-			}	
-		}
+		}	
 	}
 	
 	/**

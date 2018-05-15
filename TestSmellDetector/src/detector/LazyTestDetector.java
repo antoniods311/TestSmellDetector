@@ -27,7 +27,7 @@ import com.ibm.wala.types.TypeReference;
 
 import dataflowanalysis.DataFlowMethodAnalyzer;
 import result.ResultContainer;
-
+import util.ClassNameExtractor;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
@@ -109,7 +109,7 @@ public class LazyTestDetector extends Thread {
 				}
 			}
 			
-			lazyTestResults.add(new ResultContainer(xml, testedMethods));
+			lazyTestResults.add(new ResultContainer(ClassNameExtractor.extractClassNameFromPath(xml.getName()), testedMethods));
 			
 //			for (String key : testedMethods.keySet()) {
 //				String s = "TM: " + key + " -> "; 
@@ -149,8 +149,10 @@ public class LazyTestDetector extends Thread {
 
 		boolean isLazyTest = false;
 		HashMap<String, Integer> tot = new HashMap<String, Integer>();
-		for (ToolMethodType tmt : data.getProductionMethods())
+		for (ToolMethodType tmt : data.getProductionMethods()){
 			tot.put(tmt.getMethodName(), 0);
+		}
+			
 		/*
 		 * scorro tutti i metodi della pc e poi vado ad aumentare il numero di
 		 * chiamate per questo
@@ -168,7 +170,7 @@ public class LazyTestDetector extends Thread {
 			}
 		}
 		for (String key : tot.keySet()) {
-			if (tot.get(key) > 0){
+			if (tot.get(key) >= lazyTestAbs){
 				isLazyTest = true;
 				log.info("PC method " + key + " is tested " + tot.get(key)+" times");
 			}
