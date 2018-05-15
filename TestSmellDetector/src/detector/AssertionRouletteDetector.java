@@ -2,6 +2,7 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -41,6 +42,7 @@ public class AssertionRouletteDetector extends Thread{
 	private MethodMatcher methodMatcher;
 	private AssertParameterChecker assertChecker;
 	private ArrayList<AssertionRouletteResult> rouletteResults;
+	private int testMethodNumber;
 	private int assertionRouletteAbs;
 	private double assertionRoulettePerc;
 
@@ -59,6 +61,7 @@ public class AssertionRouletteDetector extends Thread{
 		this.testChecker = new TestMethodChecker();
 		this.methodMatcher = new MethodMatcher();
 		this.assertChecker = new AssertParameterChecker();
+		this.testMethodNumber = 0;
 		log = LogManager.getLogger(AssertionRouletteDetector.class.getName());
 	}
 	
@@ -88,6 +91,7 @@ public class AssertionRouletteDetector extends Thread{
 					if (testChecker.isTestMethod(functionElement)) {
 						// aggiungere check sugli assert
 						readNoMessageAsserts(functionElement,result);
+						testMethodNumber++;
 					}
 				}
 			}
@@ -122,15 +126,27 @@ public class AssertionRouletteDetector extends Thread{
 	 */
 	private void computeResults() {
 		
+		int assertionRouletteNumber = 0;
+		
 		for(AssertionRouletteResult arr : rouletteResults){
 			for(String testMethod : arr.getNoMessageAssertMap().keySet()){
 				ArrayList<String> noMsgAsserts = arr.getNoMessageAssertMap().get(testMethod);
 				for(String element : noMsgAsserts){
 					//log.info(arr.getTestCasesFile()+"."+testMethod+" calls "+element+" without message parameter");
 					log.info("Assertion Roulette found in "+arr.getTestCasesFile()+"."+testMethod);
+					assertionRouletteNumber++;
 				}	
 			}	
 		}
+		
+		double asrNum = assertionRouletteNumber;
+		double totMeth = testMethodNumber;
+		double perc = (asrNum/totMeth)*100;
+		DecimalFormat df = new DecimalFormat("####0.00");
+		if(perc >= assertionRoulettePerc){
+			log.info("Assertion Roulette %: "+df.format(perc)+"%");
+		}
+		
 	}
 
 	/**
