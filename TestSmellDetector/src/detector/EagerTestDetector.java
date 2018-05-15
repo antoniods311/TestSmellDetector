@@ -2,6 +2,7 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -48,6 +49,7 @@ public class EagerTestDetector extends Thread {
 	private static Logger log;
 	private DataFlowMethodAnalyzer methodAnalyzer;
 	private ArrayList<ResultContainer> eagerTestResults;
+	private int testMethodNumber;
 	private int eagerTestAbs;
 	private double eagerTestPerc;
 	
@@ -57,6 +59,7 @@ public class EagerTestDetector extends Thread {
 		this.eagerTestPerc = data.getThresholdsContainer().getEagerTestPerc();
 		this.testChecker = new TestMethodChecker();
 		this.eagerTestResults = new ArrayList<ResultContainer>(); 
+		this.testMethodNumber = 0;
 		log = LogManager.getLogger(EagerTestDetector.class.getName());
 	}
 
@@ -77,6 +80,7 @@ public class EagerTestDetector extends Thread {
 
 					// Se entro ho trovato un metodo di test
 					if (testChecker.isTestMethod(functionElement)){
+						testMethodNumber++;
 						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 						CGNode node;
 						Iterator<CGNode> iter = data.getCallGraph().iterator();
@@ -130,14 +134,26 @@ public class EagerTestDetector extends Thread {
 	 */
 	private void computeResults() {
 		
+		int eagerTestNumber = 0;
+		
 		for(ResultContainer eager : eagerTestResults){
 			for(String testMtd : eager.getTestedMethods().keySet()){
 				int numberOfTestedMethods = eager.getTestedMethods().get(testMtd).size();
 				if(numberOfTestedMethods >= eagerTestAbs){
 					log.info("Eager Test found! "+eager.getTestCasesFile()+"."+testMtd+" tests "+numberOfTestedMethods+" PC methods");
+					eagerTestNumber++;
 				}
 			}
 		}
+		
+		double etNum = eagerTestNumber;
+		double totMeth = testMethodNumber;
+		double perc = (etNum/totMeth)*100;
+		DecimalFormat df = new DecimalFormat("####0.00");
+		if(perc >= eagerTestPerc){
+			log.info("Eager Test %: "+df.format(perc)+"%");
+		}
+		
 		
 	}
 	

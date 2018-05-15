@@ -171,8 +171,8 @@ public class TestSmellsAnalyzer {
 				
 			//Esecuzione delle analisi usando i diversi detector
 			ArrayList<Thread> detectors = new ArrayList<Thread>();
-			detectors.add(new AssertionRouletteDetector(data)); //ok
-//			detectors.add(new EagerTestDetector(data)); //ok
+//			detectors.add(new AssertionRouletteDetector(data)); //ok
+			detectors.add(new EagerTestDetector(data)); //ok
 //			detectors.add(new IndirectTestingDetector(data));//ok
 //			detectors.add(new GeneralFixtureDetector(data)); //ok
 //			detectors.add(new MysteryGuestDetector(data)); //ok
