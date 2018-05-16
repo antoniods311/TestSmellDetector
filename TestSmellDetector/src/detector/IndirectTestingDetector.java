@@ -2,6 +2,7 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.StringTokenizer;
@@ -27,6 +28,7 @@ import com.ibm.wala.types.TypeReference;
 
 import dataflowanalysis.CallSiteAnalyzer;
 import dataflowanalysis.DataFlowMethodAnalyzer;
+import result.IndirectTestingResult;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
@@ -49,6 +51,7 @@ public class IndirectTestingDetector extends Thread {
 	private DataFlowMethodAnalyzer methodAnalyzer;
 	private HashSet<ToolMethodType> testedMethods;
 	private HashSet<ToolMethodType> notTestedMethods;
+	private int totalPCMethod;
 	private int indirectTestingAbs;
 	private double indirectTestingPerc;
 
@@ -59,6 +62,7 @@ public class IndirectTestingDetector extends Thread {
 		this.testChecker = new TestMethodChecker();
 		this.testedMethods = new HashSet<ToolMethodType>();
 		this.notTestedMethods = new HashSet<ToolMethodType>();
+		this.totalPCMethod = data.getProductionMethods().size();
 		log = LogManager.getLogger(IndirectTestingDetector.class.getName());
 	}
 
@@ -116,8 +120,7 @@ public class IndirectTestingDetector extends Thread {
 								 * 2. Analisi sui call-sites
 								 */
 								CallSiteAnalyzer callSiteAnalyzer = new CallSiteAnalyzer(data, node);
-								testedMethods = callSiteAnalyzer.analyzeCallSite(testedMethods, testedMethodsNames);
-
+								testedMethods = callSiteAnalyzer.analyzeCallSite(testedMethods, testedMethodsNames);								
 							}
 						}	
 					}
@@ -137,12 +140,58 @@ public class IndirectTestingDetector extends Thread {
 	}
 
 	
+
+//	private HashSet<ToolMethodType> chekIndirectTesting() {
+//
+//		HashSet<ToolMethodType> indirectTestedMethods = new HashSet<ToolMethodType>();
+//
+//		for (ToolMethodType tmt : notTestedMethods) {
+//			Iterator<CGNode> iter = data.getCallGraph().iterator();
+//			while (iter.hasNext()) {
+//				CGNode node = iter.next();
+//				IMethod iMethod = node.getMethod();
+//				MethodReference methodRef = iMethod.getReference();
+//				TypeReference typeRef = methodRef.getDeclaringClass();
+//				ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
+//
+//				if (classLoaderRef.getName().toString().equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)) {
+//					Iterator<CallSiteReference> csi = node.iterateCallSites();
+//					while (csi.hasNext()) {
+//						CallSiteReference csr = csi.next();
+//						String className = csr.getDeclaredTarget().getDeclaringClass().getName().getClassName()
+//								.toString();
+//						String methodName = csr.getDeclaredTarget().getName().toString();
+//						
+//						if (tmt.getClassType().equals(className) && tmt.getMethodName().equals(methodName)) {
+//
+//							/*
+//							 * Se entro in questo if ho trovato una chiamata al
+//							 * metodo non testato. Ora devo vedere se il
+//							 * chiamante (metodo rappresentato dal node) è un
+//							 * metodo testato o meno. Nel caso sia testato ho un
+//							 * Indirect Testing
+//							 */
+//							String callerMethod = iMethod.getName().toString();
+//							String callerClass = iMethod.getDeclaringClass().getName().getClassName().toString();
+//							ToolMethodType indTestedMethod = new ToolMethodType(callerClass, callerMethod);
+//							if(testedMethods.contains(indTestedMethod)){
+//								indirectTestedMethods.add(indTestedMethod);
+//							}
+//							
+//						}
+//					}
+//				}
+//			}
+//		}
+//
+//		return indirectTestedMethods;
+//	}
 	/**
 	 * @return indirect tested methods
 	 */
-	private HashSet<ToolMethodType> chekIndirectTesting() {
+	private HashSet<IndirectTestingResult> chekIndirectTesting_mio() {
 
-		HashSet<ToolMethodType> indirectTestedMethods = new HashSet<ToolMethodType>();
+		HashSet<IndirectTestingResult> indirectTestedMethods = new HashSet<IndirectTestingResult>();
 
 		for (ToolMethodType tmt : notTestedMethods) {
 			Iterator<CGNode> iter = data.getCallGraph().iterator();
@@ -173,9 +222,14 @@ public class IndirectTestingDetector extends Thread {
 							String callerMethod = iMethod.getName().toString();
 							String callerClass = iMethod.getDeclaringClass().getName().getClassName().toString();
 							ToolMethodType indTestedMethod = new ToolMethodType(callerClass, callerMethod);
-							if(testedMethods.contains(indTestedMethod))
-								indirectTestedMethods.add(indTestedMethod);
-
+							if(testedMethods.contains(indTestedMethod)){
+								//indirectTestedMethods.add(indTestedMethod);
+								IndirectTestingResult res = new IndirectTestingResult();
+								res.setTesterMethod(new ToolMethodType(callerClass, callerMethod));
+								res.setIndirectTestedMethod(new ToolMethodType(className, methodName));
+								indirectTestedMethods.add(res);
+							}
+							
 						}
 					}
 				}
@@ -252,12 +306,33 @@ public class IndirectTestingDetector extends Thread {
 			this.analyze(file);
 
 		computeDifferenceSet();
-		HashSet<ToolMethodType> indirectTestedMethod = chekIndirectTesting();
-		if(indirectTestedMethod.size() >= indirectTestingAbs){
-			for(ToolMethodType tmt : indirectTestedMethod){
-				log.info("Indirect Tested Methods Found: "+tmt.getClassType()+"."+tmt.getMethodName());
+		
+//		//1
+//		HashSet<ToolMethodType> indirectTestedMethod = chekIndirectTesting();
+//		if(indirectTestedMethod.size() >= indirectTestingAbs){
+//			for(ToolMethodType tmt : indirectTestedMethod){
+//				log.info("Indirect Tested Methods Found in "+tmt.getClassType()+"."+tmt.getMethodName());
+//			}
+//		}
+		
+		//2
+		HashSet<IndirectTestingResult> results = chekIndirectTesting_mio();
+		if(results.size() >= indirectTestingAbs){
+			for(IndirectTestingResult itr : results){
+				log.info("Indirect Tested Method: "+ 
+						itr.getIndirectTestedMethod().getClassType()+
+						"."+itr.getIndirectTestedMethod().getMethodName()+
+						" - called in "+ itr.getTesterMethod().getClassType()+
+						"."+itr.getTesterMethod().getMethodName());
 			}
-			
+		}
+		
+		double itMeth = results.size();
+		double totPCMeth = totalPCMethod;
+		double perc = (itMeth/totPCMeth)*100;
+		DecimalFormat df = new DecimalFormat("####0.00");
+		if(perc >= indirectTestingPerc){
+			log.info("Indirect Testing %: "+df.format(perc)+"%");
 		}
 			
 

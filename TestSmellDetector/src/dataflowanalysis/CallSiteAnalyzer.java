@@ -31,8 +31,8 @@ public class CallSiteAnalyzer {
 			String className = csr.getDeclaredTarget().getDeclaringClass().getName().getClassName().toString();
 			String methodName = csr.getDeclaredTarget().getName().toString();
 			
-			for(String m : testedMethodsNames){
-				if(m.equals(methodName)){
+			for(String m : testedMethodsNames){	
+				if(m!=null && m.equals(methodName)){
 					testedMethods.add(new ToolMethodType(className, methodName));
 				}
 			}
