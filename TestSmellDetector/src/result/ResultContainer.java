@@ -4,6 +4,7 @@ import java.util.HashSet;
 
 public class ResultContainer {
 	
+	private int testMethodNumber;
 	private String testCasesFile;
 	private HashMap<String,HashSet<String>> testedMethods;
 	
@@ -15,7 +16,20 @@ public class ResultContainer {
 		super();
 		this.testCasesFile = testCase;
 		this.testedMethods = testedMethods;
+		this.testMethodNumber = 0;
 	}
+	
+	/**
+	 * @param testCase
+	 * @param testedMethods
+	 */
+	public ResultContainer(String testCase, HashMap<String, HashSet<String>> testedMethods, int testMethodNumber) {
+		super();
+		this.testCasesFile = testCase;
+		this.testedMethods = testedMethods;
+		this.testMethodNumber = testMethodNumber;
+	}
+
 
 	/**
 	 * @return the testCase
@@ -45,6 +59,18 @@ public class ResultContainer {
 		this.testedMethods = testedMethods;
 	}
 	
-	
+	/**
+	 * @return the testMethodNumber
+	 */
+	public int getTestMethodNumber() {
+		return testMethodNumber;
+	}
+
+	/**
+	 * @param testMethodNumber the testMethodNumber to set
+	 */
+	public void setTestMethodNumber(int testMethodNumber) {
+		this.testMethodNumber = testMethodNumber;
+	}
 
 }

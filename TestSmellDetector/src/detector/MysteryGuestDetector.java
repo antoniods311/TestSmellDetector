@@ -2,6 +2,7 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -20,6 +21,7 @@ import org.xml.sax.SAXException;
 import result.MysteryGuestResult;
 import util.ClassNameExtractor;
 import util.FileApiChecker;
+import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
 import util.tooldata.ToolData;
@@ -36,6 +38,7 @@ public class MysteryGuestDetector extends Thread {
 	private DocumentBuilderFactory docbuilderFactory;
 	private DocumentBuilder documentBuilder;
 	private Document doc;
+	private TestMethodChecker testMethodChecker;
 	private FileApiChecker fileApiChecker;
 	private static Logger log;
 	private int mysteryGuestAbs;
@@ -47,6 +50,7 @@ public class MysteryGuestDetector extends Thread {
 		this.mysteryGuestPerc = data.getThresholdsContainer().getMysteryGuestPerc();
 		this.results = new ArrayList<MysteryGuestResult>();
 		this.fileApiChecker = new FileApiChecker();
+		this.testMethodChecker = new TestMethodChecker();
 		log = LogManager.getLogger(MysteryGuestDetector.class.getName());
 	}
 
@@ -87,7 +91,7 @@ public class MysteryGuestDetector extends Thread {
 				}
 			}
 			
-			results.add(new MysteryGuestResult(xml.getName(), typeResult, callResult));
+			results.add(new MysteryGuestResult(xml.getName(), typeResult, callResult,testMethodChecker.getTestMethodNumber(xml)));
 			
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);
@@ -141,15 +145,30 @@ public class MysteryGuestDetector extends Thread {
 //			}
 //		}
 		
+		int mysteryGuestNum = 0;
+		int globalTestMethodNum = 0;
+		
 		for(MysteryGuestResult result : results){
 			for(String methodName : result.getCallResult().keySet()){
 				numOfCalls = result.getCallResult().get(methodName).size();
 				numOfTypes = result.getTypeResult().get(methodName).size();
 				if((numOfCalls+numOfTypes) >= mysteryGuestAbs){
-					log.info("Mystery Guest found: "+ClassNameExtractor.extractClassNameFromPath(result.getTestClassName())+"."+methodName);
+					log.info("Value: Mystery Guest found in "+ClassNameExtractor.extractClassNameFromPath(result.getTestClassName())+"."+methodName);
+					mysteryGuestNum++;
 				}
 			}
-		}	
+			globalTestMethodNum = globalTestMethodNum + result.getTestMethodNumber();
+		}
+		
+		double mgn = mysteryGuestNum;
+		double mtn = globalTestMethodNum;
+		double perc = (mgn/mtn)*100;
+		DecimalFormat df = new DecimalFormat("####0.00");
+		if(perc >= mysteryGuestPerc)
+			log.info("Perc of Mystery Guest: "+df.format(perc)+"%");
+		
+		
+		
 	}
 	
 	/**

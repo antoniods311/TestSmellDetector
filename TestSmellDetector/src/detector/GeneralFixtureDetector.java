@@ -2,6 +2,7 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -56,6 +57,7 @@ public class GeneralFixtureDetector extends Thread {
 
 	public double analyze(File xml) {
 
+		int testMethodNumber = 0;
 		docbuilderFactory = DocumentBuilderFactory.newInstance();
 		HashMap<String, HashMap<String, Boolean>> results = new HashMap<String, HashMap<String, Boolean>>();
 
@@ -86,6 +88,7 @@ public class GeneralFixtureDetector extends Thread {
 					Element functionElement = (Element) functionList.item(i);
 					// Se entro ho trovato un metodo di test
 					if (testChecker.isTestMethod(functionElement)) {
+						testMethodNumber++;
 						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 						if (isFirstMethod) {
 							isFirstMethod = false;
@@ -152,6 +155,7 @@ public class GeneralFixtureDetector extends Thread {
 //		}
 		
 		String testClassName = ClassNameExtractor.extractClassNameFromPath(xml.getName());
+		int generalFixMethodNumber = 0;
 		
 		for(String mn : results.keySet()){
 			int numOfNoUse = 0;
@@ -159,10 +163,20 @@ public class GeneralFixtureDetector extends Thread {
 				if(!results.get(mn).get(var)) numOfNoUse++;
 			}
 			
-			if(numOfNoUse >= generalFixtureAbs)
-				log.info("Found General Fixture for "+ testClassName+"."+mn + " method");
+			if(numOfNoUse >= generalFixtureAbs){
+				log.info("Value: Found General Fixture for "+ testClassName+"."+mn);
+				generalFixMethodNumber++;
+			}
 			
 		}
+		
+		double noUse = generalFixMethodNumber;
+		double tmn = testMethodNumber;
+		double perc = (noUse/tmn)*100;
+		DecimalFormat df = new DecimalFormat("####0.00");
+		if(perc >= generalFixturePerc)
+			log.info("Perc: Percentage of GF test smell in "+ testClassName+ " "+df.format(perc)+"%");
+		
 		
 		return 0;
 	}

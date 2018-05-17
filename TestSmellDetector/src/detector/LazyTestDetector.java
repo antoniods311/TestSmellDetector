@@ -2,6 +2,7 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -109,7 +110,8 @@ public class LazyTestDetector extends Thread {
 				}
 			}
 			
-			lazyTestResults.add(new ResultContainer(ClassNameExtractor.extractClassNameFromPath(xml.getName()), testedMethods));
+			lazyTestResults.add(new ResultContainer(ClassNameExtractor.extractClassNameFromPath(xml.getName()), 
+					testedMethods, testChecker.getTestMethodNumber(xml)));
 			
 //			for (String key : testedMethods.keySet()) {
 //				String s = "TM: " + key + " -> "; 
@@ -147,7 +149,7 @@ public class LazyTestDetector extends Thread {
 	 */
 	private void computeResults() {
 
-		boolean isLazyTest = false;
+		int numOfLT = 0;
 		HashMap<String, Integer> tot = new HashMap<String, Integer>();
 		for (ToolMethodType tmt : data.getProductionMethods()){
 			tot.put(tmt.getMethodName(), 0);
@@ -157,6 +159,7 @@ public class LazyTestDetector extends Thread {
 		 * scorro tutti i metodi della pc e poi vado ad aumentare il numero di
 		 * chiamate per questo
 		 */
+		int globalTMNumber = 0;
 		for (ResultContainer lazy : lazyTestResults) {
 			for (String testMtd : lazy.getTestedMethods().keySet()) {
 				for (String tm : lazy.getTestedMethods().get(testMtd)) {
@@ -168,17 +171,24 @@ public class LazyTestDetector extends Thread {
 					}
 				}
 			}
+			globalTMNumber = globalTMNumber + lazy.getTestMethodNumber();
 		}
 		for (String key : tot.keySet()) {
 			if (tot.get(key) >= lazyTestAbs){
-				isLazyTest = true;
-				log.info("PC method " + key + " is tested " + tot.get(key)+" times");
-			}
-				
+				numOfLT++;
+				log.info("PC method " + key + " is tested " + tot.get(key)+" times with the same setUp");
+			}		
 		}
 
-		if (isLazyTest)
-			log.info("Lazy Test found");
+		double gTM = globalTMNumber;
+		double nLT = numOfLT;
+		double perc = (nLT/gTM)*100;
+		DecimalFormat df = new DecimalFormat("####0.00");
+		log.info("Perc: Lazy Test % is "+df.format(perc));
+		
+		
+//		if (isLazyTest)
+//			log.info("Lazy Test found");
 
 	}
 	

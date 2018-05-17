@@ -2,6 +2,7 @@ package detector;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,6 +51,7 @@ public class SensitiveEqualityDetector extends Thread {
 	private DataFlowMethodAnalyzer methodAnalyzer;
 	private HashSet<ToolMethodType> customToString;
 	private int sensitiveEqualityAbs;
+	private int globalTestMethodNumber;
 	private double sensitiveEqualityPerc;
 	
 	public SensitiveEqualityDetector(ToolData data){
@@ -60,6 +62,7 @@ public class SensitiveEqualityDetector extends Thread {
 		this.methodMatcher = new MethodMatcher();
 		this.customToString = new HashSet<ToolMethodType>();
 		this.sensitiveEqualityResults = new HashMap<String,HashMap<String,Integer>>();
+		this.globalTestMethodNumber = 0;
 		log = LogManager.getLogger(EagerTestDetector.class.getName());
 	}
 
@@ -88,6 +91,7 @@ public class SensitiveEqualityDetector extends Thread {
 					// Se entro ho trovato un metodo di test e devo cercare le
 					// chiamate dei metodi toString
 					if (testChecker.isTestMethod(functionElement)) {
+						globalTestMethodNumber++;
 						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 						//int numberOfToString = checkToString(functionElement);
 						int numberOfToString = getNumOfToStringAssertParams(methodName);
@@ -199,6 +203,8 @@ public class SensitiveEqualityDetector extends Thread {
 	 */
 	private void computeResults() {
 		
+		int numOfSE = 0;
+		
 		for(String testCaseName : sensitiveEqualityResults.keySet()){
 			HashMap<String,Integer> result = sensitiveEqualityResults.get(testCaseName);
 			for(String testMethod : result.keySet()){
@@ -206,11 +212,18 @@ public class SensitiveEqualityDetector extends Thread {
 				if(numToString >= sensitiveEqualityAbs){
 					log.info("Sensitive Equality found: "+testCaseName+"."+testMethod);
 					//log.info(testMethod+" uses toString() "+numToString+" times");
+					numOfSE++;
 				}
 			}
-			
 		}
 		
+		double nSE = numOfSE;
+		double totTM = globalTestMethodNumber;
+		double perc = (nSE/totTM)*100;
+		DecimalFormat df = new DecimalFormat("####0.00");
+		if(perc >= sensitiveEqualityPerc)
+			log.info("Perc: Sensitive Equality %:  "+df.format(perc));
+	
 		
 	}
 

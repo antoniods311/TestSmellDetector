@@ -8,7 +8,8 @@ public class MysteryGuestResult {
 	private String testClassName;
 	private HashMap<String, ArrayList<String>> typeResult;
 	private HashMap<String, ArrayList<String>> callResult;
-	
+	private int testMethodNumber;
+
 	/**
 	 * Object constructor
 	 * 
@@ -17,11 +18,12 @@ public class MysteryGuestResult {
 	 * @param callResult
 	 */
 	public MysteryGuestResult(String testCase, HashMap<String, ArrayList<String>> typeResult,
-			HashMap<String, ArrayList<String>> callResult) {
+			HashMap<String, ArrayList<String>> callResult, int testMethodNumber) {
 		super();
 		this.testClassName = testCase;
 		this.typeResult = typeResult;
 		this.callResult = callResult;
+		this.testMethodNumber = testMethodNumber;
 	}
 	
 	/**
@@ -66,7 +68,19 @@ public class MysteryGuestResult {
 		this.callResult = callResult;
 	}
 	
-	
+	/**
+	 * @return the testMethodNumber
+	 */
+	public int getTestMethodNumber() {
+		return testMethodNumber;
+	}
+
+	/**
+	 * @param testMethodNumber the testMethodNumber to set
+	 */
+	public void setTestMethodNumber(int testMethodNumber) {
+		this.testMethodNumber = testMethodNumber;
+	}
 	
 	
 }
