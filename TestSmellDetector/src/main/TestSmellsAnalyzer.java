@@ -41,6 +41,7 @@ public class TestSmellsAnalyzer {
 	private static String test_cases_jar_path;
 	private static String exclusion_file;
 	private static String log4jConfig;
+	private static String walaPropertiesFile;
 	
 	public static void main(String[] args) throws URISyntaxException {	
 		
@@ -65,6 +66,7 @@ public class TestSmellsAnalyzer {
 			test_cases_java_dir = prop.getProperty(ToolConstant.TEST_CASES_JAVA_DIR);
 			exclusion_file = prop.getProperty(ToolConstant.EXCLUSION_FILE);
 			log4jConfig = prop.getProperty(ToolConstant.LOG4J_CONFIG);
+			walaPropertiesFile = prop.getProperty(ToolConstant.WALA_PROPERTIES_FILE);
 			
 			//Thresholds
 			container = new ThresholdContainer();
@@ -124,7 +126,7 @@ public class TestSmellsAnalyzer {
 		try {
 			// 1.Costruzione Call Graph
 			log.info("Building Call Graph...");
-			builder = new WalaCallGraphBuilder(jarInput,exclusion_file);
+			builder = new WalaCallGraphBuilder(jarInput,exclusion_file,walaPropertiesFile);
 			CallGraph callGraph = builder.buildCallGraph();
 			log.info("done\n");
 			

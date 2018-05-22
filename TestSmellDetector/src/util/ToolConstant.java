@@ -20,8 +20,10 @@ public class ToolConstant {
 	public static final String TEST_CASE_XML_DIR = "xml_tc_dir";
 	public static final String PRODUCTION_CLASSES_XML_DIR = "xml_pc_dir";
 	public static final String EXCLUSION_FILE = "exclusion_file";
+	public static final String WALA_PROPERTIES_FILE = "wala_properties_file";
 	public static final String LOG4J_CONFIG = "log4j_config";
 	public static final String SRCML_DIR = "srcML_path";
+	
 	
 	// Thresholds absolute values
 	public static final String ASSERTION_ROULETTE_ABS = "assertion_roulette_abs";
