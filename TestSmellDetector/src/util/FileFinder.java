@@ -24,13 +24,10 @@ public class FileFinder {
 	public static ArrayList<String> findJava(String inputDirPath){
 		
 		/*
-		 * Controllare se il parametro in ingresso finisce con /
+		 * Controllare se il parametro in ingresso finisce con "/"
 		 * in questo caso va rimosso.
 		 */
-		String dirPath = inputDirPath;
-		if(inputDirPath.toCharArray()[inputDirPath.length()-1] == '/'){
-			dirPath = inputDirPath.substring(0,inputDirPath.length()-1);
-		}
+		String dirPath = PathTool.removeEndSeparator(inputDirPath);	
 		
 		ArrayList<String> fileList = new ArrayList<String>();	
 		String command = "find";

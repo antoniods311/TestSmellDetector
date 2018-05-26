@@ -10,6 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import main.TestSmellsAnalyzer;
+import util.PathTool;
 import util.ToolConstant;
 
 /**
@@ -98,10 +99,10 @@ public class JavaToXmlTranslator implements Translator {
 		this.setSourceFile(file);
 		if(type == ToolConstant.PRODUCTION_CLASS){
 			this.input = file.getAbsolutePath();
-			this.output = production_classes_xml_dir + file.getName() + ".xml";
+			this.output = production_classes_xml_dir + PathTool.extractPackage(file.getAbsolutePath(), production_classes_java_dir) + ".xml";
 		}else{
 			this.input = file.getAbsolutePath();
-			this.output = test_case_xml_dir + file.getName() + ".xml";
+			this.output = test_case_xml_dir + PathTool.extractPackage(file.getAbsolutePath(), test_cases_java_dir) + ".xml";
 		}
 		
 	}
