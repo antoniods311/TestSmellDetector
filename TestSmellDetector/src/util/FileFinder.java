@@ -37,21 +37,15 @@ public class FileFinder {
 		String option = "-name";
 		String fileType = "*.java";
 		ProcessBuilder processBuilder;
-		//processBuilder.inheritIO();
 		try {
 			processBuilder = new ProcessBuilder(command,dirPath,option,fileType);
 			Process process = processBuilder.start();
 			process.waitFor();
 			BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-			StringBuilder builder = new StringBuilder();
 			String line = null;
-			
 			while ( (line = reader.readLine()) != null) {
-				builder.append(line);
 				fileList.add(line);
-				builder.append(System.getProperty("line.separator"));
 			}
-			String result = builder.toString();
 			reader.close();
 			
 		} catch (IOException e) {
