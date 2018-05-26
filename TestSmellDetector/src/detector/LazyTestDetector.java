@@ -29,6 +29,8 @@ import com.ibm.wala.types.TypeReference;
 import dataflowanalysis.DataFlowMethodAnalyzer;
 import result.ResultContainer;
 import util.ClassNameExtractor;
+import util.PackageTool;
+import util.PathTool;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
@@ -77,6 +79,9 @@ public class LazyTestDetector extends Thread {
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
 			doc = documentBuilder.parse(xml);
 			doc.getDocumentElement().normalize();
+			
+			//Leggo il package
+			String classPackage = PackageTool.constructPackage(doc);
 
 			// leggo la lista di nodi function
 			NodeList functionList = doc.getElementsByTagName(ToolConstant.FUNCTION);
@@ -94,10 +99,12 @@ public class LazyTestDetector extends Thread {
 							MethodReference methodRef = iMethod.getReference();
 							TypeReference typeRef = methodRef.getDeclaringClass();
 							ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
+							String pack = PathTool.pathToPackage(typeRef.getName().getPackage().toString());
 
 							if (classLoaderRef.getName().toString()
 									.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
-									&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
+									&& iMethod.getName().toString().equalsIgnoreCase(methodName)
+									&& pack.equals(classPackage)) {
 								methodAnalyzer = new DataFlowMethodAnalyzer(node);
 								// HashSet<String> methodsCalled = methodAnalyzer.calculatePCMethodsCall(data,methodName);
 								// callPaths.put(methodName, methodsCalled);// tutti i metodi della PC chiamati nel metodo di test

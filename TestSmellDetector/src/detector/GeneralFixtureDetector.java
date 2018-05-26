@@ -21,6 +21,7 @@ import org.xml.sax.SAXException;
 import dataflowanalysis.ClassFieldsReader;
 import dataflowanalysis.SetUpMethodAnalyzer;
 import util.ClassNameExtractor;
+import util.PackageTool;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
@@ -65,6 +66,9 @@ public class GeneralFixtureDetector extends Thread {
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
 			doc = documentBuilder.parse(xml);
 			doc.getDocumentElement().normalize();
+			
+			//Leggo il package
+			String classPackage = PackageTool.constructPackage(doc);
 
 			/*
 			 * Quando analizzo il primo metodo di test della classe devo fare
@@ -95,7 +99,8 @@ public class GeneralFixtureDetector extends Thread {
 
 							// 1. calcolo i fields
 							fieldReader = new ClassFieldsReader(data, methodName);
-							fieldsSet = fieldReader.getClassFields();
+							//fieldsSet = fieldReader.getClassFields();
+							fieldsSet = fieldReader.getClassFields(classPackage);
 
 							// 2. trovo e analizzo i setUp per creare il
 							// "createdSet"

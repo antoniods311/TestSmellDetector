@@ -29,6 +29,8 @@ import com.ibm.wala.types.TypeReference;
 import dataflowanalysis.CallSiteAnalyzer;
 import dataflowanalysis.DataFlowMethodAnalyzer;
 import result.IndirectTestingResult;
+import util.PackageTool;
+import util.PathTool;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
@@ -54,6 +56,7 @@ public class IndirectTestingDetector extends Thread {
 	private int totalPCMethod;
 	private int indirectTestingAbs;
 	private double indirectTestingPerc;
+	private String classPackage;
 
 	public IndirectTestingDetector(ToolData data) {
 		this.data = data;
@@ -73,6 +76,9 @@ public class IndirectTestingDetector extends Thread {
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
 			doc = documentBuilder.parse(xml);
 			doc.getDocumentElement().normalize();
+			
+			//Leggo il package
+			classPackage = PackageTool.constructPackage(doc);
 
 			NodeList list = doc.getElementsByTagName(ToolConstant.FUNCTION);
 			for (int i = 0; i < list.getLength(); i++) {
@@ -89,10 +95,12 @@ public class IndirectTestingDetector extends Thread {
 							MethodReference methodRef = iMethod.getReference();
 							TypeReference typeRef = methodRef.getDeclaringClass();
 							ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
-
+							String pack = PathTool.pathToPackage(typeRef.getName().getPackage().toString());
+							
 							if (classLoaderRef.getName().toString()
 									.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
-									&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
+									&& iMethod.getName().toString().equalsIgnoreCase(methodName)
+									&& pack.equals(classPackage)) {
 								methodAnalyzer = new DataFlowMethodAnalyzer(node);
 
 								/*
@@ -210,7 +218,18 @@ public class IndirectTestingDetector extends Thread {
 								.toString();
 						String methodName = csr.getDeclaredTarget().getName().toString();
 						
-						if (tmt.getClassType().equals(className) && tmt.getMethodName().equals(methodName)) {
+						/*
+						 * START modifiche
+						 */
+						
+						String pack = PathTool.pathToPackage(typeRef.getName().getPackage().toString());
+						System.out.println(tmt.getClassType());
+						/*
+						 * END modifiche (anche la condizione nell'if successivo)
+						 */
+						
+						if (tmt.getClassType().equals(className) 
+								&& tmt.getMethodName().equals(methodName)) {
 
 							/*
 							 * Se entro in questo if ho trovato una chiamata al

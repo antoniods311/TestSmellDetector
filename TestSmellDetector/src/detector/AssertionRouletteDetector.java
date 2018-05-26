@@ -22,6 +22,7 @@ import result.AssertionRouletteResult;
 import util.AssertParameterChecker;
 import util.ClassNameExtractor;
 import util.MethodMatcher;
+import util.PackageTool;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
@@ -80,6 +81,9 @@ public class AssertionRouletteDetector extends Thread{
 			documentBuilder = docbuilderFactory.newDocumentBuilder();
 			doc = documentBuilder.parse(xml);
 			doc.getDocumentElement().normalize();
+			
+			//Leggo il package
+			String classPackage = PackageTool.constructPackage(doc);
 
 			// leggo la lista di nodi function
 			NodeList functionList = doc.getElementsByTagName(ToolConstant.FUNCTION);

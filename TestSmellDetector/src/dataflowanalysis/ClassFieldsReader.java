@@ -12,6 +12,7 @@ import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
 
+import util.PathTool;
 import util.ToolConstant;
 import util.tooldata.ToolData;
 
@@ -40,7 +41,7 @@ public class ClassFieldsReader {
 	 * 
 	 * @return method's class fields
 	 */
-	public HashSet<String> getClassFields(){
+	public HashSet<String> getClassFields(String classPackage){
 		
 		HashSet<String> fields = new HashSet<String>();
 		CGNode node;
@@ -51,10 +52,12 @@ public class ClassFieldsReader {
 			MethodReference methodRef = iMethod.getReference();
 			TypeReference typeRef = methodRef.getDeclaringClass();
 			ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
+			String pack = PathTool.pathToPackage(typeRef.getName().getPackage().toString());
 
 			if (classLoaderRef.getName().toString()
 					.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
-					&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
+					&& iMethod.getName().toString().equalsIgnoreCase(methodName)
+					&& pack.equals(classPackage)) {
 												
 				IClass declaringClass = iMethod.getDeclaringClass();	
 				Collection<IField> allFields = declaringClass.getAllFields();  //prendo i fields della classe di test

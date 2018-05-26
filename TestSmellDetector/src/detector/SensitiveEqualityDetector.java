@@ -27,6 +27,8 @@ import com.ibm.wala.types.TypeReference;
 import dataflowanalysis.DataFlowMethodAnalyzer;
 import util.ClassNameExtractor;
 import util.MethodMatcher;
+import util.PackageTool;
+import util.PathTool;
 import util.TestMethodChecker;
 import util.TestParseTool;
 import util.ToolConstant;
@@ -83,6 +85,9 @@ public class SensitiveEqualityDetector extends Thread {
 			doc = documentBuilder.parse(xml);
 			doc.getDocumentElement().normalize();
 			
+			//Leggo il package
+			String classPackage = PackageTool.constructPackage(doc);
+			
 			NodeList list = doc.getElementsByTagName(ToolConstant.FUNCTION);
 			for (int i = 0; i < list.getLength(); i++) {
 				if (list.item(i).getNodeType() == Node.ELEMENT_NODE) {
@@ -94,7 +99,7 @@ public class SensitiveEqualityDetector extends Thread {
 						globalTestMethodNumber++;
 						String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 						//int numberOfToString = checkToString(functionElement);
-						int numberOfToString = getNumOfToStringAssertParams(methodName);
+						int numberOfToString = getNumOfToStringAssertParams(methodName,classPackage);
 						result.put(methodName, numberOfToString);
 						
 					}
@@ -125,7 +130,7 @@ public class SensitiveEqualityDetector extends Thread {
 	 * @param methodName
 	 * @return numOfToString
 	 */
-	private int getNumOfToStringAssertParams(String methodName){
+	private int getNumOfToStringAssertParams(String methodName,String classPackage){
 		
 		int numOfToString = 0;
 		//1. trovare il nodo corrispondente al metodo di test
@@ -137,10 +142,12 @@ public class SensitiveEqualityDetector extends Thread {
 			MethodReference methodRef = iMethod.getReference();
 			TypeReference typeRef = methodRef.getDeclaringClass();
 			ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
+			String pack = PathTool.pathToPackage(typeRef.getName().getPackage().toString());
 
 			if (classLoaderRef.getName().toString()
 					.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
-					&& iMethod.getName().toString().equalsIgnoreCase(methodName)) {
+					&& iMethod.getName().toString().equalsIgnoreCase(methodName)
+					&& pack.equals(classPackage)) {
 				methodAnalyzer = new DataFlowMethodAnalyzer(node);
 				
 				//2. customizzare ToolData

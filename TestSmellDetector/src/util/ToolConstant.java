@@ -113,6 +113,7 @@ public class ToolConstant {
 	public static final String OPERATOR = "operator";
 	public static final String BLOCK = "block";
 	public static final String INIT = "init";
+	public static final String PACKAGE = "package";
 	
 	//XML ATTRIBUTES NAME
 	public static final String FILENAME_ATTRIBUTE = "filename";
@@ -127,4 +128,9 @@ public class ToolConstant {
 	//Extension
 	public static final String JAVA_EXTENSION = "java";
 
+	//Chars
+	public static final char PATH_SEPARATOR = '/';
+	public static final char DOT = '.';
+	public static final char MINUS = '-';
+	
 }
