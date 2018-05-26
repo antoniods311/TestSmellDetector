@@ -22,7 +22,6 @@ import com.ibm.wala.util.WalaException;
 
 import callgraph.WalaCallGraphBuilder;
 import translator.JavaToXmlTranslator;
-import util.ClassNameExtractor;
 import util.FileFinder;
 import util.ToolConstant;
 import util.prodclass.ProductionClassAnalyzer;

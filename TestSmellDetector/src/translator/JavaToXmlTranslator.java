@@ -97,10 +97,10 @@ public class JavaToXmlTranslator implements Translator {
 	public void load(File file, int type) {
 		this.setSourceFile(file);
 		if(type == ToolConstant.PRODUCTION_CLASS){
-			this.input = production_classes_java_dir + file.getName();
+			this.input = file.getAbsolutePath();
 			this.output = production_classes_xml_dir + file.getName() + ".xml";
 		}else{
-			this.input = test_cases_java_dir + file.getName();
+			this.input = file.getAbsolutePath();
 			this.output = test_case_xml_dir + file.getName() + ".xml";
 		}
 		

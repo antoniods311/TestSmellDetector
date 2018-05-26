@@ -25,7 +25,7 @@ public class FileFinder {
 		
 		/*
 		 * Controllare se il parametro in ingresso finisce con /
-		 * in quest cas va rimosso.
+		 * in questo caso va rimosso.
 		 */
 		String dirPath = inputDirPath;
 		if(inputDirPath.toCharArray()[inputDirPath.length()-1] == '/'){
