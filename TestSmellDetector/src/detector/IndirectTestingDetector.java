@@ -223,7 +223,7 @@ public class IndirectTestingDetector extends Thread {
 						 */
 						
 						String pack = PathTool.pathToPackage(typeRef.getName().getPackage().toString());
-						System.out.println(tmt.getClassType());
+						//System.out.println(tmt.getClassType());
 						/*
 						 * END modifiche (anche la condizione nell'if successivo)
 						 */
