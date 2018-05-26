@@ -22,6 +22,8 @@ import com.ibm.wala.util.WalaException;
 
 import callgraph.WalaCallGraphBuilder;
 import translator.JavaToXmlTranslator;
+import util.ClassNameExtractor;
+import util.FileFinder;
 import util.ToolConstant;
 import util.prodclass.ProductionClassAnalyzer;
 import util.prodclass.ToolMethodType;
@@ -133,11 +135,10 @@ public class TestSmellsAnalyzer {
 			// 2.Traduzione delle production classes
 			log.info("Production classes translation...");
 			ArrayList<File> xmlProdClasses = new ArrayList<File>();
-			File prodClassDir = new File(production_classes_dir);
-			String prodClasses[] = prodClassDir.list();
-			for(int i=0; i<prodClasses.length; i++){
-				if(FilenameUtils.getExtension(prodClasses[i]).equalsIgnoreCase(ToolConstant.JAVA_EXTENSION)){
-					jxmlTranslator.load(new File(prodClasses[i]), ToolConstant.PRODUCTION_CLASS);
+			ArrayList<String> prodClasses = FileFinder.findJava(production_classes_dir);
+			for(String prodClass : prodClasses){
+				if(FilenameUtils.getExtension(prodClass).equalsIgnoreCase(ToolConstant.JAVA_EXTENSION)){
+					jxmlTranslator.load(new File(prodClass), ToolConstant.PRODUCTION_CLASS);
 					xmlProdClasses.add(jxmlTranslator.translate());
 				}
 			}
@@ -146,14 +147,13 @@ public class TestSmellsAnalyzer {
 			// 3.Traduzione dei casi di test
 			log.info("Test classes transaltion...");
 			ArrayList<File> javaTestCases = new ArrayList<File>();
-			ArrayList<File> xmlTestCases = new ArrayList<File>();
-			File testCasesDir = new File(test_cases_java_dir);
-			String testCases[] = testCasesDir.list();
-			for(int i=0; i<testCases.length; i++){
-				if(FilenameUtils.getExtension(testCases[i]).equalsIgnoreCase(ToolConstant.JAVA_EXTENSION)){
-					jxmlTranslator.load(new File(testCases[i]), ToolConstant.TEST_CLASS);
+			ArrayList<File> xmlTestCases = new ArrayList<File>();			
+			ArrayList<String> testCases = FileFinder.findJava(test_cases_java_dir);
+			for(String testCase : testCases){
+				if(FilenameUtils.getExtension(testCase).equalsIgnoreCase(ToolConstant.JAVA_EXTENSION)){
+					jxmlTranslator.load(new File(testCase), ToolConstant.TEST_CLASS);
 					xmlTestCases.add(jxmlTranslator.translate());
-					javaTestCases.add(new File(test_cases_java_dir+testCases[i]));
+					javaTestCases.add(new File(testCase));
 				}
 			}
 			log.info("done\n");
