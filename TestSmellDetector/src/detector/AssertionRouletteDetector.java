@@ -6,6 +6,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.tools.Tool;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -99,8 +100,8 @@ public class AssertionRouletteDetector extends Thread{
 					}
 				}
 			}
-			String className = ClassNameExtractor.extractClassNameFromPath(xml.getName());
-			rouletteResults.add(new AssertionRouletteResult(className,result));
+			String packFromPaht = ClassNameExtractor.extractClassNameFromPath(xml.getName());
+			rouletteResults.add(new AssertionRouletteResult(packFromPaht.replace(ToolConstant.MINUS, ToolConstant.DOT),result));
 			
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);

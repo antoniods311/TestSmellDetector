@@ -1,6 +1,11 @@
 package detector;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.text.DecimalFormat;
+import java.util.Properties;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,7 +16,9 @@ import simian.BlockSet;
 import simian.CloneAnalyzer;
 import simian.SimianResult;
 import simian.TestSmellCloneAnalyzer;
-import util.ClassNameExtractor;
+
+import util.PathTool;
+import util.ToolConstant;
 import util.tooldata.ToolData;
 
 /**
@@ -49,15 +56,28 @@ public class TestCodeDuplicationDetector extends Thread {
 
 		log.info("*** START CODE DUPLICATION ANALYSIS ***");
 		
+		Properties prop = new Properties();
+		InputStream input = null;
+		String test_cases_java_dir = "";
+		try {
+			input = new FileInputStream(ToolConstant.CONFIG_FILE_PATH);
+			prop.load(input);
+			test_cases_java_dir = prop.getProperty(ToolConstant.TEST_CASES_JAVA_DIR);
+		} catch (FileNotFoundException e) {
+			log.error("Config File not found!");
+			e.printStackTrace();
+		} catch (IOException e) {
+			log.error("Error reading properties file!");
+			e.printStackTrace();
+		}
+		
+		
 		SimianResult simianResult = duplicationAnalyzer.execSimianAnalysis(data.getJavaTestClasses());
-		
 		int numberOfDuplicatedLines = simianResult.getCheckSummary().getDuplicateLineCount();
-		
 		if(numberOfDuplicatedLines >= codeDuplicationAbs){
 			log.info("VALUE: # cloned lines: "+numberOfDuplicatedLines);
 		}
 		
-//		double percentageOfDuplicatedLines = simianResult.getCheckSummary().getDuplicateLinePercentage();
 		double loc = simianResult.getCheckSummary().getTotalSignificantLineCount();
 		double dloc = simianResult.getCheckSummary().getDuplicateLineCount();
 		double perc = (dloc/loc)*100;
@@ -70,7 +90,8 @@ public class TestCodeDuplicationDetector extends Thread {
 		for(BlockSet bs : simianResult.getSet()){
 			log.info("start set");
 			for(Block block : bs.getClones()){
-				log.info(ClassNameExtractor.extractClassNameFromPath(block.getSourceFile().getFilename())+ 
+				String temp = PathTool.extractPackage(block.getSourceFile().getFilename(), test_cases_java_dir);
+				log.info(temp.replace(ToolConstant.MINUS, ToolConstant.DOT)+ 
 						" lines: "+block.getStartLineNumber() +"-"+block.getEndLineNumber());
 			}
 			log.info("end set\n");

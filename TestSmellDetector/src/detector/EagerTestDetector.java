@@ -106,28 +106,7 @@ public class EagerTestDetector extends Thread {
 									.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
 									&& iMethod.getName().toString().equalsIgnoreCase(methodName)
 									&& pack.equals(classPackage)) {
-								
-								
-								/*
-								 * ************************* Prove ***************************
-								 * 
-								 */
-								
-//								System.out.println("declaring to string: "+iMethod.getDeclaringClass().toString());
-//								System.out.println("source file name: "+iMethod.getDeclaringClass().getSourceFileName());
-//								System.out.println("getName: "+iMethod.getDeclaringClass().getName());
-//								System.out.println("getReference: "+iMethod.getDeclaringClass().getReference());
-//								System.out.println("getDescriptor: "+iMethod.getDescriptor());
-								
-//								String pack_1 = typeRef.getName().getPackage().toString();
-//								System.out.println(pack_1+"   "+PathTool.pathToPackage(pack_1));
-								
-								
-								/*
-								 * ************************* Prove ***************************
-								 */	
 								methodAnalyzer = new DataFlowMethodAnalyzer(node);
-								
 								HashSet<String> methodsTested = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
 								testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test										
 							}
@@ -136,7 +115,8 @@ public class EagerTestDetector extends Thread {
 				}
 			}
 			
-			eagerTestResults.add(new ResultContainer(ClassNameExtractor.extractClassNameFromPath(xml.getName()), testedMethods));
+			eagerTestResults.add(new ResultContainer(ClassNameExtractor.extractClassNameFromPath(xml.getName())
+					.replace(ToolConstant.MINUS, ToolConstant.DOT), testedMethods));
 
 		} catch (ParserConfigurationException e) {
 			log.error(ToolConstant.PARSE_EXCEPTION_MSG);

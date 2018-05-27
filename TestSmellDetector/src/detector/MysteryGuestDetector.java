@@ -153,7 +153,8 @@ public class MysteryGuestDetector extends Thread {
 				numOfCalls = result.getCallResult().get(methodName).size();
 				numOfTypes = result.getTypeResult().get(methodName).size();
 				if((numOfCalls+numOfTypes) >= mysteryGuestAbs){
-					log.info("Value: Mystery Guest found in "+ClassNameExtractor.extractClassNameFromPath(result.getTestClassName())+"."+methodName);
+					log.info("Value: Mystery Guest found in "+ClassNameExtractor.extractClassNameFromPath(result.getTestClassName()).
+							replace(ToolConstant.MINUS, ToolConstant.DOT)+"."+methodName);
 					mysteryGuestNum++;
 				}
 			}

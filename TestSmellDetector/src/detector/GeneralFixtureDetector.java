@@ -159,7 +159,8 @@ public class GeneralFixtureDetector extends Thread {
 //			System.out.println("---------------");
 //		}
 		
-		String testClassName = ClassNameExtractor.extractClassNameFromPath(xml.getName());
+		String testClassName = ClassNameExtractor.extractClassNameFromPath(xml.getName())
+				.replace(ToolConstant.MINUS, ToolConstant.DOT);
 		int generalFixMethodNumber = 0;
 		
 		for(String mn : results.keySet()){

@@ -107,7 +107,8 @@ public class SensitiveEqualityDetector extends Thread {
 				}
 			}
 
-			sensitiveEqualityResults.put(ClassNameExtractor.extractClassNameFromPath(xml.getName()), result);
+			sensitiveEqualityResults.put(ClassNameExtractor.extractClassNameFromPath(xml.getName()).
+					replace(ToolConstant.MINUS, ToolConstant.DOT), result);
 			
 		} catch (ParserConfigurationException e) {
 			System.out.println(ToolConstant.PARSE_EXCEPTION_MSG);

@@ -215,6 +215,11 @@ public class IndirectTestingDetector extends Thread {
 				MethodReference methodRef = iMethod.getReference();
 				TypeReference typeRef = methodRef.getDeclaringClass();
 				ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
+				Atom packWala = typeRef.getName().getPackage();
+				String pack = "";
+				if(packWala!=null){
+					pack = PathTool.pathToPackage(packWala.toString());
+				}
 
 				if (classLoaderRef.getName().toString().equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)) {
 					Iterator<CallSiteReference> csi = node.iterateCallSites();
@@ -223,20 +228,11 @@ public class IndirectTestingDetector extends Thread {
 						String className = csr.getDeclaredTarget().getDeclaringClass().getName().getClassName()
 								.toString();
 						String methodName = csr.getDeclaredTarget().getName().toString();
-						
-						/*
-						 * START modifiche
-						 */
-						
-						Atom packWala = typeRef.getName().getPackage();
-						String pack = "";
-						if(packWala!=null){
-							pack = PathTool.pathToPackage(packWala.toString());
+						Atom packWalaCalled = csr.getDeclaredTarget().getDeclaringClass().getName().getPackage();
+						String packCalled = "";
+						if(packWalaCalled!=null){
+							packCalled = PathTool.pathToPackage(packWalaCalled.toString());
 						}
-						
-						/*
-						 * END modifiche (anche la condizione nell'if successivo)
-						 */
 						
 						if (tmt.getClassType().equals(className) 
 								&& tmt.getMethodName().equals(methodName)
@@ -255,8 +251,8 @@ public class IndirectTestingDetector extends Thread {
 							if(testedMethods.contains(indTestedMethod)){
 								//indirectTestedMethods.add(indTestedMethod);
 								IndirectTestingResult res = new IndirectTestingResult();
-								res.setTesterMethod(new ToolMethodType(callerClass, callerMethod));
-								res.setIndirectTestedMethod(new ToolMethodType(className, methodName));
+								res.setTesterMethod(new ToolMethodType(callerClass, callerMethod, pack));
+								res.setIndirectTestedMethod(new ToolMethodType(className, methodName, packCalled));
 								indirectTestedMethods.add(res);
 							}
 							
@@ -351,9 +347,11 @@ public class IndirectTestingDetector extends Thread {
 		if(results.size() >= indirectTestingAbs){
 			for(IndirectTestingResult itr : results){
 				log.info("Indirect Tested Method: "+ 
+						itr.getIndirectTestedMethod().getStrPackage()+ToolConstant.DOT+
 						itr.getIndirectTestedMethod().getClassType()+
 						"."+itr.getIndirectTestedMethod().getMethodName()+
-						" - called in "+ itr.getTesterMethod().getClassType()+
+						" - called in "+ itr.getTesterMethod().getStrPackage()+
+						ToolConstant.DOT + itr.getTesterMethod().getClassType()+
 						"."+itr.getTesterMethod().getMethodName());
 			}
 		}

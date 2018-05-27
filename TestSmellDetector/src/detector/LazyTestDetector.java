@@ -123,7 +123,8 @@ public class LazyTestDetector extends Thread {
 				}
 			}
 			
-			lazyTestResults.add(new ResultContainer(ClassNameExtractor.extractClassNameFromPath(xml.getName()), 
+			lazyTestResults.add(new ResultContainer(ClassNameExtractor.extractClassNameFromPath(xml.getName())
+					.replace(ToolConstant.MINUS, ToolConstant.DOT), 
 					testedMethods, testChecker.getTestMethodNumber(xml)));
 			
 //			for (String key : testedMethods.keySet()) {
@@ -165,6 +166,7 @@ public class LazyTestDetector extends Thread {
 		int numOfLT = 0;
 		HashMap<String, Integer> tot = new HashMap<String, Integer>();
 		for (ToolMethodType tmt : data.getProductionMethods()){
+		//	System.out.println(tmt.getStrPackage()+"."+tmt.getMethodName());
 			tot.put(tmt.getMethodName(), 0);
 		}
 			
@@ -173,9 +175,9 @@ public class LazyTestDetector extends Thread {
 		 * chiamate per questo
 		 */
 		int globalTMNumber = 0;
-		for (ResultContainer lazy : lazyTestResults) {
-			for (String testMtd : lazy.getTestedMethods().keySet()) {
-				for (String tm : lazy.getTestedMethods().get(testMtd)) {
+		for (ResultContainer lazy : lazyTestResults) { //per ogni classe di test
+			for (String testMtd : lazy.getTestedMethods().keySet()) { //per ogni metodo di test
+				for (String tm : lazy.getTestedMethods().get(testMtd)) { // per ogni PC method
 					if (tot.containsKey(tm)) {
 						int count = tot.get(tm);
 						count++;
