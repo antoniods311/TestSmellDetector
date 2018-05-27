@@ -22,7 +22,7 @@ public class PackageTool {
 	 */
 	public static String constructPackage(Document doc) {
 
-		String pack = "";
+		String stringPackage = "";
 		ArrayList<String> directories = new ArrayList<String>();
 		NodeList packList = doc.getElementsByTagName(ToolConstant.PACKAGE);
 		for (int i = 0; i < packList.getLength(); i++) {
@@ -52,14 +52,14 @@ public class PackageTool {
 		boolean isFirstDir = true;
 		for(String dir : directories){
 			if(isFirstDir){
-				pack = dir;
+				stringPackage = dir;
 				isFirstDir = false;
 			}else{
-				pack = pack + ToolConstant.DOT + dir;
+				stringPackage = stringPackage + ToolConstant.DOT + dir;
 			}
 		}
 
-		return pack;
+		return stringPackage;
 	}
 
 }

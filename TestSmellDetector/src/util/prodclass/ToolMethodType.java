@@ -4,6 +4,7 @@ public class ToolMethodType {
 	
 	private String classType;
 	private String methodName;
+	private String strPackage;
 	
 	/**
 	 * @param classType
@@ -13,6 +14,18 @@ public class ToolMethodType {
 		super();
 		this.classType = classType;
 		this.methodName = methodName;
+		this.strPackage = "";
+	}
+	
+	/**
+	 * @param classType
+	 * @param method
+	 */
+	public ToolMethodType(String classType, String methodName, String strPackage) {
+		super();
+		this.classType = classType;
+		this.methodName = methodName;
+		this.strPackage = strPackage;
 	}
 
 	/**
@@ -41,6 +54,20 @@ public class ToolMethodType {
 	 */
 	public void setMethodName(String method) {
 		this.methodName = method;
+	}
+
+	/**
+	 * @return the strPackage
+	 */
+	public String getStrPackage() {
+		return strPackage;
+	}
+
+	/**
+	 * @param strPackage the strPackage to set
+	 */
+	public void setStrPackage(String strPackage) {
+		this.strPackage = strPackage;
 	}
 
 	@Override

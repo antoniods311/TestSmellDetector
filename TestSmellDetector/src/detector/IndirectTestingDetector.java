@@ -25,6 +25,7 @@ import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
+import com.ibm.wala.util.strings.Atom;
 
 import dataflowanalysis.CallSiteAnalyzer;
 import dataflowanalysis.DataFlowMethodAnalyzer;
@@ -95,12 +96,17 @@ public class IndirectTestingDetector extends Thread {
 							MethodReference methodRef = iMethod.getReference();
 							TypeReference typeRef = methodRef.getDeclaringClass();
 							ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
-							String pack = PathTool.pathToPackage(typeRef.getName().getPackage().toString());
+							Atom packWala = typeRef.getName().getPackage();
+							String pack = "";
+							if(packWala!=null){
+								pack = PathTool.pathToPackage(packWala.toString());
+							}
 							
 							if (classLoaderRef.getName().toString()
 									.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
 									&& iMethod.getName().toString().equalsIgnoreCase(methodName)
 									&& pack.equals(classPackage)) {
+						
 								methodAnalyzer = new DataFlowMethodAnalyzer(node);
 
 								/*
@@ -222,15 +228,20 @@ public class IndirectTestingDetector extends Thread {
 						 * START modifiche
 						 */
 						
-						String pack = PathTool.pathToPackage(typeRef.getName().getPackage().toString());
-						//System.out.println(tmt.getClassType());
+						Atom packWala = typeRef.getName().getPackage();
+						String pack = "";
+						if(packWala!=null){
+							pack = PathTool.pathToPackage(packWala.toString());
+						}
+						
 						/*
 						 * END modifiche (anche la condizione nell'if successivo)
 						 */
 						
 						if (tmt.getClassType().equals(className) 
-								&& tmt.getMethodName().equals(methodName)) {
-
+								&& tmt.getMethodName().equals(methodName)
+								&& tmt.getStrPackage().equals(pack)) {
+							
 							/*
 							 * Se entro in questo if ho trovato una chiamata al
 							 * metodo non testato. Ora devo vedere se il
@@ -301,6 +312,7 @@ public class IndirectTestingDetector extends Thread {
 			 * customPCMethods
 			 */
 			String completePath = tmt.getClassType();
+			//System.out.println("-- "+completePath);
 			StringTokenizer tokenizer = new StringTokenizer(completePath, "/");
 			String last = "";
 			while (tokenizer.hasMoreTokens())
@@ -311,7 +323,7 @@ public class IndirectTestingDetector extends Thread {
 			if (tokenizer.hasMoreElements())
 				className = tokenizer.nextToken();
 
-			customPCMethods.add(new ToolMethodType(className, tmt.getMethodName()));
+			customPCMethods.add(new ToolMethodType(className, tmt.getMethodName(), tmt.getStrPackage()));
 		}
 
 		return customPCMethods;

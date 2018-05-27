@@ -11,6 +11,7 @@ import com.ibm.wala.ipa.callgraph.CGNode;
 import com.ibm.wala.types.ClassLoaderReference;
 import com.ibm.wala.types.MethodReference;
 import com.ibm.wala.types.TypeReference;
+import com.ibm.wala.util.strings.Atom;
 
 import util.PathTool;
 import util.ToolConstant;
@@ -52,7 +53,11 @@ public class ClassFieldsReader {
 			MethodReference methodRef = iMethod.getReference();
 			TypeReference typeRef = methodRef.getDeclaringClass();
 			ClassLoaderReference classLoaderRef = typeRef.getClassLoader();
-			String pack = PathTool.pathToPackage(typeRef.getName().getPackage().toString());
+			Atom packWala = typeRef.getName().getPackage();
+			String pack = "";
+			if(packWala!=null){
+				pack = PathTool.pathToPackage(packWala.toString());
+			}
 
 			if (classLoaderRef.getName().toString()
 					.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)

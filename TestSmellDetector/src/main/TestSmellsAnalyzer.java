@@ -38,7 +38,8 @@ public class TestSmellsAnalyzer {
 	private static JavaToXmlTranslator jxmlTranslator;
 	private static Logger log;
 	private static String test_cases_java_dir;
-	private static String production_classes_dir;
+	private static String production_classes_java_dir;
+	private static String production_classes_xml_dir;
 	private static String test_cases_jar_path;
 	private static String exclusion_file;
 	private static String log4jConfig;
@@ -63,7 +64,8 @@ public class TestSmellsAnalyzer {
 			
 			//directories
 			test_cases_jar_path = prop.getProperty(ToolConstant.TEST_CASES_JAR_DIR);
-			production_classes_dir = prop.getProperty(ToolConstant.PRODUCTION_CLASS_JAVA_DIR);
+			production_classes_java_dir = prop.getProperty(ToolConstant.PRODUCTION_CLASS_JAVA_DIR);
+			production_classes_xml_dir = prop.getProperty(ToolConstant.PRODUCTION_CLASSES_XML_DIR);
 			test_cases_java_dir = prop.getProperty(ToolConstant.TEST_CASES_JAVA_DIR);
 			exclusion_file = prop.getProperty(ToolConstant.EXCLUSION_FILE);
 			log4jConfig = prop.getProperty(ToolConstant.LOG4J_CONFIG);
@@ -134,7 +136,7 @@ public class TestSmellsAnalyzer {
 			// 2.Traduzione delle production classes
 			log.info("Production classes translation...");
 			ArrayList<File> xmlProdClasses = new ArrayList<File>();
-			ArrayList<String> prodClasses = FileFinder.findJava(production_classes_dir);
+			ArrayList<String> prodClasses = FileFinder.findJava(production_classes_java_dir);
 			for(String prodClass : prodClasses){
 				if(FilenameUtils.getExtension(prodClass).equalsIgnoreCase(ToolConstant.JAVA_EXTENSION)){
 					jxmlTranslator.load(new File(prodClass), ToolConstant.PRODUCTION_CLASS);
@@ -159,7 +161,8 @@ public class TestSmellsAnalyzer {
 			
 			// 3a. Calcolo di tutti i metodi delle production class
 			ProductionClassAnalyzer prodClassAnalyzer = new ProductionClassAnalyzer(xmlProdClasses);
-			HashSet<ToolMethodType> productionClassesMethods = prodClassAnalyzer.getClassMethods();
+//			HashSet<ToolMethodType> productionClassesMethods = prodClassAnalyzer.getClassMethods();
+			HashSet<ToolMethodType> productionClassesMethods = prodClassAnalyzer.getClassMethods(production_classes_xml_dir);
 			
 			// 4. Costruzione oggetto ToolData
 			ToolData data = new ToolData();
