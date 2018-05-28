@@ -13,7 +13,7 @@ public class AssertVariablesAnalyzer {
 
 	private IR ir;
 	private ToolData data;
-
+	
 	/**
 	 * Constructor
 	 * 
@@ -64,9 +64,9 @@ public class AssertVariablesAnalyzer {
 		if (!pmCallFound) {
 			pcDefinitionMethod = checkConversion(def, var);
 		}
-
+		
 		return pcDefinitionMethod;
-
+		
 	}
 
 	private String checkConversion(SSAInstruction instruction, int var) {

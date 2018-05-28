@@ -115,8 +115,8 @@ public class LazyTestDetector extends Thread {
 								// HashSet<String> methodsCalled = methodAnalyzer.calculatePCMethodsCall(data,methodName);
 								// callPaths.put(methodName, methodsCalled);// tutti i metodi della PC chiamati nel metodo di test
 								HashSet<String> methodsTested = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
-								testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test									
-																		
+								testedMethods.put(classPackage+"."+methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test
+								
 							}
 						}
 					}

@@ -1,5 +1,6 @@
 package dataflowanalysis;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -30,7 +31,7 @@ public class DataFlowMethodAnalyzer {
 		this.node = node;
 		this.ir = node.getIR();
 	}
-
+	
 	/**
 	 * This method finds which production class methods 
 	 * are reached from test method node 
@@ -90,6 +91,7 @@ public class DataFlowMethodAnalyzer {
 				for(int g=0; g<limit; g++){
 					DefUse defUse = new DefUse(ir);
 					int usedVariable = instruction.getUse(g);
+					
 	    			SSAInstruction uvDefinition = defUse.getDef(usedVariable); //recupero la definizioned della variabile usata dall'assert
 //	    			if(uvDefinition!=null)
 //	    				System.out.println(testMethod+"-->"+uvDefinition.toString());
