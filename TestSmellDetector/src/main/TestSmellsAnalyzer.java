@@ -131,8 +131,8 @@ public class TestSmellsAnalyzer {
 			log.info("Building Call Graph...");
 			builder = new WalaCallGraphBuilder(jarInput,exclusion_file,walaPropertiesFile);
 			CallGraph callGraph = builder.buildCallGraph();
-			log.info("done\n");
 			log.info("CG nodes #: "+callGraph.getNumberOfNodes());
+			log.info("done\n");
 			
 			// 2.Traduzione delle production classes
 			log.info("Production classes translation...");
