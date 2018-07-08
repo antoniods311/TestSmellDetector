@@ -23,6 +23,15 @@ public class ToolConstant {
 	public static final String WALA_PROPERTIES_FILE = "wala_properties_file";
 	public static final String LOG4J_CONFIG = "log4j_config";
 	public static final String SRCML_DIR = "srcML_path";
+	public static final String BINARY_DIR = "binary_dir";
+	public static final String SCOPE_LOCATION = "scope_file_location";
+	
+	// Scope read file
+	public static final String SCOPE_FILE_NAME = "scope.txt";
+	public static final String PRIMORDIAL_STD_LIB = "Primordial,Java,stdlib,none";
+	public static final String PRIMORDIAL_JAR_FILE = "Primordial,Java,jarFile,primordial.jar.model";
+	public static final String APPLICATION_BIN_DIR = "Application,Java,binaryDir,";
+	public static final String WRITING_SCOPE_FILE_ERROR = "Writing scope file error!";
 	
 	
 	// Thresholds absolute values
@@ -35,7 +44,7 @@ public class ToolConstant {
 	public static final String CODE_DUPLICATION_ABS = "code_duplication_abs";
 	public static final String LAZY_TEST_ABS = "lazy_test_abs";
 	
-	//Thresholds percentage values
+	// Thresholds percentage values
 	public static final String ASSERTION_ROULETTE_PERC = "assertion_roulette_perc";
 	public static final String EAGER_TEST_PERC = "eager_test_perc";
 	public static final String INDIRECT_TESTING_PERC = "indirect_testing_perc";

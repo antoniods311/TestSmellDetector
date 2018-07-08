@@ -134,6 +134,8 @@ public class SensitiveEqualityDetector extends Thread {
 	 */
 	private int getNumOfToStringAssertParams(String methodName,String classPackage){
 		
+		//System.out.println(">>>>>>>> "+methodName);
+		
 		int numOfToString = 0;
 		//1. trovare il nodo corrispondente al metodo di test
 		CGNode node;
@@ -149,6 +151,23 @@ public class SensitiveEqualityDetector extends Thread {
 			if(packWala!=null){
 				pack = PathTool.pathToPackage(packWala.toString());
 			}
+			
+//			System.out.println(pack);
+//			System.out.println(classPackage);
+//			
+//			if(methodName.equals("testConversionToString()")){
+//				
+//			}
+			
+		
+//			if (classLoaderRef.getName().toString()
+//					.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)){
+//				
+//				System.out.println(iMethod.getName().toString());
+//			}
+			
+			
+			
 			
 			if (classLoaderRef.getName().toString()
 					.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
@@ -168,6 +187,8 @@ public class SensitiveEqualityDetector extends Thread {
 				//3. fare l'analisi
 				HashSet<String> toStringCalls = methodAnalyzer.getPCMethodsTestedByTestMethod(customData,
 						methodName);
+				
+				//System.out.println("ciao");
 				
 				for(String s : toStringCalls){
 					if(s!=null && s.equals(ToolConstant.TO_STRING))

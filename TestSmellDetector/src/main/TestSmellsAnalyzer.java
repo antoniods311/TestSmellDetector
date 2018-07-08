@@ -44,6 +44,8 @@ public class TestSmellsAnalyzer {
 	private static String exclusion_file;
 	private static String log4jConfig;
 	private static String walaPropertiesFile;
+	private static String binaryDir;
+	private static String scopeLocation;
 	
 	public static void main(String[] args) throws URISyntaxException {	
 		
@@ -70,6 +72,10 @@ public class TestSmellsAnalyzer {
 			exclusion_file = prop.getProperty(ToolConstant.EXCLUSION_FILE);
 			log4jConfig = prop.getProperty(ToolConstant.LOG4J_CONFIG);
 			walaPropertiesFile = prop.getProperty(ToolConstant.WALA_PROPERTIES_FILE);
+			binaryDir = prop.getProperty(ToolConstant.BINARY_DIR);
+			scopeLocation = prop.getProperty(ToolConstant.SCOPE_LOCATION);
+			
+			System.out.println(binaryDir);
 			
 			//Thresholds
 			container = new ThresholdContainer();
@@ -127,12 +133,14 @@ public class TestSmellsAnalyzer {
 		File jarInput = new File(test_cases_jar_path);
 		WalaCallGraphBuilder builder;
 		try {
+			
 			// 1.Costruzione Call Graph
 			log.info("Building Call Graph...");
-			builder = new WalaCallGraphBuilder(jarInput,exclusion_file,walaPropertiesFile);
+			//builder = new WalaCallGraphBuilder(jarInput,exclusion_file,walaPropertiesFile); /*JAR VERSION*/
+			builder = new WalaCallGraphBuilder(binaryDir, scopeLocation,exclusion_file,walaPropertiesFile);
 			CallGraph callGraph = builder.buildCallGraph();
 			log.info("CG nodes #: "+callGraph.getNumberOfNodes());
-			log.info("done\n");
+			log.info("done\n");		
 			
 			// 2.Traduzione delle production classes
 			log.info("Production classes translation...");
@@ -159,6 +167,10 @@ public class TestSmellsAnalyzer {
 				}
 			}
 			log.info("done\n");
+			
+				
+			
+			
 			
 			// 3a. Calcolo di tutti i metodi delle production class
 			ProductionClassAnalyzer prodClassAnalyzer = new ProductionClassAnalyzer(xmlProdClasses);
