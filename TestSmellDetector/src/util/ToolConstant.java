@@ -95,10 +95,11 @@ public class ToolConstant {
 
 	// File API types
 	public static final String[] FILE_API_TYPES = { "File", "BufferedReader", "FileReader", "FileWriter", "IOException",
-			"FileWriter", "PrintWriter", "Scanner" };
+			"FileWriter", "PrintWriter", "Scanner", "Connection" };
 
 	// File API methods
-	public static final String[] FILE_API_METHODS = { "readLine", "nextLine", /*"close",*/ "read" };
+	public static final String[] FILE_API_METHODS = { "readLine", "nextLine", /*"close",*/ "read", "getConnection", 
+			"createStatement", "executeQuery", "executeUpdate" };
 
 	// toString method
 	public static final String TO_STRING = "toString";
