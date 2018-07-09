@@ -107,6 +107,7 @@ public class EagerTestDetector extends Thread {
 									&& iMethod.getName().toString().equalsIgnoreCase(methodName)
 									&& pack.equals(classPackage)) {
 								methodAnalyzer = new DataFlowMethodAnalyzer(node);
+								//System.out.println("##"+pack+" "+typeRef.getName().getClassName().toString());
 								HashSet<String> methodsTested = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
 								testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test										
 							}

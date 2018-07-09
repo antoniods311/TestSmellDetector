@@ -35,7 +35,7 @@ public class AssertVariablesAnalyzer {
 	 * @param the
 	 *            variable defined by SSAInstruction object
 	 */
-	public String analyzeUse(SSAInstruction def, int var) {
+	public String analyzeUse(SSAInstruction def, int var, int code) {
 
 		boolean pmCallFound = false;
 		String pcDefinitionMethod = null;
@@ -61,7 +61,7 @@ public class AssertVariablesAnalyzer {
 		 * di var. Quindi è necessario risalire le istruzioni di definizione.
 		 * (Vedere conversion(J) in questo caso)
 		 */
-		if (!pmCallFound) {
+		if (!pmCallFound && code!=1) {
 			pcDefinitionMethod = checkConversion(def, var);
 		}
 		
@@ -97,7 +97,7 @@ public class AssertVariablesAnalyzer {
 			SSAInstruction definition = defUse.getDef(usedVar);
 			if(definition!=null){
 				AssertVariablesAnalyzer innerAva = new AssertVariablesAnalyzer(data, ir);
-				String returnedMethod = innerAva.analyzeUse(definition, usedVar);
+				String returnedMethod = innerAva.analyzeUse(definition, usedVar,1);
 				if (returnedMethod != null)
 					method = returnedMethod;
 			}
