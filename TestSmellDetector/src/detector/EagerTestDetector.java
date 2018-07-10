@@ -109,7 +109,7 @@ public class EagerTestDetector extends Thread {
 								methodAnalyzer = new DataFlowMethodAnalyzer(node);
 								//System.out.println("##"+pack+" "+typeRef.getName().getClassName().toString());
 								HashSet<String> methodsTested = methodAnalyzer.getPCMethodsTestedByTestMethod(data,methodName);
-								testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test										
+								testedMethods.put(methodName, methodsTested); //tutti i metodi testati della PC nel metodo di test								
 							}
 						}
 					}
@@ -151,7 +151,7 @@ public class EagerTestDetector extends Thread {
 		
 		for(ResultContainer eager : eagerTestResults){
 			for(String testMtd : eager.getTestedMethods().keySet()){
-				int numberOfTestedMethods = eager.getTestedMethods().get(testMtd).size();
+				int numberOfTestedMethods = calculateNullMethod(eager.getTestedMethods().get(testMtd));
 				if(numberOfTestedMethods >= eagerTestAbs){
 					log.info("Eager Test found! "+eager.getTestCasesFile()+"."+testMtd+" tests "+numberOfTestedMethods+" PC methods");
 					eagerTestNumber++;
@@ -168,6 +168,21 @@ public class EagerTestDetector extends Thread {
 		}
 		
 		
+	}
+	
+	/**
+	 * This method calculates number of methods witch are not null
+	 * 
+	 * @param set
+	 * @return number of not null production code methods
+	 */
+	private int calculateNullMethod(HashSet<String> set){
+		
+		int nullMethodNumber = 0;
+		for(String method : set)
+			if(method != null) nullMethodNumber++;
+
+		return nullMethodNumber;
 	}
 	
 	/*

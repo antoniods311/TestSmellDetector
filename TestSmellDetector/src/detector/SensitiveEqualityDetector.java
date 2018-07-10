@@ -166,9 +166,6 @@ public class SensitiveEqualityDetector extends Thread {
 //				System.out.println(iMethod.getName().toString());
 //			}
 			
-			
-			
-			
 			if (classLoaderRef.getName().toString()
 					.equalsIgnoreCase(ToolConstant.APPLLICATION_CLASS_LOADER)
 					&& iMethod.getName().toString().equalsIgnoreCase(methodName)
@@ -185,15 +182,19 @@ public class SensitiveEqualityDetector extends Thread {
 				customData.setProductionMethods(customToString);
 				
 				//3. fare l'analisi
-				HashSet<String> toStringCalls = methodAnalyzer.getPCMethodsTestedByTestMethod(customData,
+				HashSet<String> toStringCalls = methodAnalyzer.getPCMethodsTestedByTestMethodSE(customData,
 						methodName);
 				
-				//System.out.println("ciao");
+//				if(methodName.equals("testWithBufferedWrite")){
+//					for(String s : toStringCalls){
+//						System.out.println("--> "+s);
+//					}
+//				}
 				
 				for(String s : toStringCalls){
 					if(s!=null && s.equals(ToolConstant.TO_STRING))
 						numOfToString++;
-				}	
+				}
 			}
 		}
 		

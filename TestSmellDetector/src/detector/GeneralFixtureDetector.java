@@ -113,9 +113,12 @@ public class GeneralFixtureDetector extends Thread {
 								if (createdSet.contains(element))
 									commonElements.add(element);
 							}
-//							for(String x : commonElements){
-//								System.out.println(methodName+" ce: "+x);
-//							}
+							
+//								System.out.println(xml.getName());
+//								for(String x : commonElements){
+//									System.out.println(methodName+" ce: "+x);
+//								}
+//							
 							
 						}
 
@@ -129,8 +132,10 @@ public class GeneralFixtureDetector extends Thread {
 
 						// analizzo le call per trovare il nome della variabile
 						// chiamata
-						HashSet<String> callNames = findCallNames(functionElement);
-						for(String varName : callNames){
+						
+						HashSet<String> callNames = findCallNames(functionElement,methodName);	
+						
+						for(String varName : callNames){							
 							if(commonElements.contains(varName)){
 								results.get(methodName).remove(varName);
 								results.get(methodName).put(varName, true);
@@ -194,13 +199,17 @@ public class GeneralFixtureDetector extends Thread {
 	 * 
 	 *         call 
 	 *        	 |--- name 
-	 *         			|--- name -> "varName"
+	 *         	 |		|--- name -> "varName"
+	 *           |
+	 *           |--- argumentList
+	 *           		|--- argument
+	 *           				|--- name
 	 * 
 	 */
-	private HashSet<String> findCallNames(Element functionElement) {
+	private HashSet<String> findCallNames(Element functionElement, String met) {
 
 		HashSet<String> result = new HashSet<String>();
-
+		
 		NodeList funElChildList = functionElement.getElementsByTagName(ToolConstant.CALL);
 		for (int i = 0; i < funElChildList.getLength(); i++) {
 			if (funElChildList.item(i).getNodeType() == Node.ELEMENT_NODE) {
@@ -208,22 +217,52 @@ public class GeneralFixtureDetector extends Thread {
 				NodeList callChildList = call.getChildNodes();
 				for (int j = 0; j < callChildList.getLength(); j++) {
 					Node item = callChildList.item(j);
-					if (item.getNodeType() == Node.ELEMENT_NODE && item.getNodeName() == ToolConstant.NAME) {
-
+					if (item.getNodeType() == Node.ELEMENT_NODE && item.getNodeName().equals(ToolConstant.NAME)) {
 						NodeList nameChildList = item.getChildNodes();
 						if (nameChildList != null) {
-							for (int k = 0; k < nameChildList.getLength(); k++) {
-								Node nameVarNode = nameChildList.item(k);
-								if (nameVarNode.getNodeType() == Node.ELEMENT_NODE) {
-									result.add(nameVarNode.getTextContent());
-								}
+							//sono dentro in name interno
+//							for (int k = 0; k < nameChildList.getLength(); k++) {
+//								Node nameVarNode = nameChildList.item(k);
+//								if (nameVarNode.getNodeType() == Node.ELEMENT_NODE && nameVarNode.getNodeName() == ToolConstant.NAME) {
+//									result.add(nameVarNode.getTextContent());
+//								}
+//							}
+							
+							Node nameVarNode = nameChildList.item(0);
+							if (nameVarNode.getNodeType() == Node.ELEMENT_NODE && nameVarNode.getNodeName().equals(ToolConstant.NAME)) {
+								result.add(nameVarNode.getTextContent());
 							}
 						}
 					}
+					
+					if (item.getNodeType() == Node.ELEMENT_NODE && item.getNodeName().equals(ToolConstant.ARGUMENT_LIST)) {	
+						NodeList arumentListChildList = item.getChildNodes();
+						for(int l = 0; l < arumentListChildList.getLength(); l++){
+							Node argument = arumentListChildList.item(l);
+							if(argument.getNodeType() == Node.ELEMENT_NODE && argument.getNodeName().equals(ToolConstant.ARGUMENT)){
+								Element argElement = (Element) argument;
+								NodeList nameList = argElement.getElementsByTagName(ToolConstant.NAME);
+								if(nameList!=null){
+									for (int k = 0; k < nameList.getLength(); k++) {
+										Node nameVarNode = nameList.item(k);
+										if (nameVarNode.getNodeType() == Node.ELEMENT_NODE && nameVarNode.getNodeName().equals(ToolConstant.NAME)) {
+											result.add(nameVarNode.getTextContent());		
+										}
+									}
+								}
+							}	
+							
+							
+							
+						}
+					}
+					
+					
+					
 				}
-			}
+			}	
+			
 		}
-
 		return result;
 	}
 

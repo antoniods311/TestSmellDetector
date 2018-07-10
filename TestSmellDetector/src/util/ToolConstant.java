@@ -98,7 +98,7 @@ public class ToolConstant {
 			"FileWriter", "PrintWriter", "Scanner", "Connection" };
 
 	// File API methods
-	public static final String[] FILE_API_METHODS = { "readLine", "nextLine", /*"close",*/ "read", "getConnection", 
+	public static final String[] FILE_API_METHODS = { "readLine", /*"nextLine",*/ /*"close",*/ "read", "getConnection", 
 			"createStatement", "executeQuery", "executeUpdate" };
 
 	// toString method

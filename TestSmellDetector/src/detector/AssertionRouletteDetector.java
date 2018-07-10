@@ -165,7 +165,7 @@ public class AssertionRouletteDetector extends Thread{
 
 		String methodName = TestParseTool.readMethodNameByFunction(functionElement);
 		result.put(methodName, new ArrayList<String>());
-
+		
 		// devo scorrere i name della function
 		int numberOfAssertNoMsg = 0;
 		NodeList nameList = functionElement.getElementsByTagName(ToolConstant.NAME);
